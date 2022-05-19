@@ -24,6 +24,7 @@ function App() {
           <div>deeper div</div>
         </div>
         {arr}
+        <Typer.DeleteAll />
       </Typer>
     </div>
   );

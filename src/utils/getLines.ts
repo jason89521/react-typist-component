@@ -17,7 +17,6 @@ const getLines = (children: React.ReactNode) => {
   };
 
   React.Children.forEach(children, recurse);
-  console.log(lines);
   return lines;
 };
 

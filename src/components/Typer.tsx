@@ -1,7 +1,9 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
+import { getActions } from '../utils/actions';
 
 import getLines from '../utils/getLines';
 import getTypedChildren from '../utils/getTypedChildren';
+import DeleteAll from './DeleteAll';
 
 type Props = {
   children: React.ReactNode;
@@ -9,23 +11,28 @@ type Props = {
 };
 
 const Typer = ({ children, typingInterval = 100 }: Props) => {
-  const [lines, setLines] = useState<string[]>(() => getLines(children));
+  const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearIds = useRef<number[]>([]).current;
 
   const typeAll = async () => {
     let lineIdx = 0;
+    let actionIdx = 0;
     setTypedLines([]);
-    while (lineIdx < lines.length) {
-      setTypedLines(prev => [...prev, '']);
-      await typeLine(lineIdx);
-      lineIdx += 1;
+    while (actionIdx < actions.length) {
+      const action = actions[actionIdx];
+      if (action.type === 'TYPE_STRING') {
+        setTypedLines(prev => [...prev, '']);
+        await typeLine(action.payload, lineIdx);
+        lineIdx += 1;
+      }
+      actionIdx += 1;
     }
   };
 
-  const typeLine = (lineIdx: number) => {
+  const typeLine = (str: string, lineIdx: number) => {
     return new Promise<void>(resolve => {
-      const splittedLine = lines[lineIdx].split('');
+      const splittedLine = str.split('');
       let charIdx = 0;
       const clearId = setInterval(() => {
         charIdx += 1;
@@ -34,28 +41,32 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
         if (charIdx === splittedLine.length) {
           resolve();
           clearInterval(clearId);
+          clearIds.filter(id => id !== clearId);
         }
-
-        clearIds.push(clearId);
       }, typingInterval);
+
+      // append the registered interval id
+      clearIds.push(clearId);
     });
   };
 
   useEffect(() => {
+    // clears all interval to prevent weird behaviour
     while (clearIds.length > 0) {
       const clearId = clearIds.shift();
       clearInterval(clearId);
     }
 
     typeAll();
-  }, [lines]);
+  }, [actions]);
 
   useEffect(() => {
-    setLines(getLines(children));
+    setActions(getActions(children));
   }, [children]);
 
   const typedChildren = getTypedChildren(children, typedLines);
   return <div className="typer">{typedChildren}</div>;
 };
 
+Typer.DeleteAll = DeleteAll;
 export default Typer;

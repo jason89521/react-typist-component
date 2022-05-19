@@ -1,9 +1,5 @@
 import React from 'react';
 
-const isArray = (children: React.ReactNode): children is React.ReactNode[] => {
-  return Array.isArray(children);
-};
-
 const getTypedChildren = (children: React.ReactNode, lines: string[]): React.ReactNode => {
   let lineIdx = 0;
   const recurse = (children: React.ReactNode): React.ReactNode => {
