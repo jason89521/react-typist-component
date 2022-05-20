@@ -42,7 +42,7 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
         charIdx += 1;
         const newLine = splittedLine.slice(0, charIdx).join('');
         setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
-        if (charIdx === splittedLine.length) {
+        if (charIdx >= splittedLine.length) {
           resolve();
           clearInterval(clearId);
         }
@@ -101,6 +101,7 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
   }, [children]);
 
   const typedChildren = getTypedChildren(children, typedLines);
+
   return <div className="typer">{typedChildren}</div>;
 };
 
