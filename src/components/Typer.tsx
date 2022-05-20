@@ -8,34 +8,44 @@ type Props = {
   children: React.ReactNode;
   typingInterval?: number;
   backspaceInterval?: number;
+  loop?: boolean;
 };
 
-const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Props) => {
+const Typer = ({
+  children,
+  typingInterval = 100,
+  backspaceInterval = 100,
+  loop = false,
+}: Props) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
-  const clearIds = useRef<number[]>([]).current;
+  const onClearIntervalRef = useRef(() => {});
 
   const typeAll = async () => {
     let lineIdx = 0;
     let actionIdx = 0;
     setTypedLines([]);
-    while (actionIdx < actions.length) {
-      const action = actions[actionIdx];
-      if (action.type === 'TYPE_STRING') {
-        setTypedLines(prev => [...prev, '']);
-        await typeLine(action.payload, lineIdx);
-        lineIdx += 1;
-      } else if (action.type === 'BACKSPACE') {
-        await backspace(action.payload);
+    try {
+      while (actionIdx < actions.length) {
+        const action = actions[actionIdx];
+        if (action.type === 'TYPE_STRING') {
+          setTypedLines(prev => [...prev, '']);
+          await typeLine(action.payload, lineIdx);
+          lineIdx += 1;
+        } else if (action.type === 'BACKSPACE') {
+          await backspace(action.payload);
+        }
+        actionIdx += 1;
       }
-      actionIdx += 1;
-    }
 
-    console.log('typeAll complete');
+      if (loop) typeAll();
+    } catch (error) {
+      console.log(`halt from ${error}`);
+    }
   };
 
   const typeLine = (str: string, lineIdx: number) => {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve, reject) => {
       const splittedLine = str.split('');
       let charIdx = 0;
       const clearId = setInterval(() => {
@@ -48,23 +58,26 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
         }
       }, typingInterval);
 
-      // append the registered interval id
-      clearIds.push(clearId);
+      onClearIntervalRef.current = () => {
+        clearInterval(clearId);
+        reject('typeLine');
+      };
     });
   };
 
   const backspace = (amount: number) => {
-    return new Promise<void>(resolve => {
+    return new Promise<void>((resolve, reject) => {
       if (amount === 0) {
         resolve();
         return;
       }
+
       const clearId = setInterval(() => {
         setTypedLines(prev => {
           const copiedLine = [...prev];
           let idx = copiedLine.length - 1;
           let lastLine = copiedLine[idx];
-          while (copiedLine[idx].length === 0 && idx > 0) {
+          while (lastLine.length === 0 && idx > 0) {
             idx -= 1;
             lastLine = copiedLine[idx];
           }
@@ -74,24 +87,21 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
         });
 
         amount -= 1;
-        if (amount === 0) onResolve();
+        if (amount === 0) {
+          resolve();
+          clearInterval(clearId);
+        }
       }, backspaceInterval);
 
-      const onResolve = () => {
-        resolve();
+      onClearIntervalRef.current = () => {
         clearInterval(clearId);
+        reject('backspace');
       };
-
-      clearIds.push(clearId);
     });
   };
 
   useEffect(() => {
-    // clears all interval to prevent old action from excuting
-    while (clearIds.length > 0) {
-      const clearId = clearIds.shift();
-      clearInterval(clearId);
-    }
+    onClearIntervalRef.current();
 
     typeAll();
   }, [actions]);

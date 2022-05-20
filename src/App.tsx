@@ -14,14 +14,10 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer>
-        Text 1
-        <div>
-          div
-          <div className="deeper">deeper div</div>
-        </div>
-        <Typer.Backspace amount={13} />
-        <div>After backspace</div>
+      <Typer loop>
+        qwertyuiopasdfghjklmnbvcxz qwertyuiopasdfghjklmnbvcxz
+        <Typer.Backspace amount={53} />
+        {/* <div>After backspace</div> */}
       </Typer>
     </div>
   );
