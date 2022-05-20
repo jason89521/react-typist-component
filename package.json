@@ -1,6 +1,12 @@
 {
   "name": "react-typer-component",
   "version": "0.0.0",
+  "description": "A react component lets you create typewriter effect.",
+  "keywords": [
+    "react",
+    "react component",
+    "typewriter"
+  ],
   "files": [
     "dist"
   ],
