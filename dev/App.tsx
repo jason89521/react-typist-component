@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import Typer from '../src';
 
+const arr = [<Typer.Pause duration={500} />, 'typo', <Typer.Backspace amount={4} />, 'component'];
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -11,13 +13,7 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer loop>
-        qwertyuiopasdfghjklmnbvcxz
-        <Typer.Pause duration={1500} />
-        qwertyuiopasdfghjklmnbvcxz
-        <Typer.Backspace amount={52} />
-        {/* <div>After backspace</div> */}
-      </Typer>
+      <Typer>{arr}</Typer>
     </div>
   );
 }
