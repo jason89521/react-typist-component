@@ -17,14 +17,13 @@ function App() {
       <Typer>
         Text 1
         <br />
-        Text 2
-        <br />
         <div>
           Text wrapped within div
           <div>deeper div</div>
         </div>
         {arr}
-        <Typer.DeleteAll />
+        <Typer.Backspace amount={6} />
+        <div>After backspace</div>
       </Typer>
     </div>
   );

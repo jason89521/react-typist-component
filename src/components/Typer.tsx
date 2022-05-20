@@ -1,16 +1,16 @@
 import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { getActions } from '../utils/actions';
 
-import getLines from '../utils/getLines';
 import getTypedChildren from '../utils/getTypedChildren';
-import DeleteAll from './DeleteAll';
+import Backspace from './Backspace';
 
 type Props = {
   children: React.ReactNode;
   typingInterval?: number;
+  backspaceInterval?: number;
 };
 
-const Typer = ({ children, typingInterval = 100 }: Props) => {
+const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Props) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearIds = useRef<number[]>([]).current;
@@ -25,6 +25,8 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
         setTypedLines(prev => [...prev, '']);
         await typeLine(action.payload, lineIdx);
         lineIdx += 1;
+      } else if (action.type === 'BACKSPACE') {
+        await backspace(action.payload);
       }
       actionIdx += 1;
     }
@@ -49,6 +51,47 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
     });
   };
 
+  const backspace = (amount: number) => {
+    return new Promise<void>(resolve => {
+      if (amount === 0) {
+        resolve();
+        return;
+      }
+
+      const clearId = setInterval(() => {
+        setTypedLines(prev => {
+          const copiedLine = [...prev];
+          let lastLine = copiedLine.pop();
+          if (lastLine === undefined) {
+            onResolve();
+            return copiedLine;
+          }
+
+          // if the last line is empty string, then we need to pop out a new line
+          if (lastLine.length === 0) {
+            lastLine = copiedLine.pop();
+            if (lastLine === undefined) {
+              onResolve();
+              return copiedLine;
+            }
+          }
+
+          copiedLine.push(lastLine.slice(0, -1));
+          amount -= 1;
+          if (amount === 0) onResolve();
+          return copiedLine;
+        });
+      }, backspaceInterval);
+
+      const onResolve = () => {
+        resolve();
+        clearInterval(clearId);
+      };
+
+      clearIds.push(clearId);
+    });
+  };
+
   useEffect(() => {
     // clears all interval to prevent old action from excuting
     while (clearIds.length > 0) {
@@ -67,5 +110,5 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
   return <div className="typer">{typedChildren}</div>;
 };
 
-Typer.DeleteAll = DeleteAll;
+Typer.Backspace = Backspace;
 export default Typer;

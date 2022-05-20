@@ -1,10 +1,10 @@
 import React from 'react';
-import DeleteAll from '../components/DeleteAll';
+import Backspace from '../components/Backspace';
 
 type Element<T = unknown> = React.ReactElement<T, string | React.JSXElementConstructor<any>>;
 
 export const isDeleteAll = (element: Element) => {
-  return element.type === DeleteAll ? true : false;
+  return element.type === Backspace ? true : false;
 };
 
 export const isTyperElement = (element: Element) => {
