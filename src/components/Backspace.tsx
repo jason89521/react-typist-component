@@ -1,5 +1,4 @@
-import React from 'react';
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 type Props = {
   amount: number;
 };

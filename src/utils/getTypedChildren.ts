@@ -1,6 +1,4 @@
 import React from 'react';
-import Backspace from '../components/Backspace';
-import Pause from '../components/Pause';
 
 type ReturnValue =
   | (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]
@@ -28,7 +26,6 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]): ReturnVal
         if (isArray(t) && t.every(value => value === '')) {
           return null;
         }
-
         return React.cloneElement(child, props, t);
       }
 

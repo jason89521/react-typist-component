@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { getActions } from '../utils/actions';
 
 import getTypedChildren from '../utils/getTypedChildren';
@@ -20,7 +20,9 @@ const Typer = ({
 }: TyperProps) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
-  const clearTimerRef = useRef(() => {});
+  const clearTimerRef = useRef(() => {
+    return;
+  });
 
   const typeAll = async () => {
     let lineIdx = 0;
