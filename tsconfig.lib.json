@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
     "declaration": true,
     "declarationDir": "./types",
+    "declarationMap": true,
     "emitDeclarationOnly": true
   },
   "include": ["src/index.ts"],

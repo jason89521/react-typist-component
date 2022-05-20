@@ -7,9 +7,11 @@
     "react component",
     "typewriter"
   ],
+  "license": "MIT",
   "files": [
     "dist"
   ],
+  "types": "./dist/react-typer-component.d.ts",
   "main": "./dist/react-typer-component.umd.js",
   "module": "./dist/react-typer-component.es.js",
   "exports": {
@@ -21,15 +23,18 @@
   "scripts": {
     "dev": "vite",
     "build:example": "tsc && vite build",
-    "build:lib": "tsc --project tsconfig.lib.json && vite build --mode lib",
+    "build:types": "rimraf types/* && tsc --project tsconfig.lib.json",
+    "build:lib": "yarn build:types && vite build --mode lib && api-extractor run",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.24.1",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@vitejs/plugin-react": "^1.3.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
+    "rimraf": "^3.0.2",
     "typescript": "^4.6.4",
     "vite": "^2.9.9"
   }

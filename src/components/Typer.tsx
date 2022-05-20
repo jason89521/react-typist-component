@@ -5,14 +5,19 @@ import getTypedChildren from '../utils/getTypedChildren';
 import Backspace from './Backspace';
 import Pause from './Pause';
 
-type Props = {
+type TyperProps = {
   children: React.ReactNode;
   typingInterval?: number;
   backspaceInterval?: number;
   loop?: boolean;
 };
 
-const Typer = ({ children, typingInterval = 100, backspaceInterval = 50, loop = false }: Props) => {
+const Typer = ({
+  children,
+  typingInterval = 100,
+  backspaceInterval = 50,
+  loop = false,
+}: TyperProps) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearTimerRef = useRef(() => {});
@@ -126,3 +131,4 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 50, loop = 
 Typer.Backspace = Backspace;
 Typer.Pause = Pause;
 export default Typer;
+export type { TyperProps };
