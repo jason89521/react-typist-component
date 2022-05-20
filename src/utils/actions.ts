@@ -17,7 +17,6 @@ export const getActions = (node: React.ReactNode) => {
     React.Children.forEach(node, child => {
       if (React.isValidElement(child)) {
         if (child.type === Backspace) {
-          console.log(child.props);
           actions.push(backspace(child.props.amount));
           return;
         }

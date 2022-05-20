@@ -30,6 +30,8 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
       }
       actionIdx += 1;
     }
+
+    console.log('typeAll complete');
   };
 
   const typeLine = (str: string, lineIdx: number) => {
@@ -57,30 +59,22 @@ const Typer = ({ children, typingInterval = 100, backspaceInterval = 100 }: Prop
         resolve();
         return;
       }
-
       const clearId = setInterval(() => {
         setTypedLines(prev => {
           const copiedLine = [...prev];
-          let lastLine = copiedLine.pop();
-          if (lastLine === undefined) {
-            onResolve();
-            return copiedLine;
+          let idx = copiedLine.length - 1;
+          let lastLine = copiedLine[idx];
+          while (copiedLine[idx].length === 0 && idx > 0) {
+            idx -= 1;
+            lastLine = copiedLine[idx];
           }
+          copiedLine[idx] = lastLine.slice(0, -1);
 
-          // if the last line is empty string, then we need to pop out a new line
-          if (lastLine.length === 0) {
-            lastLine = copiedLine.pop();
-            if (lastLine === undefined) {
-              onResolve();
-              return copiedLine;
-            }
-          }
-
-          copiedLine.push(lastLine.slice(0, -1));
-          amount -= 1;
-          if (amount === 0) onResolve();
           return copiedLine;
         });
+
+        amount -= 1;
+        if (amount === 0) onResolve();
       }, backspaceInterval);
 
       const onResolve = () => {
