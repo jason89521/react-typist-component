@@ -41,7 +41,6 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
         if (charIdx === splittedLine.length) {
           resolve();
           clearInterval(clearId);
-          clearIds.filter(id => id !== clearId);
         }
       }, typingInterval);
 
@@ -51,7 +50,7 @@ const Typer = ({ children, typingInterval = 100 }: Props) => {
   };
 
   useEffect(() => {
-    // clears all interval to prevent weird behaviour
+    // clears all interval to prevent old action from excuting
     while (clearIds.length > 0) {
       const clearId = clearIds.shift();
       clearInterval(clearId);
