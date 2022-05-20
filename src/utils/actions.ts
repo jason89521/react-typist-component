@@ -1,14 +1,20 @@
 import React from 'react';
 import Backspace from '../components/Backspace';
+import Pause from '../components/Pause';
 
-import type { Action, TypeStringAction, BackspaceAction } from '../types/actions';
+import type { Action, TypeStringAction, BackspaceAction, PauseAction } from '../types/actions';
 
-export const typeString = (str: string): TypeStringAction => ({
+const typeString = (str: string): TypeStringAction => ({
   type: 'TYPE_STRING',
   payload: str,
 });
 
-export const backspace = (num: number): BackspaceAction => ({ type: 'BACKSPACE', payload: num });
+const backspace = (amount: number): BackspaceAction => ({
+  type: 'BACKSPACE',
+  payload: amount,
+});
+
+const pause = (duration: number): PauseAction => ({ type: 'PAUSE', payload: duration });
 
 export const getActions = (node: React.ReactNode) => {
   const actions: Action[] = [];
@@ -18,6 +24,11 @@ export const getActions = (node: React.ReactNode) => {
       if (React.isValidElement(child)) {
         if (child.type === Backspace) {
           actions.push(backspace(child.props.amount));
+          return;
+        }
+
+        if (child.type === Pause) {
+          actions.push(pause(child.props.duration));
           return;
         }
 

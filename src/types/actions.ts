@@ -3,4 +3,5 @@ export type TypeStringAction = {
   payload: string;
 };
 export type BackspaceAction = { type: 'BACKSPACE'; payload: number };
-export type Action = TypeStringAction | BackspaceAction;
+export type PauseAction = { type: 'PAUSE'; payload: number };
+export type Action = TypeStringAction | BackspaceAction | PauseAction;

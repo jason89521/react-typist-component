@@ -3,6 +3,7 @@ import { getActions } from '../utils/actions';
 
 import getTypedChildren from '../utils/getTypedChildren';
 import Backspace from './Backspace';
+import Pause from './Pause';
 
 type Props = {
   children: React.ReactNode;
@@ -11,15 +12,10 @@ type Props = {
   loop?: boolean;
 };
 
-const Typer = ({
-  children,
-  typingInterval = 100,
-  backspaceInterval = 100,
-  loop = false,
-}: Props) => {
+const Typer = ({ children, typingInterval = 100, backspaceInterval = 50, loop = false }: Props) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
-  const onClearIntervalRef = useRef(() => {});
+  const clearTimerRef = useRef(() => {});
 
   const typeAll = async () => {
     let lineIdx = 0;
@@ -34,6 +30,8 @@ const Typer = ({
           lineIdx += 1;
         } else if (action.type === 'BACKSPACE') {
           await backspace(action.payload);
+        } else if (action.type === 'PAUSE') {
+          await pause(action.payload);
         }
         actionIdx += 1;
       }
@@ -58,7 +56,7 @@ const Typer = ({
         }
       }, typingInterval);
 
-      onClearIntervalRef.current = () => {
+      clearTimerRef.current = () => {
         clearInterval(clearId);
         reject('typeLine');
       };
@@ -93,15 +91,25 @@ const Typer = ({
         }
       }, backspaceInterval);
 
-      onClearIntervalRef.current = () => {
+      clearTimerRef.current = () => {
         clearInterval(clearId);
         reject('backspace');
       };
     });
   };
 
+  const pause = (duration: number) => {
+    return new Promise((resolve, reject) => {
+      const clearId = setTimeout(resolve, duration);
+      clearTimerRef.current = () => {
+        clearTimeout(clearId);
+        reject('pause');
+      };
+    });
+  };
+
   useEffect(() => {
-    onClearIntervalRef.current();
+    clearTimerRef.current();
 
     typeAll();
   }, [actions]);
@@ -116,4 +124,5 @@ const Typer = ({
 };
 
 Typer.Backspace = Backspace;
+Typer.Pause = Pause;
 export default Typer;

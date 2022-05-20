@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Typer from './components/Typer';
-
-const arr = ['abc', 'def'];
+import Typer from '../src';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -15,8 +12,10 @@ function App() {
       <br />
       <br />
       <Typer loop>
-        qwertyuiopasdfghjklmnbvcxz qwertyuiopasdfghjklmnbvcxz
-        <Typer.Backspace amount={53} />
+        qwertyuiopasdfghjklmnbvcxz
+        <Typer.Pause duration={1500} />
+        qwertyuiopasdfghjklmnbvcxz
+        <Typer.Backspace amount={52} />
         {/* <div>After backspace</div> */}
       </Typer>
     </div>
