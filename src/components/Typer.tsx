@@ -88,23 +88,22 @@ const Typer = ({
 
   useEffect(() => {
     const startTyping = async () => {
-      do {
-        let lineIdx = 0;
-        let actionIdx = 0;
-        setTypedLines([]);
-        try {
+      try {
+        do {
+          let lineIdx = 0;
+          let actionIdx = 0;
+          setTypedLines([]);
           while (actionIdx < actions.length) {
-            const action = actions[actionIdx];
-            if (action.type === 'TYPE_STRING') {
+            const { type, payload } = actions[actionIdx];
+            if (type === 'TYPE_STRING') {
               setTypedLines(prev => [...prev, '']);
-              await typeLine(action.payload, lineIdx);
-
+              await typeLine(payload, lineIdx);
               lineIdx += 1;
-            } else if (action.type === 'BACKSPACE') {
-              await backspace(action.payload);
-            } else if (action.type === 'PAUSE') {
+            } else if (type === 'BACKSPACE') {
+              await backspace(payload);
+            } else if (type === 'PAUSE') {
               await new Promise((resolve, reject) => {
-                const clearId = setTimeout(resolve, action.payload);
+                const clearId = setTimeout(resolve, payload);
                 clearTimerRef.current = () => {
                   clearTimeout(clearId);
                   reject('pause');
@@ -113,10 +112,10 @@ const Typer = ({
             }
             actionIdx += 1;
           }
-        } catch (error) {
-          console.log(`halt from ${error}`);
-        }
-      } while (loop);
+        } while (loop);
+      } catch (error) {
+        console.log(`halt from ${error}`);
+      }
     };
 
     startTyping();

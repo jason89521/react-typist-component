@@ -11,7 +11,7 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer loop>
+      <Typer>
         <div className="deeper">
           text
           <Typer.Pause duration={1500} />
