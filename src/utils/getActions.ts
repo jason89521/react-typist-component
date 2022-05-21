@@ -16,7 +16,7 @@ const backspace = (amount: number): BackspaceAction => ({
 
 const pause = (duration: number): PauseAction => ({ type: 'PAUSE', payload: duration });
 
-export const getActions = (node: React.ReactNode) => {
+const getActions = (node: React.ReactNode) => {
   const actions: Action[] = [];
 
   const recurse = (node: React.ReactNode) => {
@@ -44,3 +44,5 @@ export const getActions = (node: React.ReactNode) => {
 
   return actions;
 };
+
+export default getActions;

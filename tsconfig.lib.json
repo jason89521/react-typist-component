@@ -19,6 +19,6 @@
     "declarationMap": true,
     "emitDeclarationOnly": true
   },
-  "include": ["src/index.ts"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

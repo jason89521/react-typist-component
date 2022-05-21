@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { getActions } from '../utils/actions';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
+import getActions from '../utils/getActions';
 import getTypedChildren from '../utils/getTypedChildren';
 import Backspace from './Backspace';
 import Pause from './Pause';
@@ -24,102 +24,106 @@ const Typer = ({
     return;
   });
 
-  const typeAll = async () => {
-    let lineIdx = 0;
-    let actionIdx = 0;
-    setTypedLines([]);
-    try {
-      while (actionIdx < actions.length) {
-        const action = actions[actionIdx];
-        if (action.type === 'TYPE_STRING') {
-          setTypedLines(prev => [...prev, '']);
-          await typeLine(action.payload, lineIdx);
-          lineIdx += 1;
-        } else if (action.type === 'BACKSPACE') {
-          await backspace(action.payload);
-        } else if (action.type === 'PAUSE') {
-          await pause(action.payload);
-        }
-        actionIdx += 1;
-      }
-
-      if (loop) typeAll();
-    } catch (error) {
-      console.log(`halt from ${error}`);
-    }
-  };
-
-  const typeLine = (str: string, lineIdx: number) => {
-    return new Promise<void>((resolve, reject) => {
-      const splittedLine = str.split('');
-      let charIdx = 0;
-      const clearId = setInterval(() => {
-        charIdx += 1;
-        const newLine = splittedLine.slice(0, charIdx).join('');
-        setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
-        if (charIdx >= splittedLine.length) {
-          resolve();
-          clearInterval(clearId);
-        }
-      }, typingInterval);
-
-      clearTimerRef.current = () => {
-        clearInterval(clearId);
-        reject('typeLine');
-      };
-    });
-  };
-
-  const backspace = (amount: number) => {
-    return new Promise<void>((resolve, reject) => {
-      if (amount === 0) {
-        resolve();
-        return;
-      }
-
-      const clearId = setInterval(() => {
-        setTypedLines(prev => {
-          const copiedLine = [...prev];
-          let idx = copiedLine.length - 1;
-          let lastLine = copiedLine[idx];
-          while (lastLine.length === 0 && idx > 0) {
-            idx -= 1;
-            lastLine = copiedLine[idx];
+  const typeLine = useCallback(
+    (str: string, lineIdx: number) => {
+      return new Promise<void>((resolve, reject) => {
+        const splittedLine = str.split('');
+        let charIdx = 0;
+        const clearId = setInterval(() => {
+          charIdx += 1;
+          const newLine = splittedLine.slice(0, charIdx).join('');
+          setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
+          if (charIdx >= splittedLine.length) {
+            resolve();
+            clearInterval(clearId);
           }
-          copiedLine[idx] = lastLine.slice(0, -1);
+        }, typingInterval);
 
-          return copiedLine;
-        });
+        clearTimerRef.current = () => {
+          clearInterval(clearId);
+          reject('typeLine');
+        };
+      });
+    },
+    [typingInterval]
+  );
 
-        amount -= 1;
+  const backspace = useCallback(
+    (amount: number) => {
+      return new Promise<void>((resolve, reject) => {
         if (amount === 0) {
           resolve();
-          clearInterval(clearId);
+          return;
         }
-      }, backspaceInterval);
 
-      clearTimerRef.current = () => {
-        clearInterval(clearId);
-        reject('backspace');
-      };
-    });
-  };
+        const clearId = setInterval(() => {
+          setTypedLines(prev => {
+            const copiedLine = [...prev];
+            let idx = copiedLine.length - 1;
+            let lastLine = copiedLine[idx];
+            while (lastLine.length === 0 && idx > 0) {
+              idx -= 1;
+              lastLine = copiedLine[idx];
+            }
+            copiedLine[idx] = lastLine.slice(0, -1);
 
-  const pause = (duration: number) => {
-    return new Promise((resolve, reject) => {
-      const clearId = setTimeout(resolve, duration);
-      clearTimerRef.current = () => {
-        clearTimeout(clearId);
-        reject('pause');
-      };
-    });
-  };
+            return copiedLine;
+          });
+
+          amount -= 1;
+          if (amount === 0) {
+            resolve();
+            clearInterval(clearId);
+          }
+        }, backspaceInterval);
+
+        clearTimerRef.current = () => {
+          clearInterval(clearId);
+          reject('backspace');
+        };
+      });
+    },
+    [backspaceInterval]
+  );
 
   useEffect(() => {
-    clearTimerRef.current();
+    const startTyping = async () => {
+      do {
+        let lineIdx = 0;
+        let actionIdx = 0;
+        setTypedLines([]);
+        try {
+          while (actionIdx < actions.length) {
+            const action = actions[actionIdx];
+            if (action.type === 'TYPE_STRING') {
+              setTypedLines(prev => [...prev, '']);
+              await typeLine(action.payload, lineIdx);
 
-    typeAll();
-  }, [actions]);
+              lineIdx += 1;
+            } else if (action.type === 'BACKSPACE') {
+              await backspace(action.payload);
+            } else if (action.type === 'PAUSE') {
+              await new Promise((resolve, reject) => {
+                const clearId = setTimeout(resolve, action.payload);
+                clearTimerRef.current = () => {
+                  clearTimeout(clearId);
+                  reject('pause');
+                };
+              });
+            }
+            actionIdx += 1;
+          }
+        } catch (error) {
+          console.log(`halt from ${error}`);
+        }
+      } while (loop);
+    };
+
+    startTyping();
+    return () => {
+      clearTimerRef.current();
+    };
+  }, [actions, loop, typeLine, backspace]);
 
   useEffect(() => {
     setActions(getActions(children));
@@ -127,7 +131,7 @@ const Typer = ({
 
   const typedChildren = getTypedChildren(children, typedLines);
 
-  return <div className="typer">{typedChildren}</div>;
+  return <>{typedChildren}</>;
 };
 
 Typer.Backspace = Backspace;

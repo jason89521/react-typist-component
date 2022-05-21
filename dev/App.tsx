@@ -11,9 +11,10 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer>
+      <Typer loop>
         <div className="deeper">
           text
+          <Typer.Pause duration={1500} />
           <Typer.Backspace amount={4} />
         </div>
       </Typer>
