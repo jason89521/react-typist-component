@@ -24,7 +24,7 @@ const insertCursor = (
     // <div></div> or <div />
     if (!children) return typedChildren;
 
-    const afterInsert = insertCursor([...children], cursor);
+    const afterInsert = recurse([...children]);
     const el = React.cloneElement(lastChild, props, afterInsert);
 
     return [...typedChildren.slice(0, -1), el];
