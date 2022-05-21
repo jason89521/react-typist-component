@@ -9,9 +9,3 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
-
-.deeper {
-  min-height: 5px;
-  background-color: #000;
-  color: #fff;
-}

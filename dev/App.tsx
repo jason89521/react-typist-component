@@ -12,11 +12,12 @@ function App() {
       <br />
       <br />
       <Typer>
-        <div className="deeper">
-          text
-          <Typer.Pause duration={1500} />
-          <Typer.Backspace amount={4} />
+        <div className="green">
+          green background
+          <div>deeper</div>
         </div>
+        <div>haha</div>
+        <Typer.Backspace amount={10} />
       </Typer>
     </div>
   );

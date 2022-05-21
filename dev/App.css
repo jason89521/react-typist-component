@@ -40,3 +40,14 @@
 button {
   font-size: calc(10px + 2vmin);
 }
+
+.black {
+  min-height: 5px;
+  background-color: black;
+  color: white;
+}
+
+.green {
+  min-height: 5px;
+  background-color: green;
+}

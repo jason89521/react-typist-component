@@ -2,6 +2,10 @@
 
 A react component lets you create typewriter effect.
 
+## Caveat ⚠⚠⚠
+
+This package is not production-ready, Use it with caution.
+
 ## Install
 
 ```bash

@@ -1,4 +1,6 @@
 import React from 'react';
+import Backspace from '../components/Backspace';
+import Pause from '../components/Pause';
 
 type ReturnValue =
   | (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]
@@ -21,6 +23,9 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]): ReturnVal
       if (lineIdx >= lines.length) return null;
 
       if (React.isValidElement(child)) {
+        // Remove Backspace and Pause from virtual DOM.
+        if (child.type === Backspace || child.type === Pause) return null;
+
         const { children, ...props } = child.props;
         const t = recurse(children);
         if (isArray(t) && t.every(value => value === '')) {
