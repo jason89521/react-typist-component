@@ -11,13 +11,14 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer>
+      <Typer typingInterval={100} cursor={<span className="cursor">|</span>}>
         <div className="green">
-          green background
+          <Typer.Pause duration={0} />
+          green
           <div>deeper</div>
         </div>
         <div>haha</div>
-        <Typer.Backspace amount={10} />
+        <Typer.Backspace amount={20} />
       </Typer>
     </div>
   );

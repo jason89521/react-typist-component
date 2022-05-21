@@ -2,23 +2,21 @@ import React from 'react';
 import Backspace from '../components/Backspace';
 import Pause from '../components/Pause';
 
-type ReturnValue =
-  | (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]
-  | null
-  | undefined;
+import type { TypedChildren } from '../types/typedChildren';
 
 const isArray = (
-  value: ReturnValue
+  value: TypedChildren
 ): value is (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[] => {
   return Array.isArray(value);
 };
 
-const getTypedChildren = (children: React.ReactNode, lines: string[]): ReturnValue => {
+const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
   let lineIdx = 0;
 
-  const recurse = (children: React.ReactNode): ReturnValue => {
+  const recurse = (children: React.ReactNode): TypedChildren => {
     // React.Children.map will ignore null, if the mapping function return null.
     // For example, React.Children.map(children, () => null) will return [];
+
     const typedChildren = React.Children.map(children, child => {
       if (lineIdx >= lines.length) return null;
 
@@ -38,7 +36,7 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]): ReturnVal
 
       return null;
     });
-
+    !Array.isArray(typedChildren) && console.log('not array');
     return typedChildren;
   };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import getActions from '../utils/getActions';
 import getTypedChildren from '../utils/getTypedChildren';
+import insertCursor from '../utils/insertCursor';
 import Backspace from './Backspace';
 import Pause from './Pause';
 
@@ -10,6 +11,7 @@ type TyperProps = {
   typingInterval?: number;
   backspaceInterval?: number;
   loop?: boolean;
+  cursor?: string | React.ReactElement;
 };
 
 const Typer = ({
@@ -17,6 +19,7 @@ const Typer = ({
   typingInterval = 100,
   backspaceInterval = 50,
   loop = false,
+  cursor,
 }: TyperProps) => {
   const [actions, setActions] = useState(() => getActions(children));
   const [typedLines, setTypedLines] = useState<string[]>([]);
@@ -129,8 +132,7 @@ const Typer = ({
   }, [children]);
 
   const typedChildren = getTypedChildren(children, typedLines);
-
-  return <>{typedChildren}</>;
+  return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
 };
 
 Typer.Backspace = Backspace;
