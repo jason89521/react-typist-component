@@ -67,16 +67,17 @@ const Typer = ({
 
         const clearId = setInterval(() => {
           setTypedLines(prev => {
-            const copiedLine = [...prev];
-            let idx = copiedLine.length - 1;
-            let lastLine = copiedLine[idx];
+            const typedLines = [...prev];
+            let idx = typedLines.length - 1;
+            let lastLine = typedLines[idx];
             while (lastLine.length === 0 && idx > 0) {
               idx -= 1;
-              lastLine = copiedLine[idx];
+              lastLine = typedLines[idx];
             }
-            copiedLine[idx] = lastLine.slice(0, -1);
+            const splittedLine = spliter(lastLine);
+            typedLines[idx] = splittedLine.join('').slice(0, -1);
 
-            return copiedLine;
+            return typedLines;
           });
 
           amount -= 1;
@@ -92,7 +93,7 @@ const Typer = ({
         };
       });
     },
-    [backspaceInterval]
+    [backspaceInterval, spliter]
   );
 
   useEffect(() => {
