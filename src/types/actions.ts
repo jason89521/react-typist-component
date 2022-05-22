@@ -4,4 +4,5 @@ export type TypeStringAction = {
 };
 export type BackspaceAction = { type: 'BACKSPACE'; payload: number };
 export type PauseAction = { type: 'PAUSE'; payload: number };
-export type Action = TypeStringAction | BackspaceAction | PauseAction;
+export type PasteAction = { type: 'PASTE'; payload: string };
+export type Action = TypeStringAction | BackspaceAction | PauseAction | PasteAction;

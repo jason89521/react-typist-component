@@ -12,7 +12,7 @@ This package is not production-ready, Use it with caution.
 - [x] Allow nested elements
 - [x] Custom cursor
 - [ ] Curstom string splitting
-- [ ] Support pasting text
+- [x] Support pasting text
 - [x] Support pause
 - [x] Support backspace
 
@@ -34,7 +34,7 @@ const MyComponent = () => {
     <Typer cursor={<span className="cursor">|</span>}>
       This is a typo
       <Typer.Backspace count={4} />
-      react component
+      <Typer.Paste>react component</Typer.Paste>
       <Typer.Pause ms={1500} />
       <div>
         use

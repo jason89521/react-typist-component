@@ -5,6 +5,7 @@ import getTypedChildren from '../utils/getTypedChildren';
 import insertCursor from '../utils/insertCursor';
 import Backspace from './Backspace';
 import Pause from './Pause';
+import Paste from './Paste';
 
 type TyperProps = {
   children: React.ReactNode;
@@ -112,6 +113,9 @@ const Typer = ({
                   reject('pause');
                 };
               });
+            } else if (type === 'PASTE') {
+              setTypedLines(prev => [...prev, payload]);
+              lineIdx += 1;
             }
             actionIdx += 1;
           }
@@ -133,5 +137,6 @@ const Typer = ({
 
 Typer.Backspace = Backspace;
 Typer.Pause = Pause;
+Typer.Paste = Paste;
 export default Typer;
 export type { TyperProps };
