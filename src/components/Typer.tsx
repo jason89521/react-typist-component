@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 
 import getActions from '../utils/getActions';
 import getTypedChildren from '../utils/getTypedChildren';
@@ -21,7 +21,7 @@ const Typer = ({
   loop = false,
   cursor,
 }: TyperProps) => {
-  const [actions, setActions] = useState(() => getActions(children));
+  const actions = useMemo(() => getActions(children), [children]);
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearTimerRef = useRef(() => {
     return;
@@ -126,10 +126,6 @@ const Typer = ({
       clearTimerRef.current();
     };
   }, [actions, loop, typeLine, backspace]);
-
-  useEffect(() => {
-    setActions(getActions(children));
-  }, [children]);
 
   const typedChildren = getTypedChildren(children, typedLines);
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;

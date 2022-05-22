@@ -23,12 +23,12 @@ const getActions = (node: React.ReactNode) => {
     React.Children.forEach(node, child => {
       if (React.isValidElement(child)) {
         if (child.type === Backspace) {
-          actions.push(backspace(child.props.amount));
+          actions.push(backspace(child.props.count));
           return;
         }
 
         if (child.type === Pause) {
-          actions.push(pause(child.props.duration));
+          actions.push(pause(child.props.ms));
           return;
         }
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 type Props = {
-  duration: number;
+  ms: number;
 };
 
 const Pause = (props: Props) => {

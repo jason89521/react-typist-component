@@ -25,18 +25,19 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
         if (child.type === Backspace || child.type === Pause) return null;
 
         const { children, ...props } = child.props;
-        const t = recurse(children);
-        if (isArray(t) && t.every(value => value === '')) {
+        if (!children) return null;
+        const newChildren = recurse(children);
+        if (isArray(newChildren) && newChildren.every(value => value === '')) {
           return null;
         }
-        return React.cloneElement(child, props, t);
+        return React.cloneElement(child, props, newChildren);
       }
 
       if (typeof child === 'string' || typeof child === 'number') return lines[lineIdx++];
 
       return null;
     });
-    !Array.isArray(typedChildren) && console.log('not array');
+
     return typedChildren;
   };
 

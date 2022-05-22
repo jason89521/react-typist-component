@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 type Props = {
-  amount: number;
+  count: number;
 };
 
 const Backspace = (props: Props) => {
