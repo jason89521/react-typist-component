@@ -1,10 +1,20 @@
 # React Typer Component
 
-A react component lets you create typewriter effect.
+Create typewriter effect by setting up a component's children directly.
 
 ## Caveat ⚠⚠⚠
 
 This package is not production-ready, Use it with caution.
+
+## Features 🎈
+
+- [x] Directly set up text inside a component
+- [x] Allow nested elements
+- [x] Custom cursor
+- [ ] Curstom string splitting
+- [ ] Support pasting text
+- [x] Support pause
+- [x] Support backspace
 
 ## Install
 
@@ -21,11 +31,11 @@ import Typer from 'react-typer-component';
 
 const MyComponent = () => {
   return (
-    <Typer>
+    <Typer cursor={<span className="cursor">|</span>}>
       This is a typo
-      <Typer.Backspace amount={4} />
+      <Typer.Backspace count={4} />
       react component
-      <Typer.Pause duration={1500} />
+      <Typer.Pause ms={1500} />
       <div>
         use
         <div>deeper div</div>
@@ -33,4 +43,19 @@ const MyComponent = () => {
     </Typer>
   );
 };
+```
+
+The final result will look like:
+
+```html
+<div>
+  This is a react component
+  <div>
+    use
+    <div>
+      deeper div
+      <span className="cursor">|</span>
+    </div>
+  </div>
+</div>
 ```

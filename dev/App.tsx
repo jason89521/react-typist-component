@@ -12,14 +12,14 @@ function App() {
       <br />
       <br />
       <Typer typingInterval={100} cursor={<span className="cursor">|</span>}>
-        <div className="green">
-          <Typer.Pause ms={0} />
-          green
-          <div>deeper</div>
+        This is a typo
+        <Typer.Backspace count={4} />
+        react component
+        <Typer.Pause ms={1500} />
+        <div>
+          use
+          <div>deeper div</div>
         </div>
-        <div className="black" />
-        <div>haha</div>
-        <Typer.Backspace count={10} />
       </Typer>
     </div>
   );
