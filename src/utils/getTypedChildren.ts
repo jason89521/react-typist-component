@@ -4,19 +4,18 @@ import Pause from '../components/Pause';
 
 import type { TypedChildren } from '../types/typedChildren';
 
-const isArray = (
-  value: TypedChildren
-): value is (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[] => {
-  return Array.isArray(value);
-};
-
+/**
+ * Determine whether to display contents by looking up the `lines` variable.
+ * @param children
+ * @param lines
+ * @returns
+ */
 const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
   let lineIdx = 0;
 
   const recurse = (children: React.ReactNode): TypedChildren => {
-    // React.Children.map will ignore null, if the mapping function return null.
+    // React.Children.map will ignore null if the mapping function return null.
     // For example, React.Children.map(children, () => null) will return [];
-
     const typedChildren = React.Children.map(children, child => {
       if (lineIdx >= lines.length) return null;
 
@@ -25,14 +24,20 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
         if (child.type === Backspace || child.type === Pause) return null;
 
         const { children, ...props } = child.props;
+        // Ignore any element whose children is either undefined or null.
+        // For example, <br />
         if (!children) return null;
+
         const newChildren = recurse(children);
-        if (isArray(newChildren) && newChildren.every(value => value === '')) {
+        // If `newChildren` is an empty array or all its items are '',
+        // then we say that this element's contents are been removed by backspace.
+        if (newChildren && newChildren.every(value => value === '')) {
           return null;
         }
         return React.cloneElement(child, props, newChildren);
       }
 
+      // Only number and string are valid contents that can be typed.
       if (typeof child === 'string' || typeof child === 'number') return lines[lineIdx++];
 
       return null;

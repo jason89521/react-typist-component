@@ -25,8 +25,19 @@ const pause = (ms: number): PauseAction => ({ type: 'PAUSE', payload: ms });
 
 const paste = (str: string): PasteAction => ({ type: 'PASTE', payload: str });
 
+/**
+ * Returns an actions array generated from ReactNode.
+ * `Typer` will use these actions to determine what it should do.
+ * @param node
+ * @returns
+ */
 const getActions = (node: React.ReactNode) => {
   const actions: Action[] = [];
+  /**
+   * If the child is a `Paste` element, then this variable will be set to true
+   * such that `recurse` can determine whether it should call `typeString` or `paste`
+   * when the type of the traversed child is string.
+   */
   let isPaste = false;
 
   const recurse = (node: React.ReactNode) => {
@@ -45,6 +56,7 @@ const getActions = (node: React.ReactNode) => {
         if (child.type === Paste) {
           isPaste = true;
           React.Children.forEach(child.props.children, recurse);
+          // It should be set to false when its children have been traversed.
           isPaste = false;
           return;
         }

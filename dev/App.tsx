@@ -14,8 +14,8 @@ function App() {
       <Typer typingInterval={100} cursor={<span className="cursor">|</span>}>
         This is a typo
         <Typer.Backspace count={4} />
-        <Typer.Paste>react component</Typer.Paste>
         <Typer.Pause ms={1500} />
+        <Typer.Paste>react component</Typer.Paste>
         <div>
           use
           <div>deeper div</div>

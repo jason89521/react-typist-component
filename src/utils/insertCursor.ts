@@ -1,6 +1,12 @@
 import React from 'react';
 import type { TypedChildren } from '../types/typedChildren';
 
+/**
+ * Insert the cursor after the latest typed character.
+ * @param typedChildren
+ * @param cursor
+ * @returns
+ */
 const insertCursor = (
   typedChildren: TypedChildren,
   cursor: string | React.ReactElement

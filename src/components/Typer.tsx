@@ -31,7 +31,6 @@ const Typer = ({
   const clearTimerRef = useRef(() => {
     return;
   });
-  // use ref to update the
 
   const typeLine = useCallback(
     (line: string, lineIdx: number) => {
@@ -101,9 +100,8 @@ const Typer = ({
       try {
         do {
           let lineIdx = 0;
-          let actionIdx = 0;
           setTypedLines([]);
-          while (actionIdx < actions.length) {
+          for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
             const { type, payload } = actions[actionIdx];
             if (type === 'TYPE_STRING') {
               setTypedLines(prev => [...prev, '']);
@@ -123,7 +121,6 @@ const Typer = ({
               setTypedLines(prev => [...prev, payload]);
               lineIdx += 1;
             }
-            actionIdx += 1;
           }
         } while (loop);
       } catch (error) {
