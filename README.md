@@ -11,7 +11,7 @@ This package is not production-ready, Use it with caution.
 - [x] Directly set up text inside a component
 - [x] Allow nested elements
 - [x] Custom cursor
-- [ ] Curstom string splitting
+- [x] Curstom string splitting
 - [x] Support pasting text
 - [x] Support pause
 - [x] Support backspace

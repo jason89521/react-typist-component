@@ -13,7 +13,10 @@ type TyperProps = {
   backspaceInterval?: number;
   loop?: boolean;
   cursor?: string | React.ReactElement;
+  spliter?: (str: string) => string[];
 };
+
+const defaultSplitter = (str: string) => str.split('');
 
 const Typer = ({
   children,
@@ -21,17 +24,19 @@ const Typer = ({
   backspaceInterval = 50,
   loop = false,
   cursor,
+  spliter = defaultSplitter,
 }: TyperProps) => {
   const actions = useMemo(() => getActions(children), [children]);
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearTimerRef = useRef(() => {
     return;
   });
+  // use ref to update the
 
   const typeLine = useCallback(
-    (str: string, lineIdx: number) => {
+    (line: string, lineIdx: number) => {
       return new Promise<void>((resolve, reject) => {
-        const splittedLine = str.split('');
+        const splittedLine = spliter(line);
         let charIdx = 0;
         const clearId = setInterval(() => {
           charIdx += 1;
@@ -49,7 +54,7 @@ const Typer = ({
         };
       });
     },
-    [typingInterval]
+    [typingInterval, spliter]
   );
 
   const backspace = useCallback(
