@@ -24,7 +24,7 @@ npm install react-typer-component
 yarn add react-typer-component
 ```
 
-## How to use
+## Example
 
 ```jsx
 import Typer from 'react-typer-component';
@@ -45,17 +45,33 @@ const MyComponent = () => {
 };
 ```
 
-The final result will look like:
+## API reference
 
-```html
-<div>
-  This is a react component
-  <div>
-    use
-    <div>
-      deeper div
-      <span className="cursor">|</span>
-    </div>
-  </div>
-</div>
-```
+### `Typer`
+
+| property          | required | type                      | default value          | description                                                                                                  |
+| ----------------- | -------- | ------------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------ |
+| children          | yes      | ReactNode                 |                        | The contents that will be rendered with typewriter effect                                                    |
+| typingInterval    | no       | number                    | 100                    | The interval between each typing                                                                             |
+| backspaceInterval | no       | number                    | 50                     | The interval between each backspace                                                                          |
+| loop              | no       | boolean                   | false                  | Loop the typewriter effect                                                                                   |
+| cursor            | no       | `string or ReactElement`  |                        | The cursor will be appended after the last character                                                         |
+| splitter          | no       | (str: string) => string[] | (str) => str.split('') | Use this function to split the string. It may be useful when you want to split your string in different way. |
+
+### `Typer.Backspace`
+
+| property | required | type   | default value | description                                   |
+| -------- | -------- | ------ | ------------- | --------------------------------------------- |
+| count    | yes      | number |               | The number of characters that will be deleted |
+
+### `Typer.Pause`
+
+| property | required | type   | default value | description                               |
+| -------- | -------- | ------ | ------------- | ----------------------------------------- |
+| ms       | yes      | number |               | The duration of the pause in milliseconds |
+
+### `Typer.Paste`
+
+| property | required | type      | default value | description                                                             |
+| -------- | -------- | --------- | ------------- | ----------------------------------------------------------------------- |
+| children | yes      | ReactNode |               | Children inside this component will be pasted without typewriter effect |
