@@ -1,6 +1,6 @@
 {
-  "name": "react-typer-component",
-  "version": "0.1.1",
+  "name": "react-typist-component",
+  "version": "0.0.0",
   "description": "A react component lets you create typewriter effect.",
   "keywords": [
     "react",
@@ -10,18 +10,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jason89521/react-typer-component"
+    "url": "https://github.com/jason89521/react-typist-component"
   },
   "files": [
     "dist"
   ],
-  "types": "./dist/react-typer-component.d.ts",
-  "main": "./dist/react-typer-component.umd.js",
-  "module": "./dist/react-typer-component.es.js",
+  "types": "./dist/react-typist-component.d.ts",
+  "main": "./dist/react-typist-component.umd.js",
+  "module": "./dist/react-typist-component.es.js",
   "exports": {
     ".": {
-      "import": "./dist/react-typer-component.es.js",
-      "require": "./dist/react-typer-component.umd.js"
+      "import": "./dist/react-typist-component.es.js",
+      "require": "./dist/react-typist-component.umd.js"
     }
   },
   "scripts": {

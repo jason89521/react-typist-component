@@ -27,7 +27,7 @@ const paste = (str: string): PasteAction => ({ type: 'PASTE', payload: str });
 
 /**
  * Returns an actions array generated from ReactNode.
- * `Typer` will use these actions to determine what it should do.
+ * `Typist` will use these actions to determine what it should do.
  * @param node
  * @returns
  */

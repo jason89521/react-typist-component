@@ -30,7 +30,7 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
 
         const newChildren = recurse(children);
         // If `newChildren` is an empty array or all its items are '',
-        // then we say that this element's contents are been removed by backspace.
+        // then we say that this element's contents have been removed by backspace.
         if (newChildren && newChildren.every(value => value === '')) {
           return null;
         }

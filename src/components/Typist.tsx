@@ -7,7 +7,7 @@ import Backspace from './Backspace';
 import Pause from './Pause';
 import Paste from './Paste';
 
-type TyperProps = {
+type TypistProps = {
   children: React.ReactNode;
   typingInterval?: number;
   backspaceInterval?: number;
@@ -18,14 +18,14 @@ type TyperProps = {
 
 const defaultSplitter = (str: string) => str.split('');
 
-const Typer = ({
+const Typist = ({
   children,
   typingInterval = 100,
   backspaceInterval = 50,
   loop = false,
   cursor,
   spliter = defaultSplitter,
-}: TyperProps) => {
+}: TypistProps) => {
   const actions = useMemo(() => getActions(children), [children]);
   const [typedLines, setTypedLines] = useState<string[]>([]);
   const clearTimerRef = useRef(() => {
@@ -138,8 +138,8 @@ const Typer = ({
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
 };
 
-Typer.Backspace = Backspace;
-Typer.Pause = Pause;
-Typer.Paste = Paste;
-export default Typer;
-export type { TyperProps };
+Typist.Backspace = Backspace;
+Typist.Pause = Pause;
+Typist.Paste = Paste;
+export default Typist;
+export type { TypistProps };

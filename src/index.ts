@@ -1,5 +1,5 @@
-import Typer from './components/Typer';
-import type { TyperProps } from './components/Typer';
+import Typist from './components/Typist';
+import type { TypistProps } from './components/Typist';
 
-export default Typer;
-export type { TyperProps };
+export default Typist;
+export type { TypistProps };

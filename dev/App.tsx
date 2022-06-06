@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './App.css';
-import Typer from '../src';
+import Typist from '../src';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -11,16 +11,16 @@ function App() {
       <br />
       <br />
       <br />
-      <Typer typingInterval={100} cursor={<span className="cursor">|</span>}>
+      <Typist typingInterval={100} cursor={<span className="cursor">|</span>}>
         This is a typo
-        <Typer.Backspace count={4} />
-        <Typer.Pause ms={1500} />
-        <Typer.Paste>react component</Typer.Paste>
+        <Typist.Backspace count={4} />
+        <Typist.Pause ms={1500} />
+        <Typist.Paste>react component</Typist.Paste>
         <div>
           use
           <div>deeper div</div>
         </div>
-      </Typer>
+      </Typist>
     </div>
   );
 }

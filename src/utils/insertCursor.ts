@@ -13,7 +13,7 @@ const insertCursor = (
 ): TypedChildren => {
   if (typeof cursor !== 'string') {
     const { children, ...props } = cursor.props;
-    if (!props.key) props.key = 'typer-cursor';
+    if (!props.key) props.key = 'typist-cursor';
     cursor = React.cloneElement(cursor, props, children);
   }
 

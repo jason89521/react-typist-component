@@ -1,4 +1,4 @@
-# React Typer Component
+# React Typist Component
 
 Create typewriter effect by setting up a component's children directly.
 
@@ -19,35 +19,35 @@ This package is not production-ready, Use it with caution.
 ## Install
 
 ```bash
-npm install react-typer-component
+npm install react-typist-component
 # or
-yarn add react-typer-component
+yarn add react-typist-component
 ```
 
 ## Example
 
 ```jsx
-import Typer from 'react-typer-component';
+import Typist from 'react-typist-component';
 
 const MyComponent = () => {
   return (
-    <Typer cursor={<span className="cursor">|</span>}>
+    <Typist cursor={<span className="cursor">|</span>}>
       This is a typo
-      <Typer.Backspace count={4} />
-      <Typer.Paste>react component</Typer.Paste>
-      <Typer.Pause ms={1500} />
+      <Typist.Backspace count={4} />
+      <Typist.Paste>react component</Typist.Paste>
+      <Typist.Pause ms={1500} />
       <div>
         use
         <div>deeper div</div>
       </div>
-    </Typer>
+    </Typist>
   );
 };
 ```
 
 ## API reference
 
-### `Typer`
+### `Typist`
 
 | property          | required | type                        | default value            | description                                                                                                  |
 | ----------------- | -------- | --------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
@@ -58,19 +58,19 @@ const MyComponent = () => {
 | cursor            | no       | `string or ReactElement`    |                          | The cursor will be appended after the last character                                                         |
 | splitter          | no       | `(str: string) => string[]` | `(str) => str.split('')` | Use this function to split the string. It may be useful when you want to split your string in different way. |
 
-### `Typer.Backspace`
+### `Typist.Backspace`
 
 | property | required | type     | default value | description                                   |
 | -------- | -------- | -------- | ------------- | --------------------------------------------- |
 | count    | yes      | `number` |               | The number of characters that will be deleted |
 
-### `Typer.Pause`
+### `Typist.Pause`
 
 | property | required | type     | default value | description                               |
 | -------- | -------- | -------- | ------------- | ----------------------------------------- |
 | ms       | yes      | `number` |               | The duration of the pause in milliseconds |
 
-### `Typer.Paste`
+### `Typist.Paste`
 
 | property | required | type        | default value | description                                                             |
 | -------- | -------- | ----------- | ------------- | ----------------------------------------------------------------------- |

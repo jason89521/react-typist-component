@@ -12,7 +12,7 @@ const libConfig: UserConfigExport = {
   build: {
     lib: {
       entry: 'src/index.ts',
-      name: 'react-typer-component',
+      name: 'react-typist-component',
     },
     rollupOptions: {
       external: ['react'],
