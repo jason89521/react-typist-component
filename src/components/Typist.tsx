@@ -9,50 +9,75 @@ import Paste from './Paste';
 
 type TypistProps = {
   children: React.ReactNode;
-  typingInterval?: number;
-  backspaceInterval?: number;
+  typingDelay?: number;
+  typingNoise?: number;
   loop?: boolean;
   cursor?: string | React.ReactElement;
-  spliter?: (str: string) => string[];
+  splitter?: (str: string) => string[];
 };
 
 const defaultSplitter = (str: string) => str.split('');
 
+const delayGenerator = (delay: number, noise: number) => {
+  const coefficient = Math.random() * 2 - 1; // -1 to <1
+  return delay + coefficient * noise;
+};
+
 const Typist = ({
   children,
-  typingInterval = 100,
-  backspaceInterval = 50,
+  typingDelay = 70,
+  typingNoise = 20,
   loop = false,
   cursor,
-  spliter = defaultSplitter,
+  splitter = defaultSplitter,
 }: TypistProps) => {
   const actions = useMemo(() => getActions(children), [children]);
-  const [typedLines, setTypedLines] = useState<string[]>([]);
+  const [typedLines, setTypedLines] = useState<(string | React.ReactElement | null)[]>([]);
   const clearTimerRef = useRef(() => {
     return;
   });
 
-  const typeLine = useCallback(
-    async (line: string, lineIdx: number) => {
-      const splittedLine = spliter(line);
+  const typeString = useCallback(
+    async (line: string) => {
+      const splittedLine = splitter(line);
       let charIndex = 0;
+      setTypedLines(prev => [...prev, '']);
       while (charIndex < splittedLine.length) {
         charIndex += 1;
         const newLine = splittedLine.slice(0, charIndex).join('');
         await new Promise<void>((resolve, reject) => {
           const clearId = setTimeout(() => {
-            setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
+            setTypedLines(prev =>
+              prev.map((line, index) => (index === prev.length - 1 ? newLine : line))
+            );
             resolve();
-          }, typingInterval);
+          }, delayGenerator(typingDelay, typingNoise));
 
           clearTimerRef.current = () => {
             clearTimeout(clearId);
-            reject();
+            reject('type string');
           };
         });
       }
     },
-    [typingInterval, spliter]
+    [splitter, typingDelay, typingNoise]
+  );
+
+  const typeElement = useCallback(
+    async (el: React.ReactElement) => {
+      return new Promise<void>((resolve, reject) => {
+        const clearId = setTimeout(() => {
+          resolve();
+          setTypedLines(prev => [...prev, el]);
+        }, delayGenerator(typingDelay, typingNoise));
+
+        clearTimerRef.current = () => {
+          clearTimeout(clearId);
+          reject('type element');
+        };
+      });
+    },
+    [typingDelay, typingNoise]
   );
 
   const backspace = useCallback(
@@ -64,18 +89,27 @@ const Typist = ({
               const typedLines = [...prev];
               let lineIdx = typedLines.length - 1;
               let lastLine = typedLines[lineIdx];
-              while (lastLine.length === 0 && lineIdx > 0) {
+              while (lastLine === null && lineIdx > 0) {
                 lineIdx -= 1;
                 lastLine = typedLines[lineIdx];
               }
-              const splittedLine = spliter(lastLine);
-              typedLines[lineIdx] = splittedLine.join('').slice(0, -1);
+
+              // all lines are null means that there is nothing can be deleted
+              if (typeof lastLine === null) amount = 0;
+              if (typeof lastLine === 'object') typedLines[lineIdx] = null;
+
+              if (typeof lastLine === 'string') {
+                const splittedLine = splitter(lastLine);
+                const newLine = splittedLine.slice(0, -1).join('');
+                typedLines[lineIdx] = newLine === '' ? null : newLine;
+              }
+
               return typedLines;
             });
 
             amount -= 1;
             resolve();
-          }, backspaceInterval);
+          }, delayGenerator(typingDelay, typingNoise));
 
           clearTimerRef.current = () => {
             clearInterval(clearId);
@@ -84,47 +118,40 @@ const Typist = ({
         });
       }
     },
-    [backspaceInterval, spliter]
+    [splitter, typingDelay, typingNoise]
   );
 
-  useEffect(() => {
-    const startTyping = async () => {
-      try {
-        do {
-          let lineIdx = 0;
-          setTypedLines([]);
-          for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
-            const { type, payload } = actions[actionIdx];
-            if (type === 'TYPE_STRING') {
-              setTypedLines(prev => [...prev, '']);
-              await typeLine(payload, lineIdx);
-              lineIdx += 1;
-            } else if (type === 'BACKSPACE') {
-              await backspace(payload);
-            } else if (type === 'PAUSE') {
-              await new Promise((resolve, reject) => {
-                const clearId = setTimeout(resolve, payload);
-                clearTimerRef.current = () => {
-                  clearTimeout(clearId);
-                  reject('pause');
-                };
-              });
-            } else if (type === 'PASTE') {
-              setTypedLines(prev => [...prev, payload]);
-              lineIdx += 1;
-            }
-          }
-        } while (loop);
-      } catch (error) {
-        console.log(`halt from ${error}`);
-      }
-    };
+  const startTyping = useCallback(async () => {
+    try {
+      do {
+        setTypedLines([]);
+        for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
+          const { type, payload } = actions[actionIdx];
+          if (type === 'TYPE_STRING') await typeString(payload);
+          else if (type === 'TYPE_ELEMENT') await typeElement(payload);
+          else if (type === 'BACKSPACE') await backspace(payload);
+          else if (type === 'PAUSE') {
+            await new Promise((resolve, reject) => {
+              const clearId = setTimeout(resolve, payload);
+              clearTimerRef.current = () => {
+                clearTimeout(clearId);
+                reject('pause');
+              };
+            });
+          } else if (type === 'PASTE') setTypedLines(prev => [...prev, payload]);
+        }
+      } while (loop);
+    } catch (error) {
+      console.log(`halt from ${error}`);
+    }
+  }, [actions, backspace, loop, typeElement, typeString]);
 
+  useEffect(() => {
     startTyping();
     return () => {
       clearTimerRef.current();
     };
-  }, [actions, loop, typeLine, backspace]);
+  }, [startTyping]);
 
   const typedChildren = getTypedChildren(children, typedLines);
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;

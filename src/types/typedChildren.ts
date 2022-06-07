@@ -1,4 +1,1 @@
-export type TypedChildren =
-  | (string | React.ReactElement<any, string | React.JSXElementConstructor<any>>)[]
-  | null
-  | undefined;
+export type TypedChildren = (string | React.ReactElement)[] | null | undefined;

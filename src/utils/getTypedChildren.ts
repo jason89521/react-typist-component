@@ -3,6 +3,7 @@ import Backspace from '../components/Backspace';
 import Pause from '../components/Pause';
 
 import type { TypedChildren } from '../types/typedChildren';
+import isNil from './isNil';
 
 /**
  * Determine whether to display contents by looking up the `lines` variable.
@@ -10,7 +11,10 @@ import type { TypedChildren } from '../types/typedChildren';
  * @param lines
  * @returns
  */
-const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
+const getTypedChildren = (
+  children: React.ReactNode,
+  lines: (string | React.ReactElement | null)[]
+) => {
   let lineIdx = 0;
 
   const recurse = (children: React.ReactNode): TypedChildren => {
@@ -24,16 +28,14 @@ const getTypedChildren = (children: React.ReactNode, lines: string[]) => {
         if (child.type === Backspace || child.type === Pause) return null;
 
         const { children, ...props } = child.props;
-        // Ignore any element whose children is either undefined or null.
-        // For example, <br />
-        if (!children) return null;
+        // if children is nil, treat the element as a single line
+        if (isNil(children)) return lines[lineIdx++];
 
         const newChildren = recurse(children);
-        // If `newChildren` is an empty array or all its items are '',
-        // then we say that this element's contents have been removed by backspace.
-        if (newChildren && newChildren.every(value => value === '')) {
-          return null;
-        }
+        // If `newChildren` is an empty array, then we say that
+        // this element's contents have been removed by backspace.
+        if (newChildren && newChildren.length === 0) return null;
+
         return React.cloneElement(child, props, newChildren);
       }
 

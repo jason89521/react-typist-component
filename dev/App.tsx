@@ -9,17 +9,18 @@ function App() {
     <div className="App">
       <button onClick={() => setCount(count + 1)}>{count}</button>
       <br />
-      <br />
-      <br />
-      <Typist typingInterval={100} cursor={<span className="cursor">|</span>}>
+      <Typist typingDelay={100} cursor={<span className="cursor">|</span>}>
         This is a typo
-        <Typist.Backspace count={4} />
+        <br />
+        <Typist.Backspace count={5} />
         <Typist.Pause ms={1500} />
-        <Typist.Paste>react component</Typist.Paste>
-        <div>
-          use
-          <div>deeper div</div>
-        </div>
+        react component
+        <Typist.Paste>
+          <div>
+            use
+            <div>deeper div</div>
+          </div>
+        </Typist.Paste>
       </Typist>
     </div>
   );

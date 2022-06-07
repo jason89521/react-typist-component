@@ -9,7 +9,9 @@ import type {
   BackspaceAction,
   PauseAction,
   PasteAction,
+  TypeElementAction,
 } from '../types/actions';
+import isNil from './isNil';
 
 const typeString = (str: string): TypeStringAction => ({
   type: 'TYPE_STRING',
@@ -24,6 +26,11 @@ const backspace = (count: number): BackspaceAction => ({
 const pause = (ms: number): PauseAction => ({ type: 'PAUSE', payload: ms });
 
 const paste = (str: string): PasteAction => ({ type: 'PASTE', payload: str });
+
+const typeElement = (el: React.ReactElement): TypeElementAction => ({
+  type: 'TYPE_ELEMENT',
+  payload: el,
+});
 
 /**
  * Returns an actions array generated from ReactNode.
@@ -58,6 +65,12 @@ const getActions = (node: React.ReactNode) => {
           React.Children.forEach(child.props.children, recurse);
           // It should be set to false when its children have been traversed.
           isPaste = false;
+          return;
+        }
+
+        // if children is undefined or null, treat the child as a single action
+        if (isNil(child.props.children)) {
+          actions.push(typeElement(child));
           return;
         }
 

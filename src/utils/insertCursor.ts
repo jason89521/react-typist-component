@@ -1,11 +1,9 @@
 import React from 'react';
 import type { TypedChildren } from '../types/typedChildren';
+import isNil from './isNil';
 
 /**
  * Insert the cursor after the latest typed character.
- * @param typedChildren
- * @param cursor
- * @returns
  */
 const insertCursor = (
   typedChildren: TypedChildren,
@@ -13,7 +11,7 @@ const insertCursor = (
 ): TypedChildren => {
   if (typeof cursor !== 'string') {
     const { children, ...props } = cursor.props;
-    if (!props.key) props.key = 'typist-cursor';
+    if (!cursor.key) props.key = 'typist-cursor';
     cursor = React.cloneElement(cursor, props, children);
   }
 
@@ -27,9 +25,11 @@ const insertCursor = (
     if (typeof lastChild === 'string') return [...typedChildren, cursor];
 
     const { children, ...props } = lastChild.props;
-    const afterInsert = recurse([...children]);
-    const el = React.cloneElement(lastChild, props, afterInsert);
+    // if lastChild does not have children, insert the cursor after it
+    if (isNil(children)) return [...typedChildren, cursor];
 
+    const afterInsert = recurse(children);
+    const el = React.cloneElement(lastChild, props, afterInsert);
     return [...typedChildren.slice(0, -1), el];
   };
 
