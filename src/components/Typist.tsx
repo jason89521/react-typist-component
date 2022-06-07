@@ -33,64 +33,56 @@ const Typist = ({
   });
 
   const typeLine = useCallback(
-    (line: string, lineIdx: number) => {
-      return new Promise<void>((resolve, reject) => {
-        const splittedLine = spliter(line);
-        let charIdx = 0;
-        const clearId = setInterval(() => {
-          charIdx += 1;
-          const newLine = splittedLine.slice(0, charIdx).join('');
-          setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
-          if (charIdx >= splittedLine.length) {
+    async (line: string, lineIdx: number) => {
+      const splittedLine = spliter(line);
+      let charIndex = 0;
+      while (charIndex < splittedLine.length) {
+        charIndex += 1;
+        const newLine = splittedLine.slice(0, charIndex).join('');
+        await new Promise<void>((resolve, reject) => {
+          const clearId = setTimeout(() => {
+            setTypedLines(prev => prev.map((line, index) => (index === lineIdx ? newLine : line)));
             resolve();
-            clearInterval(clearId);
-          }
-        }, typingInterval);
+          }, typingInterval);
 
-        clearTimerRef.current = () => {
-          clearInterval(clearId);
-          reject('typeLine');
-        };
-      });
+          clearTimerRef.current = () => {
+            clearTimeout(clearId);
+            reject();
+          };
+        });
+      }
     },
     [typingInterval, spliter]
   );
 
   const backspace = useCallback(
-    (amount: number) => {
-      return new Promise<void>((resolve, reject) => {
-        if (amount === 0) {
-          resolve();
-          return;
-        }
+    async (amount: number) => {
+      while (amount > 0) {
+        await new Promise<void>((resolve, reject) => {
+          const clearId = setTimeout(() => {
+            setTypedLines(prev => {
+              const typedLines = [...prev];
+              let lineIdx = typedLines.length - 1;
+              let lastLine = typedLines[lineIdx];
+              while (lastLine.length === 0 && lineIdx > 0) {
+                lineIdx -= 1;
+                lastLine = typedLines[lineIdx];
+              }
+              const splittedLine = spliter(lastLine);
+              typedLines[lineIdx] = splittedLine.join('').slice(0, -1);
+              return typedLines;
+            });
 
-        const clearId = setInterval(() => {
-          setTypedLines(prev => {
-            const typedLines = [...prev];
-            let idx = typedLines.length - 1;
-            let lastLine = typedLines[idx];
-            while (lastLine.length === 0 && idx > 0) {
-              idx -= 1;
-              lastLine = typedLines[idx];
-            }
-            const splittedLine = spliter(lastLine);
-            typedLines[idx] = splittedLine.join('').slice(0, -1);
-
-            return typedLines;
-          });
-
-          amount -= 1;
-          if (amount === 0) {
+            amount -= 1;
             resolve();
-            clearInterval(clearId);
-          }
-        }, backspaceInterval);
+          }, backspaceInterval);
 
-        clearTimerRef.current = () => {
-          clearInterval(clearId);
-          reject('backspace');
-        };
-      });
+          clearTimerRef.current = () => {
+            clearInterval(clearId);
+            reject('backspace');
+          };
+        });
+      }
     },
     [backspaceInterval, spliter]
   );
