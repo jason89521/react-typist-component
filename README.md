@@ -2,7 +2,7 @@
 
 Create typewriter effect by setting up a component's children directly.
 
-## Caveat ⚠⚠⚠
+## Caveat ⚠
 
 This package is not production-ready, Use it with caution.
 
@@ -31,15 +31,18 @@ import Typist from 'react-typist-component';
 
 const MyComponent = () => {
   return (
-    <Typist cursor={<span className="cursor">|</span>}>
+    <Typist typingDelay={100} cursor={<span className="cursor">|</span>}>
       This is a typo
-      <Typist.Backspace count={4} />
-      <Typist.Paste>react component</Typist.Paste>
+      <br />
+      <Typist.Backspace count={5} />
       <Typist.Pause ms={1500} />
-      <div>
-        use
-        <div>deeper div</div>
-      </div>
+      react component
+      <Typist.Paste>
+        <div>
+          use
+          <div>deeper div</div>
+        </div>
+      </Typist.Paste>
     </Typist>
   );
 };
@@ -49,29 +52,77 @@ const MyComponent = () => {
 
 ### `Typist`
 
-| property          | required | type                        | default value            | description                                                                                                  |
-| ----------------- | -------- | --------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------ |
-| children          | yes      | `ReactNode`                 |                          | The contents that will be rendered with typewriter effect                                                    |
-| typingInterval    | no       | `number`                    | `100`                    | The interval between each typing                                                                             |
-| backspaceInterval | no       | `number`                    | `50`                     | The interval between each backspace                                                                          |
-| loop              | no       | `boolean`                   | `false`                  | Loop the typewriter effect                                                                                   |
-| cursor            | no       | `string or ReactElement`    |                          | The cursor will be appended after the last character                                                         |
-| splitter          | no       | `(str: string) => string[]` | `(str) => str.split('')` | Use this function to split the string. It may be useful when you want to split your string in different way. |
+```ts
+type TypistProps = {
+  children: React.ReactNode;
+  typingDelay?: number;
+  typingNoise?: number;
+  loop?: boolean;
+  cursor?: string | React.ReactElement;
+  splitter?: (str: string) => string[];
+};
+```
+
+#### `children`
+
+The contents that will be rendered with typewriter effect.
+
+Note that `Typist` treats the element whose children is undefined or null as a single character, that is, the element will be animated.
+
+#### `typingDelay`
+
+The average delay between each character. Default is `70`
+
+#### `typingNoise`
+
+For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`. Default is `20`.
+
+#### `loop`
+
+Determines whether the animation should loop. Default is `false`.
+
+#### `cursor`
+
+Will be inserted after the last typed character.
+
+#### `splitter`
+
+Use this function to split the string. It may be useful when you want to split your string in different way.
+
+Default is `(str: string) => str.split('')`
 
 ### `Typist.Backspace`
 
-| property | required | type     | default value | description                                   |
-| -------- | -------- | -------- | ------------- | --------------------------------------------- |
-| count    | yes      | `number` |               | The number of characters that will be deleted |
+```ts
+type Props = {
+  count: number;
+};
+```
+
+#### `count`
+
+The number of characters that will be deleted.
 
 ### `Typist.Pause`
 
-| property | required | type     | default value | description                               |
-| -------- | -------- | -------- | ------------- | ----------------------------------------- |
-| ms       | yes      | `number` |               | The duration of the pause in milliseconds |
+```ts
+type Props = {
+  ms: number;
+};
+```
+
+#### `ms`
+
+The duration of the pause in milliseconds.
 
 ### `Typist.Paste`
 
-| property | required | type        | default value | description                                                             |
-| -------- | -------- | ----------- | ------------- | ----------------------------------------------------------------------- |
-| children | yes      | `ReactNode` |               | Children inside this component will be pasted without typewriter effect |
+```ts
+type Props = {
+  children: React.ReactNode;
+};
+```
+
+#### `children`
+
+Children inside this component will be pasted without typewriter effect

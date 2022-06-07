@@ -40,11 +40,9 @@ const Typist = ({
   const typeString = useCallback(
     async (line: string) => {
       const splittedLine = splitter(line);
-      let charIndex = 0;
       setTypedLines(prev => [...prev, '']);
-      while (charIndex < splittedLine.length) {
-        charIndex += 1;
-        const newLine = splittedLine.slice(0, charIndex).join('');
+      for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
+        const newLine = splittedLine.slice(0, charIdx).join('');
         await new Promise<void>((resolve, reject) => {
           const clearId = setTimeout(() => {
             setTypedLines(prev =>
@@ -67,8 +65,8 @@ const Typist = ({
     async (el: React.ReactElement) => {
       return new Promise<void>((resolve, reject) => {
         const clearId = setTimeout(() => {
-          resolve();
           setTypedLines(prev => [...prev, el]);
+          resolve();
         }, delayGenerator(typingDelay, typingNoise));
 
         clearTimerRef.current = () => {
