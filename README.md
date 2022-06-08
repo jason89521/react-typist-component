@@ -57,8 +57,8 @@ type TypistProps = {
   children: React.ReactNode;
   typingDelay?: number;
   typingNoise?: number;
-  loop?: boolean;
   cursor?: string | React.ReactElement;
+  onTypingDone?: () => boolean;
   splitter?: (str: string) => string[];
 };
 ```
@@ -81,15 +81,15 @@ The average delay between each character.
 
 For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`.
 
-#### `loop`
-
-**Default**: `false`
-
-Determines whether the animation should loop.
-
 #### `cursor`
 
 Will be inserted after the last typed character.
+
+#### `onTypingDone`
+
+**Default**: `() => false`
+
+This function will be called when the typing animation finishes. If it returns true, then `Typist` will restart the typing animation.
 
 #### `splitter`
 

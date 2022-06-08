@@ -11,8 +11,8 @@ type TypistProps = {
   children: React.ReactNode;
   typingDelay?: number;
   typingNoise?: number;
-  loop?: boolean;
   cursor?: string | React.ReactElement;
+  onTypingDone?: () => boolean;
   splitter?: (str: string) => string[];
 };
 
@@ -27,14 +27,14 @@ const Typist = ({
   children,
   typingDelay = 70,
   typingNoise = 20,
-  loop = false,
   cursor,
+  onTypingDone,
   splitter = defaultSplitter,
 }: TypistProps) => {
   const actions = useMemo(() => getActions(children), [children]);
   const [typedLines, setTypedLines] = useState<(string | React.ReactElement | null)[]>([]);
   const clearTimerRef = useRef(() => {
-    return;
+    // do nothing
   });
 
   const typeString = useCallback(
@@ -62,7 +62,7 @@ const Typist = ({
   );
 
   const typeElement = useCallback(
-    async (el: React.ReactElement) => {
+    (el: React.ReactElement) => {
       return new Promise<void>((resolve, reject) => {
         const clearId = setTimeout(() => {
           setTypedLines(prev => [...prev, el]);
@@ -110,7 +110,7 @@ const Typist = ({
           }, delayGenerator(typingDelay, typingNoise));
 
           clearTimerRef.current = () => {
-            clearInterval(clearId);
+            clearTimeout(clearId);
             reject('backspace');
           };
         });
@@ -138,11 +138,11 @@ const Typist = ({
             });
           } else if (type === 'PASTE') setTypedLines(prev => [...prev, payload]);
         }
-      } while (loop);
+      } while (onTypingDone && onTypingDone());
     } catch (error) {
       console.log(`halt from ${error}`);
     }
-  }, [actions, backspace, loop, typeElement, typeString]);
+  }, [actions, backspace, onTypingDone, typeElement, typeString]);
 
   useEffect(() => {
     startTyping();
