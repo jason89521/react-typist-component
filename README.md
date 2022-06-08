@@ -71,15 +71,21 @@ Note that `Typist` treats the element whose children is undefined or null as a s
 
 #### `typingDelay`
 
-The average delay between each character. Default is `70`
+**Default**: `70`
+
+The average delay between each character.
 
 #### `typingNoise`
 
-For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`. Default is `20`.
+**Default**: `20`
+
+For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`.
 
 #### `loop`
 
-Determines whether the animation should loop. Default is `false`.
+**Default**: `false`
+
+Determines whether the animation should loop.
 
 #### `cursor`
 
@@ -87,9 +93,9 @@ Will be inserted after the last typed character.
 
 #### `splitter`
 
-Use this function to split the string. It may be useful when you want to split your string in different way.
+**Default**: `(str: string) => str.split('')`
 
-Default is `(str: string) => str.split('')`
+Use this function to split the string. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
 
 ### `Typist.Backspace`
 
