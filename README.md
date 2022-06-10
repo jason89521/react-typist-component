@@ -58,7 +58,7 @@ type TypistProps = {
   typingDelay?: number;
   typingNoise?: number;
   cursor?: string | React.ReactElement;
-  onTypingDone?: () => boolean;
+  onTypingDone?: () => boolean | void;
   splitter?: (str: string) => string[];
 };
 ```
@@ -77,7 +77,7 @@ The average delay between each character.
 
 #### `typingNoise`
 
-**Default**: `20`
+**Default**: `25`
 
 For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`.
 
@@ -87,7 +87,7 @@ Will be inserted after the last typed character.
 
 #### `onTypingDone`
 
-**Default**: `() => false`
+**Default**: `() => {return}`
 
 This function will be called when the typing animation finishes. If it returns true, then `Typist` will restart the typing animation.
 
