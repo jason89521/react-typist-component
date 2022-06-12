@@ -11,7 +11,6 @@ function App() {
       <br />
       <Typist
         typingDelay={100}
-        loop={count % 2 === 0}
         disable={count % 2 === 0}
         cursor={<span className="cursor">|</span>}
       >
@@ -26,6 +25,7 @@ function App() {
             <div>deeper div</div>
           </div>
         </Typist.Paste>
+        <Typist.Pause ms={1500} />
       </Typist>
     </div>
   );

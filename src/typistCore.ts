@@ -1,8 +1,7 @@
 import React from 'react';
 import type { Action as DispatchAction } from 'use-case-reducers';
 
-import type { CoreProps } from './types/TypistProps';
-import type { TypedLines } from './types/typedChildren';
+import type { CoreProps, TypedLines } from './types/TypistProps';
 import { reset, append, updateLastLine, deleteLastChar } from './utils/typedLinesSlice';
 import { defaultDelayGenerator, defaultSplitter, emptyFunc } from './utils/defaultFuncs';
 import getActions from './utils/getActions';
@@ -10,13 +9,26 @@ import getBackspacedLines from './utils/getBackspacedLines';
 
 export default class TypistCore {
   #children: React.ReactNode;
+
   #typingDelay!: number;
+
   #typingNoise!: number;
+
   #loop!: boolean;
+
+  /** Whether to pause the typing animation */
   #pause!: boolean;
+
+  /** When this value changes, restart the typing animation */
+  #restartKey: any;
+
   #onTypingDone!: () => void;
+
   #splitter!: (str: string) => string[];
+
+  /** This value is used to set up `Typist`'s state */
   #dispatch: React.Dispatch<DispatchAction>;
+
   #finalTypedLines!: TypedLines;
 
   /**
@@ -27,7 +39,6 @@ export default class TypistCore {
   constructor(props: CoreProps, dispatch: React.Dispatch<DispatchAction>) {
     this.#setUpProps(props);
     this.#dispatch = dispatch;
-    this.#setFinalTypedLines();
   }
 
   get finalTypedLines() {
@@ -39,6 +50,8 @@ export default class TypistCore {
   }
 
   startTyping = async () => {
+    // Clear all timer before starting typing animation.
+    this.clearTimer();
     try {
       do {
         const actions = getActions(this.#children);
@@ -60,11 +73,17 @@ export default class TypistCore {
   };
 
   onPropsChanged = (props: CoreProps) => {
-    const { loop } = props;
-    // restart the typing animation when the typing animation is stopped and new loop is changed to true
-    if (this.#clearTimer === null && this.#loop !== loop && loop === true) this.startTyping();
+    const { loop, restartKey } = props;
 
+    // previous typing was done and `loop` is going to be changed to `true`
+    const restartFinished = this.#clearTimer === null && this.#loop !== loop && loop;
+
+    const restartKeyChanged = this.#restartKey !== restartKey;
+    const shouldRestart = restartKeyChanged || restartFinished;
     this.#setUpProps(props);
+
+    // restart should be called after setUpProps because we need to ensure that all properties are latest
+    if (shouldRestart) this.startTyping();
   };
 
   #setUpProps = ({
@@ -73,6 +92,7 @@ export default class TypistCore {
     typingNoise = 25,
     loop = false,
     pause = false,
+    restartKey,
     onTypingDone = emptyFunc,
     splitter = defaultSplitter,
   }: CoreProps) => {
@@ -81,22 +101,32 @@ export default class TypistCore {
     this.#typingNoise = typingNoise;
     this.#loop = loop;
     this.#pause = pause;
+    this.#restartKey = restartKey;
     this.#onTypingDone = onTypingDone;
     this.#splitter = splitter;
+
+    let lines: TypedLines = [];
+    getActions(this.#children).forEach(action => {
+      const { type, payload } = action;
+      if (type === 'TYPE_STRING' || type === 'TYPE_ELEMENT' || type === 'PASTE')
+        lines.push(payload);
+      else if (type === 'BACKSPACE') {
+        let amount = payload;
+        while (amount > 0) {
+          lines = getBackspacedLines(lines, this.#splitter, () => (amount = 0));
+          amount -= 1;
+        }
+      }
+    });
+    this.#finalTypedLines = lines;
   };
 
   #timeoutPromise = (delay: number) => {
     return new Promise<void>((resolve, reject) => {
       let intervalId: number;
       const timeoutId = setTimeout(() => {
-        if (!this.#pause) {
-          resolve();
-          return;
-        }
-
-        intervalId = setInterval(() => {
-          if (!this.#pause) resolve();
-        });
+        if (this.#pause) intervalId = setInterval(() => !this.#pause && resolve());
+        else resolve();
       }, delay);
 
       this.#clearTimer = () => {
@@ -128,23 +158,5 @@ export default class TypistCore {
       this.#dispatch(deleteLastChar(this.#splitter, () => (amount = 0)));
       amount -= 1;
     }
-  };
-
-  #setFinalTypedLines = () => {
-    const actions = getActions(this.#children);
-    let lines: TypedLines = [];
-    actions.forEach(action => {
-      const { type, payload } = action;
-      if (type === 'TYPE_STRING' || type === 'TYPE_ELEMENT' || type === 'PASTE')
-        lines.push(payload);
-      else if (type === 'BACKSPACE') {
-        let amount = payload;
-        while (amount > 0) {
-          lines = getBackspacedLines(lines, this.#splitter, () => (amount = 0));
-          amount -= 1;
-        }
-      }
-    });
-    this.#finalTypedLines = lines;
   };
 }

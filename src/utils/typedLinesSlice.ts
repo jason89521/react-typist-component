@@ -1,7 +1,7 @@
 import React from 'react';
 import { createSlice } from 'use-case-reducers';
 
-import type { TypedLines } from '../types/typedChildren';
+import type { TypedLines } from '../types/TypistProps';
 import getBackspacedLines from './getBackspacedLines';
 
 const {

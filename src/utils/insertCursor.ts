@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TypedChildren } from '../types/typedChildren';
+import type { TypedChildren } from '../types/TypistProps';
 import isNil from './isNil';
 
 /**

@@ -1,4 +1,4 @@
-import type { TypedLines } from '../types/typedChildren';
+import type { TypedLines } from '../types/TypistProps';
 import type { Splitter } from '../types/functions';
 
 const getBackspacedLines = (lines: TypedLines, splitter: Splitter, onLinesCleared: () => void) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import Backspace from '../components/Backspace';
 import Pause from '../components/Pause';
 
-import type { TypedChildren } from '../types/typedChildren';
+import type { TypedChildren } from '../types/TypistProps';
 import isNil from './isNil';
 
 /**

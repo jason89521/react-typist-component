@@ -16,6 +16,10 @@ const Typist = (props: TypistProps) => {
   const [typistCore] = useState(() => new TypistCore(props, dispatch));
 
   useEffect(() => {
+    typistCore.onPropsChanged(props);
+  }, [props, typistCore]);
+
+  useEffect(() => {
     if (disable) {
       dispatch(reset(typistCore.finalTypedLines));
       return;
@@ -23,13 +27,10 @@ const Typist = (props: TypistProps) => {
 
     typistCore.startTyping();
     return () => {
+      // To prevent setting state on unmounted component.
       typistCore.clearTimer();
     };
   }, [typistCore, disable]);
-
-  useEffect(() => {
-    typistCore.onPropsChanged(props);
-  }, [props, typistCore]);
 
   const typedChildren = getTypedChildren(children, typedLines);
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
