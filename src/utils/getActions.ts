@@ -1,6 +1,6 @@
 import React from 'react';
 import Backspace from '../components/Backspace';
-import Pause from '../components/Pause';
+import Delay from '../components/Delay';
 import Paste from '../components/Paste';
 
 import type {
@@ -55,7 +55,7 @@ const getActions = (node: React.ReactNode) => {
           return;
         }
 
-        if (child.type === Pause) {
+        if (child.type === Delay) {
           actions.push(pause(child.props.ms));
           return;
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import Backspace from '../components/Backspace';
-import Pause from '../components/Pause';
+import Delay from '../components/Delay';
 
 import type { TypedChildren } from '../types/TypistProps';
 import isNil from './isNil';
@@ -25,7 +25,7 @@ const getTypedChildren = (
 
       if (React.isValidElement(child)) {
         // Remove Backspace and Pause from virtual DOM.
-        if (child.type === Backspace || child.type === Pause) return null;
+        if (child.type === Backspace || child.type === Delay) return null;
 
         const { children, ...props } = child.props;
         // if children is nil, treat the element as a single line

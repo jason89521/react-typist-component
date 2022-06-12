@@ -5,7 +5,7 @@ import { initialState, reducer, reset } from '../utils/typedLinesSlice';
 import getTypedChildren from '../utils/getTypedChildren';
 import insertCursor from '../utils/insertCursor';
 import Backspace from './Backspace';
-import Pause from './Pause';
+import Delay from './Delay';
 import Paste from './Paste';
 
 import TypistCore from '../typistCore';
@@ -37,7 +37,7 @@ const Typist = (props: TypistProps) => {
 };
 
 Typist.Backspace = Backspace;
-Typist.Pause = Pause;
+Typist.Pause = Delay;
 Typist.Paste = Paste;
 export default Typist;
 export type { TypistProps };
