@@ -40,4 +40,3 @@ Typist.Backspace = Backspace;
 Typist.Pause = Delay;
 Typist.Paste = Paste;
 export default Typist;
-export type { TypistProps };
