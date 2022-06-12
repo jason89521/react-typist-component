@@ -125,7 +125,7 @@ export default class TypistCore {
     return new Promise<void>((resolve, reject) => {
       let intervalId: number;
       const timeoutId = setTimeout(() => {
-        if (this.#pause) intervalId = setInterval(() => !this.#pause && resolve());
+        if (this.#pause) intervalId = window.setInterval(() => !this.#pause && resolve());
         else resolve();
       }, delay);
 
