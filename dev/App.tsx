@@ -9,7 +9,12 @@ function App() {
     <div className="App">
       <button onClick={() => setCount(count + 1)}>{count}</button>
       <br />
-      <Typist typingDelay={100} cursor={<span className="cursor">|</span>}>
+      <Typist
+        typingDelay={100}
+        loop={count % 2 === 0}
+        disable={count % 2 === 0}
+        cursor={<span className="cursor">|</span>}
+      >
         This is a typo
         <br />
         <Typist.Backspace count={5} />
