@@ -14,11 +14,11 @@ export const nestedChildren = (
 export const TestTypist = ({
   children,
   typingDelay = 0,
-  typingNoise = 0,
+  backspaceDelay: typingNoise = 0,
   ...rest
 }: TypistProps) => {
   return (
-    <Typist typingDelay={typingDelay} typingNoise={typingNoise} {...rest}>
+    <Typist typingDelay={typingDelay} backspaceDelay={typingNoise} {...rest}>
       {children}
     </Typist>
   );

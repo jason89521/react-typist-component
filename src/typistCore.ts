@@ -1,36 +1,32 @@
 import React from 'react';
 import type { Action as DispatchAction } from 'use-case-reducers';
 
-import type { CoreProps, TypedLines } from './types/TypistProps';
+import type { CoreProps } from './types/TypistProps';
 import { reset, append, updateLastLine, deleteLastChar } from './utils/typedLinesSlice';
-import { defaultDelayGenerator, defaultSplitter, emptyFunc } from './utils/defaultFuncs';
+import { defaultSplitter, emptyFunc } from './utils/defaultFuncs';
 import getActions from './utils/getActions';
-import getBackspacedLines from './utils/getBackspacedLines';
+
+type Props = Required<CoreProps>;
 
 export default class TypistCore {
   #children: React.ReactNode;
   #typingDelay!: number;
-  #typingNoise!: number;
+  #backspaceDelay!: number;
   #loop!: boolean;
   #pause!: boolean;
   #onTypingDone!: () => void;
   #splitter!: (str: string) => string[];
   /** This value is used to set up `Typist`'s state */
   #dispatch: React.Dispatch<DispatchAction>;
-  #finalTypedLines!: TypedLines;
 
   /**
    * `null` means that there is no typing animation being excuted
    */
   #clearTimer: (() => void) | null = null;
 
-  constructor(props: CoreProps, dispatch: React.Dispatch<DispatchAction>) {
+  constructor(props: Props, dispatch: React.Dispatch<DispatchAction>) {
     this.#setUpProps(props);
     this.#dispatch = dispatch;
-  }
-
-  get finalTypedLines() {
-    return this.#finalTypedLines;
   }
 
   /**
@@ -73,35 +69,20 @@ export default class TypistCore {
 
   #setUpProps = ({
     children,
-    typingDelay = 70,
-    typingNoise = 25,
-    loop = false,
-    pause = false,
+    typingDelay,
+    backspaceDelay,
+    loop,
+    pause,
     onTypingDone = emptyFunc,
     splitter = defaultSplitter,
-  }: CoreProps) => {
+  }: Props) => {
     this.#children = children;
     this.#typingDelay = typingDelay;
-    this.#typingNoise = typingNoise;
+    this.#backspaceDelay = backspaceDelay;
     this.#loop = loop;
     this.#pause = pause;
     this.#onTypingDone = onTypingDone;
     this.#splitter = splitter;
-
-    let lines: TypedLines = [];
-    getActions(this.#children).forEach(action => {
-      const { type, payload } = action;
-      if (type === 'TYPE_STRING' || type === 'TYPE_ELEMENT' || type === 'PASTE')
-        lines.push(payload);
-      else if (type === 'BACKSPACE') {
-        let amount = payload;
-        while (amount > 0) {
-          lines = getBackspacedLines(lines, this.#splitter, () => (amount = 0));
-          amount -= 1;
-        }
-      }
-    });
-    this.#finalTypedLines = lines;
   };
 
   #timeoutPromise = (delay: number) => {
@@ -124,20 +105,20 @@ export default class TypistCore {
     const splittedLine = this.#splitter(line);
     this.#dispatch(append(''));
     for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
-      await this.#timeoutPromise(defaultDelayGenerator(this.#typingDelay, this.#typingNoise));
+      await this.#timeoutPromise(this.#typingDelay);
       const newLine = splittedLine.slice(0, charIdx).join('');
       this.#dispatch(updateLastLine(newLine));
     }
   };
 
   #typeElement = async (el: React.ReactElement) => {
-    await this.#timeoutPromise(defaultDelayGenerator(this.#typingDelay, this.#typingNoise));
+    await this.#timeoutPromise(this.#typingDelay);
     this.#dispatch(append(el));
   };
 
   #backspace = async (amount: number) => {
     while (amount > 0) {
-      await this.#timeoutPromise(defaultDelayGenerator(this.#typingDelay, this.#typingNoise));
+      await this.#timeoutPromise(this.#backspaceDelay);
       this.#dispatch(deleteLastChar(this.#splitter, () => (amount = 0)));
       amount -= 1;
     }

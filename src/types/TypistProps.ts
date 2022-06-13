@@ -5,7 +5,7 @@ export type CoreProps = {
   /** Contents that will be animated as a typewriter. */
   children: React.ReactNode;
   typingDelay?: number;
-  typingNoise?: number;
+  backspaceDelay?: number;
   loop?: boolean;
   /** Pause the current typing animation. */
   pause?: boolean;
