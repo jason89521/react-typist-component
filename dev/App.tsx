@@ -2,6 +2,15 @@ import React, { useState } from 'react';
 import './App.css';
 import Typist from '../src';
 
+const PureChildren = () => {
+  return (
+    <div className="first">
+      first
+      <div className="second">second</div>
+    </div>
+  );
+};
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -16,6 +25,7 @@ function App() {
       >
         This is a typo
         <br />
+        <PureChildren />
         <Typist.Backspace count={5} />
         <Typist.Pause ms={1500} />
         react component

@@ -1,7 +1,4 @@
-import React from 'react';
-import Backspace from '../components/Backspace';
-import Delay from '../components/Delay';
-import Paste from '../components/Paste';
+import React, { Children, isValidElement } from 'react';
 
 import type {
   Action,
@@ -12,6 +9,9 @@ import type {
   TypeElementAction,
 } from '../types/actions';
 import isNil from './isNil';
+import Backspace from '../components/Backspace';
+import Delay from '../components/Delay';
+import Paste from '../components/Paste';
 
 const typeString = (str: string): TypeStringAction => ({
   type: 'TYPE_STRING',
@@ -48,8 +48,8 @@ const getActions = (node: React.ReactNode) => {
   let isPaste = false;
 
   const recurse = (node: React.ReactNode) => {
-    React.Children.forEach(node, child => {
-      if (React.isValidElement(child)) {
+    Children.forEach(node, child => {
+      if (isValidElement(child)) {
         if (child.type === Backspace) {
           actions.push(backspace(child.props.count));
           return;
@@ -62,7 +62,7 @@ const getActions = (node: React.ReactNode) => {
 
         if (child.type === Paste) {
           isPaste = true;
-          React.Children.forEach(child.props.children, recurse);
+          Children.forEach(child.props.children, recurse);
           // It should be set to false when its children have been traversed.
           isPaste = false;
           return;
@@ -74,7 +74,7 @@ const getActions = (node: React.ReactNode) => {
           return;
         }
 
-        React.Children.forEach(child.props.children, recurse);
+        Children.forEach(child.props.children, recurse);
       }
 
       if (typeof child === 'number') child = child.toString(10);

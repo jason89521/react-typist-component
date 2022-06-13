@@ -8,7 +8,7 @@ import Backspace from './Backspace';
 import Delay from './Delay';
 import Paste from './Paste';
 
-import TypistCore from '../typistCore';
+import TypistCore from '../TypistCore';
 
 const Typist = (props: TypistProps) => {
   const { children, cursor, disable } = props;
