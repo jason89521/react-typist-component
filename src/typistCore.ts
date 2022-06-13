@@ -9,26 +9,14 @@ import getBackspacedLines from './utils/getBackspacedLines';
 
 export default class TypistCore {
   #children: React.ReactNode;
-
   #typingDelay!: number;
-
   #typingNoise!: number;
-
   #loop!: boolean;
-
-  /** Whether to pause the typing animation */
   #pause!: boolean;
-
-  /** When this value changes, restart the typing animation */
-  #restartKey: any;
-
   #onTypingDone!: () => void;
-
   #splitter!: (str: string) => string[];
-
   /** This value is used to set up `Typist`'s state */
   #dispatch: React.Dispatch<DispatchAction>;
-
   #finalTypedLines!: TypedLines;
 
   /**
@@ -45,13 +33,24 @@ export default class TypistCore {
     return this.#finalTypedLines;
   }
 
-  get clearTimer() {
-    return this.#clearTimer ? this.#clearTimer : emptyFunc;
+  /**
+   * Clear the scheduled timer and make updating component's state invalid in this instance.
+   */
+  get discard() {
+    return () => {
+      this.#clearTimer && this.#clearTimer();
+      this.#dispatch = () => {
+        throw 'The component has been unmounted.';
+      };
+    };
+  }
+
+  get onPropsChanged() {
+    return this.#setUpProps;
   }
 
   startTyping = async () => {
-    // Clear all timer before starting typing animation.
-    this.clearTimer();
+    this.#clearTimer && this.#clearTimer();
     try {
       do {
         const actions = getActions(this.#children);
@@ -72,27 +71,12 @@ export default class TypistCore {
     }
   };
 
-  onPropsChanged = (props: CoreProps) => {
-    const { loop, restartKey } = props;
-
-    // previous typing was done and `loop` is going to be changed to `true`
-    const restartFinished = this.#clearTimer === null && this.#loop !== loop && loop;
-
-    const restartKeyChanged = this.#restartKey !== restartKey;
-    const shouldRestart = restartKeyChanged || restartFinished;
-    this.#setUpProps(props);
-
-    // restart should be called after setUpProps because we need to ensure that all properties are latest
-    if (shouldRestart) this.startTyping();
-  };
-
   #setUpProps = ({
     children,
     typingDelay = 70,
     typingNoise = 25,
     loop = false,
     pause = false,
-    restartKey,
     onTypingDone = emptyFunc,
     splitter = defaultSplitter,
   }: CoreProps) => {
@@ -101,7 +85,6 @@ export default class TypistCore {
     this.#typingNoise = typingNoise;
     this.#loop = loop;
     this.#pause = pause;
-    this.#restartKey = restartKey;
     this.#onTypingDone = onTypingDone;
     this.#splitter = splitter;
 
@@ -123,9 +106,9 @@ export default class TypistCore {
 
   #timeoutPromise = (delay: number) => {
     return new Promise<void>((resolve, reject) => {
-      let intervalId: number;
+      let intervalId: NodeJS.Timeout;
       const timeoutId = setTimeout(() => {
-        if (this.#pause) intervalId = window.setInterval(() => !this.#pause && resolve());
+        if (this.#pause) intervalId = setInterval(() => !this.#pause && resolve());
         else resolve();
       }, delay);
 
