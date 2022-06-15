@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { Children, isValidElement, cloneElement } from 'react';
 import Backspace from '../components/Backspace';
-import Pause from '../components/Pause';
+import Delay from '../components/Delay';
 
-import type { TypedChildren } from '../types/typedChildren';
+import type { TypedChildren } from '../types/TypistProps';
 import isNil from './isNil';
 
 /**
@@ -20,12 +20,12 @@ const getTypedChildren = (
   const recurse = (children: React.ReactNode): TypedChildren => {
     // React.Children.map will ignore null if the mapping function return null.
     // For example, React.Children.map(children, () => null) will return [];
-    const typedChildren = React.Children.map(children, child => {
+    const typedChildren = Children.map(children, child => {
       if (lineIdx >= lines.length) return null;
 
-      if (React.isValidElement(child)) {
+      if (isValidElement(child)) {
         // Remove Backspace and Pause from virtual DOM.
-        if (child.type === Backspace || child.type === Pause) return null;
+        if (child.type === Backspace || child.type === Delay) return null;
 
         const { children, ...props } = child.props;
         // if children is nil, treat the element as a single line
@@ -36,7 +36,7 @@ const getTypedChildren = (
         // this element's contents have been removed by backspace.
         if (newChildren && newChildren.length === 0) return null;
 
-        return React.cloneElement(child, props, newChildren);
+        return cloneElement(child, props, newChildren);
       }
 
       // Only number and string are valid contents that can be typed.

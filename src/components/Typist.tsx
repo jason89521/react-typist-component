@@ -1,162 +1,66 @@
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import getActions from '../utils/getActions';
+import type { TypedLines, TypistProps } from '../types/TypistProps';
 import getTypedChildren from '../utils/getTypedChildren';
+import getFinalTypedLines from '../utils/getFinalTypedLines';
 import insertCursor from '../utils/insertCursor';
+import { defaultSplitter, emptyFunc } from '../utils/defaultFuncs';
 import Backspace from './Backspace';
-import Pause from './Pause';
+import Delay from './Delay';
 import Paste from './Paste';
 
-type TypistProps = {
-  children: React.ReactNode;
-  typingDelay?: number;
-  typingNoise?: number;
-  cursor?: string | React.ReactElement;
-  onTypingDone?: () => boolean;
-  splitter?: (str: string) => string[];
-};
-
-const defaultSplitter = (str: string) => str.split('');
-
-const delayGenerator = (delay: number, noise: number) => {
-  const coefficient = Math.random() * 2 - 1; // -1 to <1
-  return delay + coefficient * noise;
-};
+import TypistCore from '../TypistCore';
 
 const Typist = ({
   children,
-  typingDelay = 70,
-  typingNoise = 20,
-  cursor,
-  onTypingDone,
+  typingDelay = 75,
+  backspaceDelay = 75,
+  loop = false,
+  pause = false,
+  onTypingDone = emptyFunc,
   splitter = defaultSplitter,
+  cursor,
+  restartKey,
+  disabled = false,
 }: TypistProps) => {
-  const actions = useMemo(() => getActions(children), [children]);
-  const [typedLines, setTypedLines] = useState<(string | React.ReactElement | null)[]>([]);
-  const clearTimerRef = useRef(() => {
-    // do nothing
-  });
-
-  const typeString = useCallback(
-    async (line: string) => {
-      const splittedLine = splitter(line);
-      setTypedLines(prev => [...prev, '']);
-      for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
-        const newLine = splittedLine.slice(0, charIdx).join('');
-        await new Promise<void>((resolve, reject) => {
-          const clearId = setTimeout(() => {
-            setTypedLines(prev =>
-              prev.map((line, index) => (index === prev.length - 1 ? newLine : line))
-            );
-            resolve();
-          }, delayGenerator(typingDelay, typingNoise));
-
-          clearTimerRef.current = () => {
-            clearTimeout(clearId);
-            reject('type string');
-          };
-        });
-      }
-    },
-    [splitter, typingDelay, typingNoise]
+  const [typedLines, setTypedLines] = useState<TypedLines>([]);
+  const typistCoreRef = useRef<TypistCore>();
+  const coreProps = useMemo(
+    () => ({ children, typingDelay, backspaceDelay, loop, pause, onTypingDone, splitter }),
+    [backspaceDelay, children, loop, onTypingDone, pause, splitter, typingDelay]
   );
-
-  const typeElement = useCallback(
-    (el: React.ReactElement) => {
-      return new Promise<void>((resolve, reject) => {
-        const clearId = setTimeout(() => {
-          setTypedLines(prev => [...prev, el]);
-          resolve();
-        }, delayGenerator(typingDelay, typingNoise));
-
-        clearTimerRef.current = () => {
-          clearTimeout(clearId);
-          reject('type element');
-        };
-      });
-    },
-    [typingDelay, typingNoise]
-  );
-
-  const backspace = useCallback(
-    async (amount: number) => {
-      while (amount > 0) {
-        await new Promise<void>((resolve, reject) => {
-          const clearId = setTimeout(() => {
-            setTypedLines(prev => {
-              const typedLines = [...prev];
-              let lineIdx = typedLines.length - 1;
-              let lastLine = typedLines[lineIdx];
-              while (lastLine === null && lineIdx > 0) {
-                lineIdx -= 1;
-                lastLine = typedLines[lineIdx];
-              }
-
-              // all lines are null means that there is nothing can be deleted
-              if (typeof lastLine === null) amount = 0;
-              if (typeof lastLine === 'object') typedLines[lineIdx] = null;
-
-              if (typeof lastLine === 'string') {
-                const splittedLine = splitter(lastLine);
-                const newLine = splittedLine.slice(0, -1).join('');
-                typedLines[lineIdx] = newLine === '' ? null : newLine;
-              }
-
-              return typedLines;
-            });
-
-            amount -= 1;
-            resolve();
-          }, delayGenerator(typingDelay, typingNoise));
-
-          clearTimerRef.current = () => {
-            clearTimeout(clearId);
-            reject('backspace');
-          };
-        });
-      }
-    },
-    [splitter, typingDelay, typingNoise]
-  );
-
-  const startTyping = useCallback(async () => {
-    try {
-      do {
-        setTypedLines([]);
-        for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
-          const { type, payload } = actions[actionIdx];
-          if (type === 'TYPE_STRING') await typeString(payload);
-          else if (type === 'TYPE_ELEMENT') await typeElement(payload);
-          else if (type === 'BACKSPACE') await backspace(payload);
-          else if (type === 'PAUSE') {
-            await new Promise((resolve, reject) => {
-              const clearId = setTimeout(resolve, payload);
-              clearTimerRef.current = () => {
-                clearTimeout(clearId);
-                reject('pause');
-              };
-            });
-          } else if (type === 'PASTE') setTypedLines(prev => [...prev, payload]);
-        }
-      } while (onTypingDone && onTypingDone());
-    } catch (error) {
-      console.log(`halt from ${error}`);
-    }
-  }, [actions, backspace, onTypingDone, typeElement, typeString]);
 
   useEffect(() => {
-    startTyping();
+    // If disable is true, show the final result immediately.
+    if (disabled) {
+      typistCoreRef.current = undefined;
+      const finalTypedLines = getFinalTypedLines(children, splitter);
+      setTypedLines(finalTypedLines);
+      return;
+    }
+
+    // Whenever `disable` is set to false or `restartKey` is changed,
+    // create a new instance of `TypistCore` and restart the typing animation.
+    const typistCore = new TypistCore(coreProps, setTypedLines);
+    typistCoreRef.current = typistCore;
+    typistCore.startTyping();
     return () => {
-      clearTimerRef.current();
+      // Make sure the old instance will not change `typedLines`.
+      typistCore.discard();
     };
-  }, [startTyping]);
+
+    // Don't add `props` to the dependencies array because
+    // it will cause re-creating instance whenever `props` changes.
+  }, [disabled, restartKey]);
+
+  // Update the typistCore's props whenever component's props change
+  useEffect(() => {
+    const typistCore = typistCoreRef.current;
+    typistCore?.onPropsChanged(coreProps);
+  }, [coreProps]);
 
   const typedChildren = getTypedChildren(children, typedLines);
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
 };
 
-Typist.Backspace = Backspace;
-Typist.Pause = Pause;
-Typist.Paste = Paste;
-export default Typist;
-export type { TypistProps };
+export default Object.assign(Typist, { Backspace, Delay, Paste });

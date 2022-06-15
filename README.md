@@ -6,16 +6,6 @@ Create typewriter effect by setting up a component's children directly.
 
 This package is not production-ready, Use it with caution.
 
-## Features 🎈
-
-- [x] Directly set up text inside a component
-- [x] Allow nested elements
-- [x] Custom cursor
-- [x] Curstom string splitting
-- [x] Support pasting text
-- [x] Support pause
-- [x] Support backspace
-
 ## Install
 
 ```bash
@@ -35,7 +25,7 @@ const MyComponent = () => {
       This is a typo
       <br />
       <Typist.Backspace count={5} />
-      <Typist.Pause ms={1500} />
+      <Typist.Delay ms={1500} />
       react component
       <Typist.Paste>
         <div>
@@ -56,46 +46,88 @@ const MyComponent = () => {
 type TypistProps = {
   children: React.ReactNode;
   typingDelay?: number;
-  typingNoise?: number;
+  backspaceDelay?: number;
+  loop?: boolean;
+  pause?: boolean;
+  onTypingDone?: () => void;
+  splitter?: Splitter;
   cursor?: string | React.ReactElement;
-  onTypingDone?: () => boolean;
-  splitter?: (str: string) => string[];
+  restartKey?: any;
+  disabled?: boolean;
 };
 ```
 
 #### `children`
 
-The contents that will be rendered with typewriter effect.
+The contents that will be rendered with typewriter effect. It accepts nested elements, so you can easily style your contents.
 
-Note that `Typist` treats the element whose children is undefined or null as a single character, that is, the element will be animated.
+Note that `Typist` treats the element whose children is `null` or `undefined` as a single token. For example:
+
+```jsx
+const Foo = () => {
+  return <div>Foo</div>;
+};
+
+// The text "Foo" will be displayed after "123" immediately instead of displayed seperately
+const App = () => {
+  return (
+    <Typist>
+      123
+      <Foo />
+    </Typist>
+  );
+};
+```
 
 #### `typingDelay`
 
-**Default**: `70`
+**Default**: `75`
 
-The average delay between each character.
+The delay before typing a token.
 
-#### `typingNoise`
+#### `backspaceDelay`
 
-**Default**: `20`
+**Default**: `75`
 
-For the delay between each character, the noise from `-typingNoise` to `<typingNoise` will be added to `typingDelay`.
+The delay before backspacing a token.
 
-#### `cursor`
+#### `loop`
 
-Will be inserted after the last typed character.
+**Default**: `false`
+
+`Typist` will automatically restart the typing animation if this value is `true`.
+
+#### `pause`
+
+**Default**: `false`
+
+Set to `true` if you want to pause the typing animation.
 
 #### `onTypingDone`
 
-**Default**: `() => false`
+**Default**: `() => {return}`
 
-This function will be called when the typing animation finishes. If it returns true, then `Typist` will restart the typing animation.
+This function will be called when the typing animation finishes.
 
 #### `splitter`
 
 **Default**: `(str: string) => str.split('')`
 
-Use this function to split the string. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
+`Typist` will use this to get tokens from strings. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
+
+#### `cursor`
+
+Will be inserted after the last typed token.
+
+#### `restartKey`
+
+The typing animation will restart when this value changes. Make sure to change this property if the content `Typist` is dynamic.
+
+### `disabled`
+
+**Default**: `false`
+
+Set to `true` if you don't want the typing animation anymore.
 
 ### `Typist.Backspace`
 
@@ -107,9 +139,9 @@ type Props = {
 
 #### `count`
 
-The number of characters that will be deleted.
+The number of tokens that will be backspaced.
 
-### `Typist.Pause`
+### `Typist.Delay`
 
 ```ts
 type Props = {
@@ -119,7 +151,7 @@ type Props = {
 
 #### `ms`
 
-The duration of the pause in milliseconds.
+The duration of the delay in milliseconds.
 
 ### `Typist.Paste`
 
@@ -131,4 +163,4 @@ type Props = {
 
 #### `children`
 
-Children inside this component will be pasted without typewriter effect
+Children inside this component will be pasted without typewriter effect.
