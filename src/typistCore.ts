@@ -1,12 +1,12 @@
 import React from 'react';
-import type { Action as DispatchAction } from 'use-case-reducers';
 
-import type { CoreProps } from './types/TypistProps';
-import { reset, append, updateLastLine, deleteLastChar } from './utils/typedLinesSlice';
+import type { Splitter, TypedLines, TypistProps } from './types/TypistProps';
 import { defaultSplitter, emptyFunc } from './utils/defaultFuncs';
 import getActions from './utils/getActions';
 
-type Props = Required<CoreProps>;
+type T = Omit<TypistProps, 'cursor' | 'restartKey' | 'disabled'>;
+type CoreProps = Required<T>;
+type SetTypedLines = React.Dispatch<React.SetStateAction<TypedLines>>;
 
 export default class TypistCore {
   #children: React.ReactNode;
@@ -15,18 +15,18 @@ export default class TypistCore {
   #loop!: boolean;
   #pause!: boolean;
   #onTypingDone!: () => void;
-  #splitter!: (str: string) => string[];
-  /** This value is used to set up `Typist`'s state */
-  #dispatch: React.Dispatch<DispatchAction>;
+  #splitter!: Splitter;
 
   /**
    * `null` means that there is no typing animation being excuted
    */
   #clearTimer: (() => void) | null = null;
+  #typedLines: TypedLines = [];
+  #setTypedLines: SetTypedLines;
 
-  constructor(props: Props, dispatch: React.Dispatch<DispatchAction>) {
+  constructor(props: CoreProps, setTypedLines: SetTypedLines) {
     this.#setUpProps(props);
-    this.#dispatch = dispatch;
+    this.#setTypedLines = setTypedLines;
   }
 
   /**
@@ -35,7 +35,7 @@ export default class TypistCore {
   get discard() {
     return () => {
       this.#clearTimer && this.#clearTimer();
-      this.#dispatch = () => {
+      this.#setTypedLines = () => {
         throw 'The component has been unmounted.';
       };
     };
@@ -50,14 +50,14 @@ export default class TypistCore {
     try {
       do {
         const actions = getActions(this.#children);
-        this.#dispatch(reset([]));
+        this.#updateTypedLines([]);
         for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
           const { type, payload } = actions[actionIdx];
           if (type === 'TYPE_STRING') await this.#typeString(payload);
           else if (type === 'TYPE_ELEMENT') await this.#typeElement(payload);
           else if (type === 'BACKSPACE') await this.#backspace(payload);
           else if (type === 'PAUSE') await this.#timeoutPromise(payload);
-          else if (type === 'PASTE') this.#dispatch(append(payload));
+          else if (type === 'PASTE') this.#updateTypedLines([...this.#typedLines, payload]);
         }
         this.#onTypingDone();
         this.#clearTimer = null;
@@ -75,7 +75,7 @@ export default class TypistCore {
     pause,
     onTypingDone = emptyFunc,
     splitter = defaultSplitter,
-  }: Props) => {
+  }: CoreProps) => {
     this.#children = children;
     this.#typingDelay = typingDelay;
     this.#backspaceDelay = backspaceDelay;
@@ -101,25 +101,54 @@ export default class TypistCore {
     });
   };
 
+  /**
+   * Make sure that `this.#typedLines` can only be set here, and `this.#setTypedLines` can only be called here too.
+   * @param newTypedLines
+   */
+  #updateTypedLines = (newTypedLines: TypedLines) => {
+    this.#typedLines = newTypedLines;
+    this.#setTypedLines(this.#typedLines);
+  };
+
   #typeString = async (line: string) => {
     const splittedLine = this.#splitter(line);
-    this.#dispatch(append(''));
+    this.#updateTypedLines([...this.#typedLines, '']);
+    const lastIdx = this.#typedLines.length - 1;
     for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
       await this.#timeoutPromise(this.#typingDelay);
       const newLine = splittedLine.slice(0, charIdx).join('');
-      this.#dispatch(updateLastLine(newLine));
+      const newTypedLines = [...this.#typedLines];
+      newTypedLines[lastIdx] = newLine;
+      this.#updateTypedLines(newTypedLines);
     }
   };
 
   #typeElement = async (el: React.ReactElement) => {
     await this.#timeoutPromise(this.#typingDelay);
-    this.#dispatch(append(el));
+    this.#updateTypedLines([...this.#typedLines, el]);
   };
 
   #backspace = async (amount: number) => {
     while (amount > 0) {
       await this.#timeoutPromise(this.#backspaceDelay);
-      this.#dispatch(deleteLastChar(this.#splitter, () => (amount = 0)));
+
+      const typedLines = [...this.#typedLines];
+      let lineIndex = typedLines.length - 1;
+      let line = typedLines[lineIndex];
+      while (line === null && lineIndex > 0) {
+        lineIndex -= 1;
+        line = typedLines[lineIndex];
+      }
+
+      if (line === null) amount = 0;
+      if (typeof line === 'object') typedLines[lineIndex] = null;
+      if (typeof line === 'string') {
+        const splittedLine = this.#splitter(line);
+        const newLine = splittedLine.slice(0, -1).join('');
+        typedLines[lineIndex] = newLine === '' ? null : newLine;
+      }
+
+      this.#updateTypedLines(typedLines);
       amount -= 1;
     }
   };

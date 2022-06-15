@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useReducer, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
-import type { TypistProps } from '../types/TypistProps';
-import { initialState, reducer, reset } from '../utils/typedLinesSlice';
+import type { TypedLines, TypistProps } from '../types/TypistProps';
 import getTypedChildren from '../utils/getTypedChildren';
 import getFinalTypedLines from '../utils/getFinalTypedLines';
 import insertCursor from '../utils/insertCursor';
@@ -22,9 +21,9 @@ const Typist = ({
   splitter = defaultSplitter,
   cursor,
   restartKey,
-  disable = false,
+  disabled = false,
 }: TypistProps) => {
-  const [typedLines, dispatch] = useReducer(reducer, initialState);
+  const [typedLines, setTypedLines] = useState<TypedLines>([]);
   const typistCoreRef = useRef<TypistCore>();
   const coreProps = useMemo(
     () => ({ children, typingDelay, backspaceDelay, loop, pause, onTypingDone, splitter }),
@@ -33,16 +32,16 @@ const Typist = ({
 
   useEffect(() => {
     // If disable is true, show the final result immediately.
-    if (disable) {
+    if (disabled) {
       typistCoreRef.current = undefined;
       const finalTypedLines = getFinalTypedLines(children, splitter);
-      dispatch(reset(finalTypedLines));
+      setTypedLines(finalTypedLines);
       return;
     }
 
     // Whenever `disable` is set to false or `restartKey` is changed,
     // create a new instance of `TypistCore` and restart the typing animation.
-    const typistCore = new TypistCore(coreProps, dispatch);
+    const typistCore = new TypistCore(coreProps, setTypedLines);
     typistCoreRef.current = typistCore;
     typistCore.startTyping();
     return () => {
@@ -52,7 +51,7 @@ const Typist = ({
 
     // Don't add `props` to the dependencies array because
     // it will cause re-creating instance whenever `props` changes.
-  }, [disable, restartKey]);
+  }, [disabled, restartKey]);
 
   // Update the typistCore's props whenever component's props change
   useEffect(() => {

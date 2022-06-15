@@ -1,47 +1,54 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
-import { TestTypist, nestedChildren, Typist } from './utils';
+import Typist from '../components/Typist';
+import { nestedChildren } from './utils';
 
 beforeEach(() => {
   jest.useFakeTimers();
 });
 
-test('should display children correctly', async () => {
-  render(<TestTypist>{nestedChildren}</TestTypist>);
+describe('Display children correctly.', () => {
+  // Since the way Typist generates its children is different when disabled is different,
+  // we need to test it separately.
+  describe('Disabled is true', () => {
+    test('Nested children', () => {
+      render(<Typist disabled>{nestedChildren}</Typist>);
+      screen.getByText('first');
+      expect(screen.queryByText('second')).toBeNull();
+      screen.getByText('third');
+    });
 
-  await screen.findByText('first');
-  await screen.findByText('second');
-});
-
-test('should display children correctly after backspace', async () => {
-  render(
-    <TestTypist>
-      {nestedChildren}
-      <Typist.Backspace count={6} />
-      third
-    </TestTypist>
-  );
-
-  await screen.findByText('first');
-  await screen.findByText('third');
-});
-
-test('should delete all text and element if the count of Backspace is Infinity', async () => {
-  const { container } = render(
-    <TestTypist>
-      {nestedChildren}
-      <Typist.Backspace count={Infinity} />
-    </TestTypist>
-  );
-
-  await waitFor(() => {
-    expect(container.firstChild).toBeNull();
+    test('Contents should be null is the last child is Typist.Backspace and its count is Infinity', () => {
+      const { container } = render(
+        <Typist disabled>
+          {nestedChildren}
+          <Typist.Backspace count={Infinity} />
+        </Typist>
+      );
+      expect(container.firstChild).toBeNull();
+    });
   });
-});
 
-test('should show the final result immediately if disable is true', () => {
-  render(<TestTypist disable>{nestedChildren}</TestTypist>);
-  screen.getByText('first');
-  screen.getByText('second');
+  describe('Disabled is false', () => {
+    test('nested children', async () => {
+      render(<Typist>{nestedChildren}</Typist>);
+      await screen.findByText('first');
+      await screen.findByText('second');
+      await screen.findByText('third');
+      expect(screen.queryByText('second')).toBeNull();
+    });
+
+    test('Contents should be null is the last child is Typist.Backspace and its count is Infinity', async () => {
+      const { container } = render(
+        <Typist>
+          {nestedChildren}
+          <Typist.Backspace count={Infinity} />
+        </Typist>
+      );
+      await waitFor(() => {
+        expect(container.firstChild).toBeNull();
+      });
+    });
+  });
 });

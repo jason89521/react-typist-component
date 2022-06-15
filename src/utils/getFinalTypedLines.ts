@@ -1,10 +1,10 @@
 import React from 'react';
 
-import type { TypedLines } from '../types/TypistProps';
+import type { Splitter, TypedLines } from '../types/TypistProps';
 import getActions from './getActions';
 import getBackspacedLines from './getBackspacedLines';
 
-const getFinalTypedLines = (children: React.ReactNode, splitter: (s: string) => string[]) => {
+const getFinalTypedLines = (children: React.ReactNode, splitter: Splitter) => {
   let finalTypedLines: TypedLines = [];
   getActions(children).forEach(action => {
     const { type, payload } = action;

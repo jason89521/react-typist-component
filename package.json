@@ -60,8 +60,5 @@
   },
   "peerDependencies": {
     "react": ">=18.0.0"
-  },
-  "dependencies": {
-    "use-case-reducers": "^0.0.9"
   }
 }

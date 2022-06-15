@@ -14,7 +14,7 @@ function App() {
       <Typist
         typingDelay={100}
         restartKey={key}
-        disable={count % 2 === 0}
+        disabled={count % 2 === 0}
         cursor={<span className="cursor">|</span>}
       >
         This is a typo

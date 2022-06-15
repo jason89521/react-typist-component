@@ -1,10 +1,6 @@
-import type { TypedLines } from '../types/TypistProps';
+import type { Splitter, TypedLines } from '../types/TypistProps';
 
-const getBackspacedLines = (
-  lines: TypedLines,
-  splitter: (s: string) => string[],
-  onLinesCleared: () => void
-) => {
+const getBackspacedLines = (lines: TypedLines, splitter: Splitter, onLinesCleared: () => void) => {
   const typedLines = [...lines];
   let lineIdx = typedLines.length - 1;
   let lastLine = typedLines[lineIdx];
