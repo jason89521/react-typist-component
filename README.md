@@ -49,8 +49,10 @@ type TypistProps = {
   backspaceDelay?: number;
   loop?: boolean;
   pause?: boolean;
+  startDelay?: number;
+  finishDelay?: number;
   onTypingDone?: () => void;
-  splitter?: Splitter;
+  splitter?: (s: string) => string[];
   cursor?: string | React.ReactElement;
   restartKey?: any;
   disabled?: boolean;
@@ -83,13 +85,13 @@ const App = () => {
 
 **Default**: `75`
 
-The delay before typing a token.
+The delay after typing a token.
 
 #### `backspaceDelay`
 
 **Default**: `75`
 
-The delay before backspacing a token.
+The delay after backspacing a token.
 
 #### `loop`
 
@@ -102,6 +104,18 @@ The delay before backspacing a token.
 **Default**: `false`
 
 Set to `true` if you want to pause the typing animation.
+
+#### `startDelay`
+
+**Default**: `0`
+
+If this value is larger than `0`, then `Typist` will wait for this delay before starting the typing animation.
+
+#### `finishDelay`
+
+**Default**: `0`
+
+If this value is larger than `0`, then `Typist` will wait for this delay after finishing the typing animation.
 
 #### `onTypingDone`
 
@@ -121,7 +135,7 @@ Will be inserted after the last typed token.
 
 #### `restartKey`
 
-The typing animation will restart when this value changes. Make sure to change this property if the content `Typist` is dynamic.
+The typing animation will restart when this value changes. Make sure to change this property if the content of `Typist` is dynamic.
 
 ### `disabled`
 

@@ -63,9 +63,9 @@ test('Display different children when restartKey is changed', async () => {
         onTypingDone={() => {
           setIndex(index === 0 ? 1 : 0);
         }}
+        finishDelay={50}
       >
         {arr[index]}
-        <Typist.Delay ms={50} />
       </Typist>
     );
   };

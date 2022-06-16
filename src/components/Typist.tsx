@@ -18,6 +18,7 @@ const Typist = ({
   loop = false,
   pause = false,
   startDelay = 0,
+  finishDelay = 0,
   onTypingDone = emptyFunc,
   splitter = defaultSplitter,
   cursor,
@@ -34,10 +35,21 @@ const Typist = ({
       loop,
       pause,
       startDelay,
+      finishDelay,
       onTypingDone,
       splitter,
     }),
-    [children, typingDelay, backspaceDelay, loop, pause, startDelay, onTypingDone, splitter]
+    [
+      children,
+      typingDelay,
+      backspaceDelay,
+      loop,
+      pause,
+      startDelay,
+      finishDelay,
+      onTypingDone,
+      splitter,
+    ]
   );
 
   useEffect(() => {
