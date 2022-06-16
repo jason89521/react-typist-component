@@ -12,6 +12,7 @@ function App() {
       <button onClick={() => setCount(count + 1)}>{count}</button>
       <br />
       <Typist
+        startDelay={3000}
         typingDelay={100}
         restartKey={key}
         disabled={count % 2 === 0}
