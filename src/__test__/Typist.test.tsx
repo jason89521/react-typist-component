@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
 import Typist from '../components/Typist';
@@ -19,7 +19,7 @@ describe('Display children correctly.', () => {
       screen.getByText('third');
     });
 
-    test('Contents should be null is the last child is Typist.Backspace and its count is Infinity', () => {
+    test('clear all children if the count of the last backspace is Infinity', () => {
       const { container } = render(
         <Typist disabled>
           {nestedChildren}
@@ -39,7 +39,7 @@ describe('Display children correctly.', () => {
       expect(screen.queryByText('second')).toBeNull();
     });
 
-    test('Contents should be null is the last child is Typist.Backspace and its count is Infinity', async () => {
+    test('clear all childthe count of the last backspace is Infinity', async () => {
       const { container } = render(
         <Typist>
           {nestedChildren}
@@ -50,5 +50,33 @@ describe('Display children correctly.', () => {
         expect(container.firstChild).toBeNull();
       });
     });
+  });
+});
+
+test('Display different children when restartKey is changed', async () => {
+  const arr = ['text 1', 'text 2'];
+  const App = () => {
+    const [index, setIndex] = useState(0);
+    return (
+      <Typist
+        restartKey={index}
+        onTypingDone={() => {
+          setIndex(index === 0 ? 1 : 0);
+        }}
+        finishDelay={50}
+      >
+        {arr[index]}
+      </Typist>
+    );
+  };
+
+  render(<App />);
+  await waitFor(() => {
+    screen.getByText('text 1');
+    expect(screen.queryByText('text 2')).toBeNull();
+  });
+  await waitFor(() => {
+    screen.getByText('text 2');
+    expect(screen.queryByText('text 1')).toBeNull();
   });
 });

@@ -17,6 +17,8 @@ const Typist = ({
   backspaceDelay = 75,
   loop = false,
   pause = false,
+  startDelay = 0,
+  finishDelay = 0,
   onTypingDone = emptyFunc,
   splitter = defaultSplitter,
   cursor,
@@ -26,8 +28,28 @@ const Typist = ({
   const [typedLines, setTypedLines] = useState<TypedLines>([]);
   const typistCoreRef = useRef<TypistCore>();
   const coreProps = useMemo(
-    () => ({ children, typingDelay, backspaceDelay, loop, pause, onTypingDone, splitter }),
-    [backspaceDelay, children, loop, onTypingDone, pause, splitter, typingDelay]
+    () => ({
+      children,
+      typingDelay,
+      backspaceDelay,
+      loop,
+      pause,
+      startDelay,
+      finishDelay,
+      onTypingDone,
+      splitter,
+    }),
+    [
+      children,
+      typingDelay,
+      backspaceDelay,
+      loop,
+      pause,
+      startDelay,
+      finishDelay,
+      onTypingDone,
+      splitter,
+    ]
   );
 
   useEffect(() => {

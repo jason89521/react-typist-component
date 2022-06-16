@@ -14,6 +14,8 @@ export default class TypistCore {
   #backspaceDelay!: number;
   #loop!: boolean;
   #pause!: boolean;
+  #startDelay!: number;
+  #finishDelay!: number;
   #onTypingDone!: () => void;
   #splitter!: Splitter;
 
@@ -49,9 +51,13 @@ export default class TypistCore {
     this.#clearTimer && this.#clearTimer();
     try {
       do {
+        // Clear previours typed lines first to prevent weird behaviour.
         const actions = getActions(this.#children);
         this.#updateTypedLines([]);
+        this.#startDelay > 0 && (await this.#timeoutPromise(this.#startDelay));
         for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
+          // Wait until this.#pause set to false.
+          this.#pause && (await this.#pausePromise());
           const { type, payload } = actions[actionIdx];
           if (type === 'TYPE_STRING') await this.#typeString(payload);
           else if (type === 'TYPE_ELEMENT') await this.#typeElement(payload);
@@ -59,6 +65,7 @@ export default class TypistCore {
           else if (type === 'PAUSE') await this.#timeoutPromise(payload);
           else if (type === 'PASTE') this.#updateTypedLines([...this.#typedLines, payload]);
         }
+        this.#finishDelay > 0 && (await this.#timeoutPromise(this.#finishDelay));
         this.#onTypingDone();
         this.#clearTimer = null;
       } while (this.#loop);
@@ -73,6 +80,8 @@ export default class TypistCore {
     backspaceDelay,
     loop,
     pause,
+    startDelay,
+    finishDelay,
     onTypingDone = emptyFunc,
     splitter = defaultSplitter,
   }: CoreProps) => {
@@ -81,20 +90,26 @@ export default class TypistCore {
     this.#backspaceDelay = backspaceDelay;
     this.#loop = loop;
     this.#pause = pause;
+    this.#startDelay = startDelay;
+    this.#finishDelay = finishDelay;
     this.#onTypingDone = onTypingDone;
     this.#splitter = splitter;
   };
 
   #timeoutPromise = (delay: number) => {
     return new Promise<void>((resolve, reject) => {
-      let intervalId: NodeJS.Timeout;
-      const timeoutId = setTimeout(() => {
-        if (this.#pause) intervalId = setInterval(() => !this.#pause && resolve());
-        else resolve();
-      }, delay);
-
+      const timeoutId = setTimeout(resolve, delay);
       this.#clearTimer = () => {
         clearTimeout(timeoutId);
+        reject();
+      };
+    });
+  };
+
+  #pausePromise = () => {
+    return new Promise<void>((resolve, reject) => {
+      const intervalId = setInterval(() => !this.#pause && resolve());
+      this.#clearTimer = () => {
         clearInterval(intervalId);
         reject();
       };
@@ -115,23 +130,21 @@ export default class TypistCore {
     this.#updateTypedLines([...this.#typedLines, '']);
     const lastIdx = this.#typedLines.length - 1;
     for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
-      await this.#timeoutPromise(this.#typingDelay);
       const newLine = splittedLine.slice(0, charIdx).join('');
       const newTypedLines = [...this.#typedLines];
       newTypedLines[lastIdx] = newLine;
       this.#updateTypedLines(newTypedLines);
+      await this.#timeoutPromise(this.#typingDelay);
     }
   };
 
   #typeElement = async (el: React.ReactElement) => {
-    await this.#timeoutPromise(this.#typingDelay);
     this.#updateTypedLines([...this.#typedLines, el]);
+    await this.#timeoutPromise(this.#typingDelay);
   };
 
   #backspace = async (amount: number) => {
     while (amount > 0) {
-      await this.#timeoutPromise(this.#backspaceDelay);
-
       const typedLines = [...this.#typedLines];
       let lineIndex = typedLines.length - 1;
       let line = typedLines[lineIndex];
@@ -150,6 +163,8 @@ export default class TypistCore {
 
       this.#updateTypedLines(typedLines);
       amount -= 1;
+
+      await this.#timeoutPromise(this.#backspaceDelay);
     }
   };
 }

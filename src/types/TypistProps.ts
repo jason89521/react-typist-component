@@ -8,6 +8,8 @@ export type TypistProps = {
   backspaceDelay?: number;
   loop?: boolean;
   pause?: boolean;
+  startDelay?: number;
+  finishDelay?: number;
   onTypingDone?: () => void;
   splitter?: Splitter;
   cursor?: string | React.ReactElement;
