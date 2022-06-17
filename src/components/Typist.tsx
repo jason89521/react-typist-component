@@ -78,7 +78,7 @@ const Typist = ({
   // Update the typistCore's props whenever component's props change
   useEffect(() => {
     const typistCore = typistCoreRef.current;
-    typistCore?.onPropsChanged(coreProps);
+    typistCore?.setUpProps(coreProps);
   }, [coreProps]);
 
   const typedChildren = getTypedChildren(children, typedLines);

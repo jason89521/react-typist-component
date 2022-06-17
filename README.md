@@ -137,7 +137,7 @@ Will be inserted after the last typed token.
 
 The typing animation will restart when this value changes. Make sure to change this property if the content of `Typist` is dynamic.
 
-### `disabled`
+#### `disabled`
 
 **Default**: `false`
 
