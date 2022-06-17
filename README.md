@@ -54,7 +54,6 @@ type TypistProps = {
   onTypingDone?: () => void;
   splitter?: (s: string) => string[];
   cursor?: string | React.ReactElement;
-  restartKey?: any;
   disabled?: boolean;
 };
 ```
@@ -132,10 +131,6 @@ This function will be called when the typing animation finishes.
 #### `cursor`
 
 Will be inserted after the last typed token.
-
-#### `restartKey`
-
-The typing animation will restart when this value changes. Make sure to change this property if the content of `Typist` is dynamic.
 
 #### `disabled`
 

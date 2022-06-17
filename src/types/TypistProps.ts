@@ -13,6 +13,5 @@ export type TypistProps = {
   onTypingDone?: () => void;
   splitter?: Splitter;
   cursor?: string | React.ReactElement;
-  restartKey?: any;
   disabled?: boolean;
 };

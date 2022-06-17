@@ -3,7 +3,7 @@ import React from 'react';
 import type { Splitter, TypedLines, TypistProps } from './types/TypistProps';
 import getActions from './utils/getActions';
 
-type T = Omit<TypistProps, 'cursor' | 'restartKey' | 'disabled'>;
+type T = Omit<TypistProps, 'cursor' | 'disabled'>;
 type CoreProps = Required<T>;
 type SetTypedLines = React.Dispatch<React.SetStateAction<TypedLines>>;
 
@@ -18,9 +18,7 @@ export default class TypistCore {
   #onTypingDone!: () => void;
   #splitter!: Splitter;
 
-  /**
-   * `null` means that there is no typing animation being excuted
-   */
+  /** `null` means that there is no typing animation being excuted. */
   #clearTimer: (() => void) | null = null;
   #typedLines: TypedLines = [];
   #setTypedLines: SetTypedLines;
@@ -30,9 +28,7 @@ export default class TypistCore {
     this.#setTypedLines = setTypedLines;
   }
 
-  /**
-   * Clear the scheduled timer and make updating component's state invalid in this instance.
-   */
+  /** Clear the scheduled timer and make updating component's state invalid in this instance. */
   discard = () => {
     this.#clearTimer && this.#clearTimer();
     this.#setTypedLines = () => {
@@ -66,21 +62,21 @@ export default class TypistCore {
     this.#clearTimer && this.#clearTimer();
     try {
       do {
-        // Clear previours typed lines first to prevent weird behaviour.
-        const actions = getActions(this.#children);
         this.#updateTypedLines([]);
-        this.#startDelay > 0 && (await this.#timeoutPromise(this.#startDelay));
-        for (let actionIdx = 0; actionIdx < actions.length; actionIdx++) {
-          const { type, payload } = actions[actionIdx];
+        await this.#timeoutPromise(this.#startDelay);
+        const actions = getActions(this.#children);
+        for (const action of actions) {
+          const { type, payload } = action;
           if (type === 'TYPE_STRING') await this.#typeString(payload);
           else if (type === 'TYPE_ELEMENT') await this.#typeElement(payload);
           else if (type === 'BACKSPACE') await this.#backspace(payload);
           else if (type === 'PAUSE') await this.#timeoutPromise(payload);
           else if (type === 'PASTE') this.#updateTypedLines([...this.#typedLines, payload]);
         }
-        this.#finishDelay > 0 && (await this.#timeoutPromise(this.#finishDelay));
+        await this.#timeoutPromise(this.#finishDelay);
         this.#onTypingDone();
         this.#clearTimer = null;
+        await this.#loopPromise();
       } while (this.#loop);
     } catch (error) {
       this.#clearTimer = null;
@@ -101,6 +97,21 @@ export default class TypistCore {
     return new Promise<void>((resolve, reject) => {
       const intervalId = setInterval(() => {
         if (this.#pause) return;
+        clearInterval(intervalId);
+        resolve();
+      });
+      this.#clearTimer = () => {
+        clearInterval(intervalId);
+        reject();
+      };
+    });
+  };
+
+  /** Resolve when `this.#loop` changes to `true`. */
+  #loopPromise = () => {
+    return new Promise<void>((resolve, reject) => {
+      const intervalId = setInterval(() => {
+        if (!this.#loop) return;
         clearInterval(intervalId);
         resolve();
       });

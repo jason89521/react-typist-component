@@ -22,7 +22,6 @@ const Typist = ({
   onTypingDone = emptyFunc,
   splitter = defaultSplitter,
   cursor,
-  restartKey,
   disabled = false,
 }: TypistProps) => {
   const [typedLines, setTypedLines] = useState<TypedLines>([]);
@@ -61,7 +60,7 @@ const Typist = ({
       return;
     }
 
-    // Whenever `disable` is set to false or `restartKey` is changed,
+    // Whenever `disable` is set to false,
     // create a new instance of `TypistCore` and restart the typing animation.
     const typistCore = new TypistCore(coreProps, setTypedLines);
     typistCoreRef.current = typistCore;
@@ -71,9 +70,9 @@ const Typist = ({
       typistCore.discard();
     };
 
-    // Don't add `props` to the dependencies array because
+    // Don't add other properties to the dependencies array because
     // it will cause re-creating instance whenever `props` changes.
-  }, [disabled, restartKey]);
+  }, [disabled]);
 
   // Update the typistCore's props whenever component's props change
   useEffect(() => {

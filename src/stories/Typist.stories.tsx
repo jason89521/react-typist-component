@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import GraphemeSplitter from 'grapheme-splitter';
 
 import Typist, { TypistProps } from '../index';
 
@@ -26,9 +27,36 @@ StyledChildren.args = {
   ),
 };
 
-export const Loop = Template.bind({});
-Loop.args = {
+export const WithEmoji = Template.bind({});
+WithEmoji.args = {
   loop: true,
-  startDelay: 1500,
-  finishDelay: 1500,
+  splitter: (str: string) => {
+    return new GraphemeSplitter().splitGraphemes(str);
+  },
+  children: (
+    <>
+      😎🗑🥵⚠😀👍✌👨‍👨‍👧‍👦📏💡🚀🎂😓🎈💕😘
+      <Typist.Backspace count={16} />
+    </>
+  ),
+};
+
+export const WithCursor = Template.bind({});
+WithCursor.args = {
+  children: (
+    <div>
+      <h1>cursor will be inserted after the last typed token</h1>
+    </div>
+  ),
+  cursor: <span>|</span>,
+};
+
+export const DynamicChildren = () => {
+  const [arr] = useState(['text 1', 'text 2', 'text 3']);
+  const [index, setIndex] = useState(0);
+  return (
+    <Typist typingDelay={150} loop onTypingDone={() => setIndex(index === 2 ? 0 : index + 1)}>
+      {arr[index]}
+    </Typist>
+  );
 };

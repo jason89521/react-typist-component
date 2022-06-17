@@ -13,7 +13,6 @@ function App() {
       <br />
       <Typist
         typingDelay={100}
-        restartKey={key}
         disabled={count % 2 === 0}
         cursor={<span className="cursor">|</span>}
       >

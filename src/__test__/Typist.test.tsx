@@ -53,17 +53,16 @@ describe('Display children correctly.', () => {
   });
 });
 
-test('Display different children when restartKey is changed', async () => {
+test('Dynamic children', async () => {
   const arr = ['text 1', 'text 2'];
   const App = () => {
     const [index, setIndex] = useState(0);
     return (
       <Typist
-        restartKey={index}
+        loop
         onTypingDone={() => {
           setIndex(index === 0 ? 1 : 0);
         }}
-        finishDelay={50}
       >
         {arr[index]}
       </Typist>
