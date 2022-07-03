@@ -1,17 +1,16 @@
 import React from 'react';
 
-import type { Splitter, TypedLines, TypistProps } from './types/TypistProps';
-import { emptyFunc } from './utils/defaultFuncs';
+import type { Splitter, TypedLines, TypistProps, Delay } from './types/TypistProps';
+import { defaultSplitter, emptyFunc } from './utils/defaultFuncs';
 import getActions from './utils/getActions';
 
-type T = Omit<TypistProps, 'cursor' | 'disabled' | 'restartKey'>;
-type CoreProps = Required<T>;
+type CoreProps = Omit<TypistProps, 'cursor' | 'disabled' | 'restartKey'>;
 type SetTypedLines = React.Dispatch<React.SetStateAction<TypedLines>>;
 
 export default class TypistCore {
   #children: React.ReactNode;
-  #typingDelay!: number | (() => number);
-  #backspaceDelay!: number | (() => number);
+  #typingDelay!: Delay;
+  #backspaceDelay!: Delay;
   #loop!: boolean;
   #pause!: boolean;
   #startDelay!: number;
@@ -24,7 +23,7 @@ export default class TypistCore {
   #setTypedLines: SetTypedLines;
 
   constructor(props: CoreProps, setTypedLines: SetTypedLines) {
-    this.setUpProps(props);
+    this.updateProps(props);
     this.#setTypedLines = setTypedLines;
   }
 
@@ -36,16 +35,16 @@ export default class TypistCore {
     };
   };
 
-  setUpProps = ({
+  updateProps = ({
     children,
-    typingDelay,
-    backspaceDelay,
-    loop,
-    pause,
-    startDelay,
-    finishDelay,
-    onTypingDone,
-    splitter,
+    typingDelay = 75,
+    backspaceDelay = 75,
+    loop = false,
+    pause = false,
+    startDelay = 0,
+    finishDelay = 0,
+    onTypingDone = emptyFunc,
+    splitter = defaultSplitter,
   }: CoreProps) => {
     this.#children = children;
     this.#typingDelay = typingDelay;
@@ -82,9 +81,10 @@ export default class TypistCore {
     }
   };
 
-  #timeoutPromise = (delay: number) => {
+  #timeoutPromise = (delay: Delay) => {
     return new Promise<void>((resolve, reject) => {
-      const timeoutId = setTimeout(resolve, delay);
+      const ms = typeof delay === 'number' ? delay : delay();
+      const timeoutId = setTimeout(resolve, ms);
       this.#clearTimer = () => {
         clearTimeout(timeoutId);
         reject();
@@ -123,14 +123,13 @@ export default class TypistCore {
   };
 
   /**
-   * Each async token should be executed after the pause promise resolve.
+   * Each token should be executed after the pause promise resolve.
    * @param callback
-   * @param timeoutDelay
+   * @param delay
    */
-  #executeAsyncToken = async (callback: () => void, timeoutDelay: number | (() => number)) => {
+  #executeToken = async (callback: () => void, delay: Delay) => {
     await this.#pausePromise();
     callback();
-    const delay = typeof timeoutDelay === 'number' ? timeoutDelay : timeoutDelay();
     await this.#timeoutPromise(delay);
   };
 
@@ -147,7 +146,7 @@ export default class TypistCore {
     const splittedLine = this.#splitter(line);
     const lastIdx = this.#typedLines.length;
     for (let charIdx = 1; charIdx <= splittedLine.length; charIdx++) {
-      await this.#executeAsyncToken(() => {
+      await this.#executeToken(() => {
         const newLine = splittedLine.slice(0, charIdx).join('');
         const newTypedLines = [...this.#typedLines];
         newTypedLines[lastIdx] = newLine;
@@ -157,14 +156,14 @@ export default class TypistCore {
   };
 
   #typeElement = async (el: React.ReactElement) => {
-    await this.#executeAsyncToken(() => {
+    await this.#executeToken(() => {
       this.#updateTypedLines([...this.#typedLines, el]);
     }, this.#typingDelay);
   };
 
   #backspace = async (amount: number) => {
     while (amount--) {
-      await this.#executeAsyncToken(() => {
+      await this.#executeToken(() => {
         const typedLines = [...this.#typedLines];
         let lineIndex = typedLines.length - 1;
         let line = typedLines[lineIndex];

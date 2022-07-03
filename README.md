@@ -121,7 +121,7 @@ Set to `true` if you want to pause the typing animation.
 
 **Default**: `() => {return}`
 
-This function will be called when the typing animation finishes.
+This function will be called when the typing animation finishes. It will be called before `finishDelay`.
 
 #### `splitter`
 

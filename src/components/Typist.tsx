@@ -1,56 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import type { TypedLines, TypistProps } from '../types/TypistProps';
 import getTypedChildren from '../utils/getTypedChildren';
 import getFinalTypedLines from '../utils/getFinalTypedLines';
 import insertCursor from '../utils/insertCursor';
-import { defaultSplitter, emptyFunc } from '../utils/defaultFuncs';
+import { defaultSplitter } from '../utils/defaultFuncs';
 import Backspace from './Backspace';
 import Delay from './Delay';
 import Paste from './Paste';
 
 import TypistCore from '../TypistCore';
 
-const Typist = ({
-  children,
-  typingDelay = 75,
-  backspaceDelay = 75,
-  loop = false,
-  pause = false,
-  startDelay = 0,
-  finishDelay = 0,
-  onTypingDone = emptyFunc,
-  splitter = defaultSplitter,
-  cursor,
-  disabled = false,
-  restartKey,
-}: TypistProps) => {
+const Typist = ({ cursor, disabled = false, restartKey, ...coreProps }: TypistProps) => {
+  const { children, splitter = defaultSplitter } = coreProps;
   const [typedLines, setTypedLines] = useState<TypedLines>([]);
   const typistCoreRef = useRef<TypistCore>();
-  const coreProps = useMemo(
-    () => ({
-      children,
-      typingDelay,
-      backspaceDelay,
-      loop,
-      pause,
-      startDelay,
-      finishDelay,
-      onTypingDone,
-      splitter,
-    }),
-    [
-      children,
-      typingDelay,
-      backspaceDelay,
-      loop,
-      pause,
-      startDelay,
-      finishDelay,
-      onTypingDone,
-      splitter,
-    ]
-  );
 
   useEffect(() => {
     // If disable is true, show the final result immediately.
@@ -77,7 +41,7 @@ const Typist = ({
 
   // Update the typistCore's props whenever component's props change
   useEffect(() => {
-    typistCoreRef.current?.setUpProps(coreProps);
+    typistCoreRef.current?.updateProps(coreProps);
   }, [coreProps]);
 
   const typedChildren = getTypedChildren(children, typedLines);

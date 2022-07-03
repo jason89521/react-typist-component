@@ -1,5 +1,5 @@
-import type { TypistProps, Splitter } from './types/TypistProps';
+import type { TypistProps, Splitter, Delay } from './types/TypistProps';
 import Typist from './components/Typist';
 
 export default Typist;
-export type { TypistProps, Splitter };
+export type { TypistProps, Splitter, Delay };
