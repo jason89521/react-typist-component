@@ -4,8 +4,8 @@ export type Splitter = (str: string) => string[];
 
 export type TypistProps = {
   children: React.ReactNode;
-  typingDelay?: number;
-  backspaceDelay?: number;
+  typingDelay?: number | (() => number);
+  backspaceDelay?: number | (() => number);
   loop?: boolean;
   pause?: boolean;
   startDelay?: number;

@@ -45,8 +45,8 @@ const MyComponent = () => {
 ```ts
 type TypistProps = {
   children: React.ReactNode;
-  typingDelay?: number;
-  backspaceDelay?: number;
+  typingDelay?: number | (() => number);
+  backspaceDelay?: number | (() => number);
   loop?: boolean;
   pause?: boolean;
   startDelay?: number;
@@ -85,13 +85,13 @@ const App = () => {
 
 **Default**: `75`
 
-The delay after typing a token.
+The delay after typing a token. If you pass in a function, `Typist` will call the function after typing a token and use the return value as the delay.
 
 #### `backspaceDelay`
 
 **Default**: `75`
 
-The delay after backspacing a token.
+The delay after backspacing a token. If you pass in a function, `Typist` will call the function after backspacing a token and use the return value as the delay.
 
 #### `loop`
 
@@ -109,13 +109,13 @@ Set to `true` if you want to pause the typing animation.
 
 **Default**: `0`
 
-If this value is larger than `0`, then `Typist` will wait for this delay before starting the typing animation.
+`Typist` will wait for this delay before starting the typing animation.
 
 #### `finishDelay`
 
 **Default**: `0`
 
-If this value is larger than `0`, then `Typist` will wait for this delay after finishing the typing animation.
+`Typist` will wait for this delay after finishing the typing animation.
 
 #### `onTypingDone`
 
@@ -137,7 +137,7 @@ Will be inserted after the last typed token.
 
 **Default**: `false`
 
-Set to `true` if you don't want the typing animation anymore.
+If this value is `true`, the result will be displayed immediately without typing animation.
 
 #### `restartKey`
 

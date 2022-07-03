@@ -10,8 +10,8 @@ type SetTypedLines = React.Dispatch<React.SetStateAction<TypedLines>>;
 
 export default class TypistCore {
   #children: React.ReactNode;
-  #typingDelay!: number;
-  #backspaceDelay!: number;
+  #typingDelay!: number | (() => number);
+  #backspaceDelay!: number | (() => number);
   #loop!: boolean;
   #pause!: boolean;
   #startDelay!: number;
@@ -127,10 +127,11 @@ export default class TypistCore {
    * @param callback
    * @param timeoutDelay
    */
-  #executeAsyncToken = async (callback: () => void, timeoutDelay: number) => {
+  #executeAsyncToken = async (callback: () => void, timeoutDelay: number | (() => number)) => {
     await this.#pausePromise();
     callback();
-    await this.#timeoutPromise(timeoutDelay);
+    const delay = typeof timeoutDelay === 'number' ? timeoutDelay : timeoutDelay();
+    await this.#timeoutPromise(delay);
   };
 
   /**
@@ -162,8 +163,7 @@ export default class TypistCore {
   };
 
   #backspace = async (amount: number) => {
-    while (amount > 0) {
-      amount -= 1;
+    while (amount--) {
       await this.#executeAsyncToken(() => {
         const typedLines = [...this.#typedLines];
         let lineIndex = typedLines.length - 1;
