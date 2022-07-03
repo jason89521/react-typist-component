@@ -59,10 +59,10 @@ test('Dynamic children', async () => {
     const [index, setIndex] = useState(0);
     return (
       <Typist
-        loop
         onTypingDone={() => {
           setIndex(index === 0 ? 1 : 0);
         }}
+        restartKey={index}
       >
         {arr[index]}
       </Typist>
