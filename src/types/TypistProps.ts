@@ -14,4 +14,5 @@ export type TypistProps = {
   splitter?: Splitter;
   cursor?: string | React.ReactElement;
   disabled?: boolean;
+  restartKey?: any;
 };

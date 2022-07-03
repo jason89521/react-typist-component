@@ -23,6 +23,7 @@ const Typist = ({
   splitter = defaultSplitter,
   cursor,
   disabled = false,
+  restartKey,
 }: TypistProps) => {
   const [typedLines, setTypedLines] = useState<TypedLines>([]);
   const typistCoreRef = useRef<TypistCore>();
@@ -72,12 +73,11 @@ const Typist = ({
 
     // Don't add other properties to the dependencies array because
     // it will cause re-creating instance whenever `props` changes.
-  }, [disabled]);
+  }, [disabled, restartKey]);
 
   // Update the typistCore's props whenever component's props change
   useEffect(() => {
-    const typistCore = typistCoreRef.current;
-    typistCore?.setUpProps(coreProps);
+    typistCoreRef.current?.setUpProps(coreProps);
   }, [coreProps]);
 
   const typedChildren = getTypedChildren(children, typedLines);

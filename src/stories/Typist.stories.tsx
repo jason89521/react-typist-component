@@ -52,10 +52,14 @@ WithCursor.args = {
 };
 
 export const DynamicChildren = () => {
-  const [arr] = useState(['text 1', 'text 2', 'text 3']);
+  const [arr] = useState(['First', 'Second', 'Third']);
   const [index, setIndex] = useState(0);
   return (
-    <Typist typingDelay={150} loop onTypingDone={() => setIndex(index === 2 ? 0 : index + 1)}>
+    <Typist
+      typingDelay={150}
+      onTypingDone={() => setIndex(index === 2 ? 0 : index + 1)}
+      restartKey={index}
+    >
       {arr[index]}
     </Typist>
   );

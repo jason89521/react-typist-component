@@ -15,6 +15,7 @@ function App() {
         typingDelay={100}
         disabled={count % 2 === 0}
         cursor={<span className="cursor">|</span>}
+        restartKey={key}
       >
         This is a typo
         <br />

@@ -55,6 +55,7 @@ type TypistProps = {
   splitter?: (s: string) => string[];
   cursor?: string | React.ReactElement;
   disabled?: boolean;
+  restartKey?: any;
 };
 ```
 
@@ -137,6 +138,10 @@ Will be inserted after the last typed token.
 **Default**: `false`
 
 Set to `true` if you don't want the typing animation anymore.
+
+#### `restartKey`
+
+`Typist` will restart the typing animation whenerver `restartKey` changes.
 
 ### `Typist.Backspace`
 

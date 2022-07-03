@@ -1,9 +1,10 @@
 import React from 'react';
 
 import type { Splitter, TypedLines, TypistProps } from './types/TypistProps';
+import { emptyFunc } from './utils/defaultFuncs';
 import getActions from './utils/getActions';
 
-type T = Omit<TypistProps, 'cursor' | 'disabled'>;
+type T = Omit<TypistProps, 'cursor' | 'disabled' | 'restartKey'>;
 type CoreProps = Required<T>;
 type SetTypedLines = React.Dispatch<React.SetStateAction<TypedLines>>;
 
@@ -18,8 +19,7 @@ export default class TypistCore {
   #onTypingDone!: () => void;
   #splitter!: Splitter;
 
-  /** `null` means that there is no typing animation being excuted. */
-  #clearTimer: (() => void) | null = null;
+  #clearTimer: () => void = emptyFunc;
   #typedLines: TypedLines = [];
   #setTypedLines: SetTypedLines;
 
@@ -30,7 +30,7 @@ export default class TypistCore {
 
   /** Clear the scheduled timer and make updating component's state invalid in this instance. */
   discard = () => {
-    this.#clearTimer && this.#clearTimer();
+    this.#clearTimer();
     this.#setTypedLines = () => {
       throw 'The component has been unmounted.';
     };
@@ -59,7 +59,7 @@ export default class TypistCore {
   };
 
   startTyping = async () => {
-    this.#clearTimer && this.#clearTimer();
+    this.#clearTimer();
     try {
       do {
         this.#updateTypedLines([]);
@@ -73,13 +73,12 @@ export default class TypistCore {
           else if (type === 'PAUSE') await this.#timeoutPromise(payload);
           else if (type === 'PASTE') this.#updateTypedLines([...this.#typedLines, payload]);
         }
-        await this.#timeoutPromise(this.#finishDelay);
         this.#onTypingDone();
-        this.#clearTimer = null;
+        await this.#timeoutPromise(this.#finishDelay);
         await this.#loopPromise();
       } while (this.#loop);
     } catch (error) {
-      this.#clearTimer = null;
+      // do nothing
     }
   };
 
@@ -93,6 +92,7 @@ export default class TypistCore {
     });
   };
 
+  /** Resolve when `this.#pause` is `false`. */
   #pausePromise = () => {
     return new Promise<void>((resolve, reject) => {
       const intervalId = setInterval(() => {
@@ -107,7 +107,7 @@ export default class TypistCore {
     });
   };
 
-  /** Resolve when `this.#loop` changes to `true`. */
+  /** Resolve when `this.#loop` is `true`. */
   #loopPromise = () => {
     return new Promise<void>((resolve, reject) => {
       const intervalId = setInterval(() => {
