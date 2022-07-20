@@ -15,7 +15,7 @@ export default class TypistCore {
   #pause!: boolean;
   #startDelay!: number;
   #finishDelay!: number;
-  #onTypingDone!: () => void;
+  #onTypingDone?: () => void;
   #splitter!: Splitter;
 
   #clearTimer: () => void = emptyFunc;
@@ -43,7 +43,7 @@ export default class TypistCore {
     pause = false,
     startDelay = 0,
     finishDelay = 0,
-    onTypingDone = emptyFunc,
+    onTypingDone,
     splitter = defaultSplitter,
   }: CoreProps) => {
     this.#children = children;
@@ -72,7 +72,7 @@ export default class TypistCore {
           else if (type === 'PAUSE') await this.#timeoutPromise(payload);
           else if (type === 'PASTE') this.#updateTypedLines([...this.#typedLines, payload]);
         }
-        this.#onTypingDone();
+        this.#onTypingDone?.();
         await this.#timeoutPromise(this.#finishDelay);
         await this.#loopPromise();
       } while (this.#loop);
