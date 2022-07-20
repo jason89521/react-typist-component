@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",
-    "@microsoft/api-extractor": "^7.24.1",
+    "@microsoft/api-extractor": "^7.28.4",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
@@ -72,7 +72,7 @@
     "react-dom": "^18.1.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.4",
-    "typescript": "^4.6.4",
+    "typescript": "^4.7.4",
     "vite": "^3.0.2"
   },
   "peerDependencies": {
