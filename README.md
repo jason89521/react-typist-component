@@ -150,11 +150,11 @@ Will be inserted after the last typed token.
 
 **Default**: `false`
 
-If this value is `true`, the result will be displayed immediately without typing animation.
+If this value is `true`, the result will be displayed immediately without typing animation. It can be useful if you don't want the typing effect anymore.
 
 #### `restartKey`
 
-`Typist` will restart the typing animation whenerver `restartKey` changes.
+`Typist` will restart the typing animation whenever `restartKey` changes.
 
 ### `Typist.Backspace`
 
