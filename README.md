@@ -125,6 +125,23 @@ This function will be called when the typing animation finishes. It will be call
 
 `Typist` will use this to get tokens from strings. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
 
+```tsx
+import GraphemeSplitter from 'grapheme-splitter';
+
+const splitter = (str: string) => {
+  return new GraphemeSplitter().splitGraphemes(str);
+};
+
+const App = () => {
+  return (
+    <Typist splitter={splitter}>
+      😎🗑🥵⚠😀👍✌👨‍👨‍👧‍👦📏💡🚀🎂😓🎈💕😘
+      <Typist.Backspace count={16} />
+    </Typist>
+  );
+};
+```
+
 #### `cursor`
 
 Will be inserted after the last typed token.
