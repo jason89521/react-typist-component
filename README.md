@@ -2,10 +2,6 @@
 
 Create typewriter effect by setting up a component's children directly.
 
-## Caveat ⚠
-
-This package is not production-ready, Use it with caution.
-
 ## Install
 
 ```bash
@@ -43,16 +39,18 @@ const MyComponent = () => {
 ### `Typist`
 
 ```ts
-type TypistProps = {
+export type Delay = number | (() => number);
+export type Splitter = (str: string) => string[];
+export type TypistProps = {
   children: React.ReactNode;
-  typingDelay?: number | (() => number);
-  backspaceDelay?: number | (() => number);
+  typingDelay?: Delay;
+  backspaceDelay?: Delay;
   loop?: boolean;
   pause?: boolean;
   startDelay?: number;
   finishDelay?: number;
   onTypingDone?: () => void;
-  splitter?: (s: string) => string[];
+  splitter?: Splitter;
   cursor?: string | React.ReactElement;
   disabled?: boolean;
   restartKey?: any;
@@ -119,9 +117,7 @@ Set to `true` if you want to pause the typing animation.
 
 #### `onTypingDone`
 
-**Default**: `() => {return}`
-
-This function will be called when the typing animation finishes. It will be called before `finishDelay`.
+This function will be called when the typing animation finishes. It will be called before waiting for the timeout with `finishDelay`.
 
 #### `splitter`
 
