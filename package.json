@@ -1,6 +1,6 @@
 {
   "name": "react-typist-component",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A react component lets you create typewriter effect.",
   "keywords": [
     "react",
@@ -21,12 +21,13 @@
     "dist"
   ],
   "types": "./dist/react-typist-component.d.ts",
+  "type": "module",
   "main": "./dist/react-typist-component.umd.js",
   "module": "./dist/react-typist-component.es.js",
   "exports": {
     ".": {
-      "import": "./dist/react-typist-component.es.js",
-      "require": "./dist/react-typist-component.umd.js"
+      "import": "./dist/react-typist-component.js",
+      "require": "./dist/react-typist-component.umd.cjs"
     }
   },
   "scripts": {
