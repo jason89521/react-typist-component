@@ -20,5 +20,6 @@
     "emitDeclarationOnly": true
   },
   "include": ["src"],
+  "exclude": ["src/__test__", "src/stories"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
