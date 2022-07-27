@@ -11,7 +11,7 @@ import Paste from './Paste';
 
 import TypistCore from '../TypistCore';
 
-const Typist = ({ cursor, disabled = false, restartKey, ...coreProps }: TypistProps) => {
+const Main = ({ cursor, disabled = false, restartKey, ...coreProps }: TypistProps) => {
   const { children, splitter = defaultSplitter } = coreProps;
   const [typedLines, setTypedLines] = useState<TypedLines>([]);
   const typistCoreRef = useRef<TypistCore>();
@@ -37,6 +37,7 @@ const Typist = ({ cursor, disabled = false, restartKey, ...coreProps }: TypistPr
 
     // Don't add other properties to the dependencies array because
     // it will cause re-creating instance whenever `props` changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [disabled, restartKey]);
 
   // Update the typistCore's props whenever component's props change
@@ -48,4 +49,6 @@ const Typist = ({ cursor, disabled = false, restartKey, ...coreProps }: TypistPr
   return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
 };
 
-export default Object.assign(Typist, { Backspace, Delay, Paste });
+const Typist = Object.assign(Main, { Backspace, Delay, Paste });
+
+export default Typist;
