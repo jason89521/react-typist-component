@@ -1,5 +1,5 @@
 import React from 'react';
-import Typist from '..';
+import Typist from '../src';
 
 export const nestedChildren = (
   <div className="first">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
-import Typist from '../components/Typist';
+import Typist from '../src';
 import { nestedChildren } from './utils';
 
 beforeEach(() => {
