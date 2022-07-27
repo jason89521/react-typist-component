@@ -22,11 +22,11 @@
   ],
   "types": "./dist/react-typist-component.d.ts",
   "main": "./dist/react-typist-component.umd.js",
-  "module": "./dist/react-typist-component.js",
+  "module": "./dist/react-typist-component.mjs",
   "exports": {
     ".": {
-      "import": "./dist/react-typist-component.js",
-      "require": "./dist/react-typist-component.umd.cjs"
+      "import": "./dist/react-typist-component.mjs",
+      "require": "./dist/react-typist-component.umd.js"
     }
   },
   "scripts": {
