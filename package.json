@@ -21,7 +21,6 @@
     "dist"
   ],
   "types": "./dist/react-typist-component.d.ts",
-  "type": "module",
   "main": "./dist/react-typist-component.umd.js",
   "module": "./dist/react-typist-component.js",
   "exports": {
@@ -33,7 +32,7 @@
   "scripts": {
     "commit": "cz",
     "dev": "vite",
-    "test": "jest ./src/__test__/Typist.test.tsx",
+    "test": "jest ./__test__/Typist.test.tsx",
     "build:example": "tsc && vite build",
     "build:types": "rimraf types/* && tsc --project tsconfig.lib.json",
     "build:lib": "yarn build:types && vite build --mode lib && api-extractor run",
@@ -53,7 +52,7 @@
     "@storybook/testing-library": "^0.0.13",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
-    "@types/jest": "^28.1.1",
+    "@types/jest": "^28.1.6",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
@@ -67,12 +66,12 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "eslint-plugin-storybook": "^0.6.1",
     "grapheme-splitter": "^1.0.4",
-    "jest": "^28.1.1",
-    "jest-environment-jsdom": "^28.1.1",
+    "jest": "^28.1.3",
+    "jest-environment-jsdom": "^28.1.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^3.0.2",
-    "ts-jest": "^28.0.4",
+    "ts-jest": "^28.0.7",
     "typescript": "^4.7.4",
     "vite": "^3.0.2"
   },
