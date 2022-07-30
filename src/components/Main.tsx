@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
-import type { Delay, TypistProps } from '../types/TypistProps';
+import type { Delay, TypedChildren, TypistProps } from '../types/TypistProps';
 import insertCursor from '../utils/insertCursor';
 import { defaultSplitter, emptyFunc } from '../utils/defaultFuncs';
 
@@ -21,10 +21,7 @@ const Main = ({
   loop = false,
   pause = false,
 }: TypistProps) => {
-  const typedChildrenArray = useMemo(
-    () => getTypedChildrenArray(children, splitter),
-    [children, splitter]
-  );
+  const [typedChildrenArray, setTypedChildrenArray] = useState<TypedChildren[]>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const clearTimerRef = useRef(emptyFunc);
   const loopRef = useRef(loop);
@@ -77,6 +74,8 @@ const Main = ({
   }, [loop, pause]);
 
   useEffect(() => {
+    const typedChildrenArray = getTypedChildrenArray(children, splitter);
+    setTypedChildrenArray(typedChildrenArray);
     if (disabled) {
       setCurrentIndex(typedChildrenArray.length - 1);
       return;
