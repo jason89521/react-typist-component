@@ -1,21 +1,23 @@
-import React, { Children, isValidElement } from 'react';
+import type { ReactElement } from 'react';
+import { Children, isValidElement } from 'react';
 
 import type {
   Action,
-  TypeStringAction,
   BackspaceAction,
   PauseAction,
   PasteAction,
-  TypeElementAction,
+  TypeTokenAction,
 } from '../types/actions';
+import type { Splitter } from '../types/TypistProps';
+
 import isNil from './isNil';
 import Backspace from '../components/Backspace';
 import Delay from '../components/Delay';
 import Paste from '../components/Paste';
 
-const typeString = (str: string): TypeStringAction => ({
-  type: 'TYPE_STRING',
-  payload: str,
+const typeToken = (token: string | ReactElement): TypeTokenAction => ({
+  type: 'TYPE_TOKEN',
+  payload: token,
 });
 
 const backspace = (count: number): BackspaceAction => ({
@@ -27,31 +29,24 @@ const pause = (ms: number): PauseAction => ({ type: 'PAUSE', payload: ms });
 
 const paste = (str: string): PasteAction => ({ type: 'PASTE', payload: str });
 
-const typeElement = (el: React.ReactElement): TypeElementAction => ({
-  type: 'TYPE_ELEMENT',
-  payload: el,
-});
-
 /**
  * Returns an actions array generated from ReactNode.
- * `Typist` will use these actions to determine what it should do.
- * @param node
- * @returns
+ * `Main` component will use these actions to determine what it should do.
  */
-const getActions = (node: React.ReactNode) => {
+const getActions = (node: React.ReactNode, splitter: Splitter) => {
   const actions: Action[] = [];
-  /**
-   * If the child is a `Paste` element, then this variable will be set to true
-   * such that `recurse` can determine whether it should call `typeString` or `paste`
-   * when the type of the traversed child is string.
-   */
   let isPaste = false;
+  let tokensNumber = 0;
 
   const recurse = (node: React.ReactNode) => {
     Children.forEach(node, child => {
       if (isValidElement(child)) {
         if (child.type === Backspace) {
-          actions.push(backspace(child.props.count));
+          const count = child.props.count as number;
+          const payload = count > tokensNumber ? tokensNumber : count;
+          tokensNumber -= payload;
+          actions.push(backspace(payload));
+
           return;
         }
 
@@ -63,22 +58,39 @@ const getActions = (node: React.ReactNode) => {
         if (child.type === Paste) {
           isPaste = true;
           Children.forEach(child.props.children, recurse);
-          // It should be set to false when its children have been traversed.
           isPaste = false;
           return;
         }
 
-        // if children is undefined or null, treat the child as a single action
+        // if children is undefined or null, treat the child as a single token
         if (isNil(child.props.children)) {
-          actions.push(typeElement(child));
+          tokensNumber += 1;
+          actions.push(typeToken(child));
           return;
         }
 
         Children.forEach(child.props.children, recurse);
       }
 
-      if (typeof child === 'number') child = child.toString(10);
-      if (typeof child === 'string') actions.push(isPaste ? paste(child) : typeString(child));
+      const str = (() => {
+        if (typeof child === 'number') return child.toString(10);
+        if (typeof child === 'string') return child;
+      })();
+
+      if (str === undefined) return;
+
+      if (isPaste) {
+        tokensNumber += splitter(str).length;
+        actions.push(paste(str));
+
+        return;
+      }
+
+      const tokens = splitter(str);
+      tokensNumber += tokens.length;
+      tokens.forEach(token => {
+        actions.push(typeToken(token));
+      });
     });
   };
 

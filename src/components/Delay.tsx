@@ -3,8 +3,8 @@ type Props = {
   ms: number;
 };
 
-const Pause = (props: Props) => {
+const Delay = (props: Props) => {
   return null;
 };
 
-export default Pause;
+export default Delay;
