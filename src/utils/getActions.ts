@@ -44,6 +44,7 @@ const getActions = (node: React.ReactNode, splitter: Splitter) => {
         if (child.type === Backspace) {
           const count = child.props.count as number;
           const payload = count > tokensNumber ? tokensNumber : count;
+          tokensNumber -= payload;
           actions.push(backspace(payload));
 
           return;
@@ -63,6 +64,7 @@ const getActions = (node: React.ReactNode, splitter: Splitter) => {
 
         // if children is undefined or null, treat the child as a single token
         if (isNil(child.props.children)) {
+          tokensNumber += 1;
           actions.push(typeToken(child));
           return;
         }
