@@ -85,17 +85,10 @@ const Main = ({
       try {
         do {
           setCurrentIndex(-1);
-          const actions = getActions(children);
+          const actions = getActions(children, splitter);
           await timeoutPromise(startDelay);
           for (const { type, payload } of actions) {
-            if (type === 'TYPE_STRING') {
-              let length = splitter(payload).length;
-              while (length--) {
-                await pausePromise();
-                setCurrentIndex(prev => prev + 1);
-                await timeoutPromise(typingDelay);
-              }
-            } else if (type === 'TYPE_ELEMENT') {
+            if (type === 'TYPE_TOKEN') {
               await pausePromise();
               setCurrentIndex(prev => prev + 1);
               await timeoutPromise(typingDelay);

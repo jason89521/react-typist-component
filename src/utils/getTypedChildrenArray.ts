@@ -84,7 +84,5 @@ export default function getTypedChildrenArray(children: ReactNode, splitter: Spl
 
   recurse(children);
 
-  console.log(typedLinesArray);
-
   return typedLinesArray.map(typedLines => getTypedChildren(children, typedLines));
 }
