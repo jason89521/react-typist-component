@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 
-import Typist from '../src';
-import { nestedChildren } from './utils';
+import Typist from '..';
+import { nestedChildren } from './constant';
 
 beforeEach(() => {
   jest.useFakeTimers();
