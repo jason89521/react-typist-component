@@ -2,6 +2,7 @@
   "name": "react-typist-component",
   "version": "1.0.2",
   "description": "A react component lets you create typewriter effect.",
+  "author": "Yu-Xuan Zheng",
   "keywords": [
     "react",
     "react component",
