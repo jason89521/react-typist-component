@@ -32,7 +32,7 @@
   "scripts": {
     "commit": "cz",
     "dev": "vite",
-    "test": "jest ./__test__/Typist.test.tsx",
+    "test": "jest",
     "build:example": "tsc && vite build",
     "build:types": "rimraf types/* && tsc --project tsconfig.lib.json",
     "build:lib": "yarn build:types && vite build --mode lib && api-extractor run",

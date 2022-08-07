@@ -86,28 +86,27 @@ const Main = ({
         do {
           setCurrentIndex(-1);
           const actions = getActions(children, splitter);
-          await timeoutPromise(startDelay);
+          if (startDelay > 0) await timeoutPromise(startDelay);
           for (const { type, payload } of actions) {
+            if (pause) await pausePromise();
             if (type === 'TYPE_TOKEN') {
-              await pausePromise();
               setCurrentIndex(prev => prev + 1);
               await timeoutPromise(typingDelay);
             } else if (type === 'BACKSPACE') {
               let amount = payload;
               while (amount--) {
-                await pausePromise();
                 setCurrentIndex(prev => prev + 1);
                 await timeoutPromise(backspaceDelay);
               }
             } else if (type === 'PASTE') {
               setCurrentIndex(prev => prev + 1);
-            } else if (type === 'PAUSE') {
+            } else if (type === 'DELAY') {
               await timeoutPromise(payload);
             }
           }
           onTypingDone?.();
-          await timeoutPromise(finishDelay);
-          await loopPromise();
+          if (finishDelay > 0) await timeoutPromise(finishDelay);
+          if (!loopRef.current) await loopPromise();
         } while (loopRef.current);
       } catch (error) {
         // do nothing

@@ -4,7 +4,7 @@ import { Children, isValidElement } from 'react';
 import type {
   Action,
   BackspaceAction,
-  PauseAction,
+  DelayAction,
   PasteAction,
   TypeTokenAction,
 } from '../types/actions';
@@ -25,7 +25,7 @@ const backspace = (count: number): BackspaceAction => ({
   payload: count,
 });
 
-const pause = (ms: number): PauseAction => ({ type: 'PAUSE', payload: ms });
+const pause = (ms: number): DelayAction => ({ type: 'DELAY', payload: ms });
 
 const paste = (str: string): PasteAction => ({ type: 'PASTE', payload: str });
 

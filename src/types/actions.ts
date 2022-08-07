@@ -5,6 +5,6 @@ export type TypeTokenAction = {
   payload: string | ReactElement;
 };
 export type BackspaceAction = { type: 'BACKSPACE'; payload: number };
-export type PauseAction = { type: 'PAUSE'; payload: number };
+export type DelayAction = { type: 'DELAY'; payload: number };
 export type PasteAction = { type: 'PASTE'; payload: string | ReactElement };
-export type Action = TypeTokenAction | BackspaceAction | PauseAction | PasteAction;
+export type Action = TypeTokenAction | BackspaceAction | DelayAction | PasteAction;
