@@ -87,7 +87,7 @@ The delay after typing a token. If you pass in a function, `Typist` will call th
 
 #### `backspaceDelay`
 
-**Default**: `75`
+**Default**: `typingDelay`
 
 The delay after backspacing a token. If you pass in a function, `Typist` will call the function after backspacing a token and use the return value as the delay.
 
