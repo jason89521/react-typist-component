@@ -100,7 +100,7 @@ const Main = ({
               }
             } else if (type === 'PASTE') {
               setCurrentIndex(prev => prev + 1);
-            } else if (type === 'PAUSE') {
+            } else if (type === 'DELAY') {
               await timeoutPromise(payload);
             }
           }
