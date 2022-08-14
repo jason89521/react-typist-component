@@ -21,7 +21,9 @@ const Main = ({
   loop = false,
   pause = false,
 }: TypistProps) => {
-  const [typedChildrenArray, setTypedChildrenArray] = useState<TypedChildren[]>([]);
+  const [typedChildrenArray, setTypedChildrenArray] = useState<TypedChildren[]>(
+    []
+  );
   const [currentIndex, setCurrentIndex] = useState(-1);
   const clearTimerRef = useRef(emptyFunc);
   const loopRef = useRef(loop);
@@ -88,18 +90,18 @@ const Main = ({
           const actions = getActions(children, splitter);
           if (startDelay > 0) await timeoutPromise(startDelay);
           for (const { type, payload } of actions) {
-            if (pause) await pausePromise();
+            if (pauseRef.current) await pausePromise();
             if (type === 'TYPE_TOKEN') {
-              setCurrentIndex(prev => prev + 1);
+              setCurrentIndex((prev) => prev + 1);
               await timeoutPromise(typingDelay);
             } else if (type === 'BACKSPACE') {
               let amount = payload;
               while (amount--) {
-                setCurrentIndex(prev => prev + 1);
+                setCurrentIndex((prev) => prev + 1);
                 await timeoutPromise(backspaceDelay);
               }
             } else if (type === 'PASTE') {
-              setCurrentIndex(prev => prev + 1);
+              setCurrentIndex((prev) => prev + 1);
             } else if (type === 'DELAY') {
               await timeoutPromise(payload);
             }
