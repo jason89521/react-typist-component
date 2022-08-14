@@ -7,7 +7,7 @@ function App() {
   const [key, setKey] = useState(1);
 
   return (
-    <div className="App">
+    <div className="App text-blue-400">
       <button onClick={() => setKey(key + 1)}>key</button>
       <button onClick={() => setCount(count + 1)}>{count}</button>
       <br />
