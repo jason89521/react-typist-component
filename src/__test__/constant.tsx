@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typist from '..';
 
 export const textsArray = [
@@ -14,11 +14,11 @@ export const textsArray = [
 ];
 
 export const nestedChildren = (
-  <div className="ab">
+  <div className='ab'>
     ab
-    <div className="cd">cd</div>
+    <div className='cd'>cd</div>
     <Typist.Backspace count={2} />
-    <div className="ef">ef</div>
+    <div className='ef'>ef</div>
     <Typist.Paste>
       <span>gh</span>
     </Typist.Paste>
@@ -27,3 +27,14 @@ export const nestedChildren = (
 
 export const WRAPPER_ID = 'wrapper';
 export const BUTTON_ID = 'button';
+
+export const PauseTest = () => {
+  const [pause, setPause] = useState(false);
+
+  return (
+    <>
+      <Typist pause={pause}>ab</Typist>
+      <button data-testid={BUTTON_ID} onClick={() => setPause(!pause)} />
+    </>
+  );
+};
