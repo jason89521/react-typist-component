@@ -17,7 +17,7 @@ import Typist from 'react-typist-component';
 
 const MyComponent = () => {
   return (
-    <Typist typingDelay={100} cursor={<span className="cursor">|</span>}>
+    <Typist typingDelay={100} cursor={<span className='cursor'>|</span>}>
       This is a typo
       <br />
       <Typist.Backspace count={5} />
@@ -123,7 +123,7 @@ This function will be called when the typing animation finishes. It will be call
 
 **Default**: `(str: string) => str.split('')`
 
-`Typist` will use this to get tokens from strings. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
+`Typist` will use this function to get tokens from strings. It may be useful when you want to split your string in different way. For example, you can use [grapheme-splitter](https://github.com/orling/grapheme-splitter) to split string if your string contains emoji.
 
 ```tsx
 import GraphemeSplitter from 'grapheme-splitter';
@@ -150,7 +150,7 @@ Will be inserted after the last typed token.
 
 **Default**: `false`
 
-If this value is `true`, the result will be displayed immediately without typing animation. It can be useful if you don't want the typing effect anymore.
+If this value is `true`, the result will be displayed immediately without typing animation. It can be useful when you want to display the final result if a user has visited the typing animation.
 
 #### `restartKey`
 
@@ -190,4 +190,4 @@ type Props = {
 
 #### `children`
 
-Children inside this component will be pasted without typewriter effect.
+Children inside this component will be pasted without typewriter effect. Do not wrap another `Paste` inside this component, otherwise `Typist` will produce weird behavior.
