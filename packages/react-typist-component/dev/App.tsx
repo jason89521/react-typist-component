@@ -1,5 +1,5 @@
 import React from 'react';
-import Typist from '../src';
+import Typist from '../packages/react-typist-component/src';
 import Header from './components/Header';
 import Section from './components/Section';
 import PauseExample from './components/PauseExample';

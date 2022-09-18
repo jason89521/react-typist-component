@@ -1,84 +1,101 @@
 lockfileVersion: 5.3
 
-specifiers:
-  '@babel/core': ^7.18.5
-  '@microsoft/api-extractor': ^7.28.4
-  '@storybook/addon-actions': ^6.5.9
-  '@storybook/addon-essentials': ^6.5.9
-  '@storybook/addon-interactions': ^6.5.9
-  '@storybook/addon-links': ^6.5.9
-  '@storybook/builder-vite': ^0.2.0
-  '@storybook/react': ^6.5.9
-  '@storybook/testing-library': ^0.0.13
-  '@testing-library/jest-dom': ^5.16.4
-  '@testing-library/react': ^13.3.0
-  '@types/jest': ^28.1.6
+overrides:
   '@types/react': ^18.0.15
   '@types/react-dom': ^18.0.6
-  '@typescript-eslint/eslint-plugin': ^5.25.0
-  '@typescript-eslint/parser': ^5.25.0
-  '@vitejs/plugin-react': ^2.0.0
-  autoprefixer: ^10.4.8
-  babel-loader: ^8.2.5
-  commitizen: ^4.2.4
-  cz-conventional-changelog: 3.3.0
-  eslint: ^8.15.0
-  eslint-plugin-react: ^7.30.0
-  eslint-plugin-react-hooks: ^4.5.0
-  eslint-plugin-storybook: ^0.6.1
-  grapheme-splitter: ^1.0.4
-  jest: ^28.1.3
-  jest-environment-jsdom: ^28.1.3
-  postcss: ^8.4.16
-  prettier: ^2.7.1
-  prettier-plugin-tailwindcss: ^0.1.13
   react: ^18.2.0
   react-dom: ^18.2.0
-  rimraf: ^3.0.2
-  tailwindcss: ^3.1.8
-  ts-jest: ^28.0.7
-  typescript: ^4.7.4
   vite: ^3.0.2
+  '@vitejs/plugin-react': ^2.0.0
+  typescript: ^4.7.4
 
-devDependencies:
-  '@babel/core': 7.18.9
-  '@microsoft/api-extractor': 7.28.4
-  '@storybook/addon-actions': 6.5.9_react-dom@18.2.0+react@18.2.0
-  '@storybook/addon-essentials': 6.5.9_e349558d9a13a36af50581153c3c53b7
-  '@storybook/addon-interactions': 6.5.9_32c7a70df5dfb6a929c1e2ab819cb5cd
-  '@storybook/addon-links': 6.5.9_react-dom@18.2.0+react@18.2.0
-  '@storybook/builder-vite': 0.2.0_5dfbc0e77f28ccd1f3921ee9a145f3b6
-  '@storybook/react': 6.5.9_e349558d9a13a36af50581153c3c53b7
-  '@storybook/testing-library': 0.0.13_react-dom@18.2.0+react@18.2.0
-  '@testing-library/jest-dom': 5.16.4
-  '@testing-library/react': 13.3.0_react-dom@18.2.0+react@18.2.0
-  '@types/jest': 28.1.6
-  '@types/react': 18.0.15
-  '@types/react-dom': 18.0.6
-  '@typescript-eslint/eslint-plugin': 5.30.7_f59730a40ab520cf82d095906622871f
-  '@typescript-eslint/parser': 5.30.7_eslint@8.20.0+typescript@4.7.4
-  '@vitejs/plugin-react': 2.0.0_vite@3.0.2
-  autoprefixer: 10.4.8_postcss@8.4.16
-  babel-loader: 8.2.5_@babel+core@7.18.9
-  commitizen: 4.2.5
-  cz-conventional-changelog: 3.3.0
-  eslint: 8.20.0
-  eslint-plugin-react: 7.30.1_eslint@8.20.0
-  eslint-plugin-react-hooks: 4.6.0_eslint@8.20.0
-  eslint-plugin-storybook: 0.6.1_eslint@8.20.0+typescript@4.7.4
-  grapheme-splitter: 1.0.4
-  jest: 28.1.3
-  jest-environment-jsdom: 28.1.3
-  postcss: 8.4.16
-  prettier: 2.7.1
-  prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
-  react: 18.2.0
-  react-dom: 18.2.0_react@18.2.0
-  rimraf: 3.0.2
-  tailwindcss: 3.1.8
-  ts-jest: 28.0.7_8163232040de7c219af8f24f2e655fd4
-  typescript: 4.7.4
-  vite: 3.0.2
+importers:
+
+  .:
+    specifiers:
+      '@typescript-eslint/eslint-plugin': ^5.25.0
+      '@typescript-eslint/parser': ^5.25.0
+      commitizen: ^4.2.4
+      cz-conventional-changelog: 3.3.0
+      eslint: ^8.15.0
+      eslint-plugin-react: ^7.30.0
+      eslint-plugin-react-hooks: ^4.5.0
+      eslint-plugin-storybook: ^0.6.1
+      prettier: ^2.7.1
+      prettier-plugin-tailwindcss: ^0.1.13
+      typescript: ^4.7.4
+    devDependencies:
+      '@typescript-eslint/eslint-plugin': 5.30.7_f59730a40ab520cf82d095906622871f
+      '@typescript-eslint/parser': 5.30.7_eslint@8.20.0+typescript@4.7.4
+      commitizen: 4.2.5
+      cz-conventional-changelog: 3.3.0
+      eslint: 8.20.0
+      eslint-plugin-react: 7.30.1_eslint@8.20.0
+      eslint-plugin-react-hooks: 4.6.0_eslint@8.20.0
+      eslint-plugin-storybook: 0.6.1_eslint@8.20.0+typescript@4.7.4
+      prettier: 2.7.1
+      prettier-plugin-tailwindcss: 0.1.13_prettier@2.7.1
+      typescript: 4.7.4
+
+  packages/react-typist-component:
+    specifiers:
+      '@babel/core': ^7.18.5
+      '@microsoft/api-extractor': ^7.28.4
+      '@storybook/addon-actions': ^6.5.9
+      '@storybook/addon-essentials': ^6.5.9
+      '@storybook/addon-interactions': ^6.5.9
+      '@storybook/addon-links': ^6.5.9
+      '@storybook/builder-vite': ^0.2.0
+      '@storybook/react': ^6.5.9
+      '@storybook/testing-library': ^0.0.13
+      '@testing-library/jest-dom': ^5.16.4
+      '@testing-library/react': ^13.3.0
+      '@types/jest': ^28.1.6
+      '@types/react': ^18.0.15
+      '@types/react-dom': ^18.0.6
+      '@vitejs/plugin-react': ^2.0.0
+      autoprefixer: ^10.4.8
+      babel-loader: ^8.2.5
+      grapheme-splitter: ^1.0.4
+      jest: ^28.1.3
+      jest-environment-jsdom: ^28.1.3
+      postcss: ^8.4.16
+      react: ^18.2.0
+      react-dom: ^18.2.0
+      rimraf: ^3.0.2
+      tailwindcss: ^3.1.8
+      ts-jest: ^28.0.7
+      typescript: ^4.7.4
+      vite: ^3.0.2
+    devDependencies:
+      '@babel/core': 7.18.9
+      '@microsoft/api-extractor': 7.28.4
+      '@storybook/addon-actions': 6.5.9_react-dom@18.2.0+react@18.2.0
+      '@storybook/addon-essentials': 6.5.9_e349558d9a13a36af50581153c3c53b7
+      '@storybook/addon-interactions': 6.5.9_32c7a70df5dfb6a929c1e2ab819cb5cd
+      '@storybook/addon-links': 6.5.9_react-dom@18.2.0+react@18.2.0
+      '@storybook/builder-vite': 0.2.0_5dfbc0e77f28ccd1f3921ee9a145f3b6
+      '@storybook/react': 6.5.9_e349558d9a13a36af50581153c3c53b7
+      '@storybook/testing-library': 0.0.13_react-dom@18.2.0+react@18.2.0
+      '@testing-library/jest-dom': 5.16.4
+      '@testing-library/react': 13.3.0_react-dom@18.2.0+react@18.2.0
+      '@types/jest': 28.1.6
+      '@types/react': 18.0.15
+      '@types/react-dom': 18.0.6
+      '@vitejs/plugin-react': 2.0.0_vite@3.0.2
+      autoprefixer: 10.4.8_postcss@8.4.16
+      babel-loader: 8.2.5_@babel+core@7.18.9
+      grapheme-splitter: 1.0.4
+      jest: 28.1.3
+      jest-environment-jsdom: 28.1.3
+      postcss: 8.4.16
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      rimraf: 3.0.2
+      tailwindcss: 3.1.8
+      ts-jest: 28.0.7_8163232040de7c219af8f24f2e655fd4
+      typescript: 4.7.4
+      vite: 3.0.2
 
 packages:
 
@@ -2162,7 +2179,7 @@ packages:
       resolve: 1.17.0
       semver: 7.3.7
       source-map: 0.6.1
-      typescript: 4.6.4
+      typescript: 4.7.4
     dev: true
 
   /@microsoft/tsdoc-config/0.16.1:
@@ -13041,12 +13058,6 @@ packages:
 
   /typedarray/0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
-    dev: true
-
-  /typescript/4.6.4:
-    resolution: {integrity: sha512-9ia/jWHIEbo49HfjrLGfKbZSuWo9iTMwXO+Ca3pRsSpbsMbc7/IU8NKdCZVRRBafVPGnoJeFL76ZOAA84I9fEg==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
     dev: true
 
   /typescript/4.7.4:
