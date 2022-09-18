@@ -26,7 +26,7 @@
     "preinstall": "npx only-allow pnpm",
     "commit": "cz",
     "test": "pnpm -r --filter ./packages/* run test",
-    "build:lib": "pnpm -r --filter ./packages/* run build:lib",
+    "build:packages": "pnpm -r --filter ./packages/* run build:package",
     "prepublishOnly": "pnpm build:lib"
   },
   "devDependencies": {

@@ -21,7 +21,7 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/react-typist-component.d.ts",
+  "types": "./dist/types/index.d.ts",
   "main": "./dist/react-typist-component.umd.js",
   "module": "./dist/react-typist-component.mjs",
   "exports": {
@@ -31,20 +31,18 @@
     }
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "dev": "vite",
     "test": "jest",
     "build:website": "tsc && vite build",
-    "build:types": "rimraf types/* && tsc --project tsconfig.lib.json",
-    "build:lib": "pnpm build:types && vite build --mode lib && api-extractor run",
-    "prepublishOnly": "pnpm build:lib",
+    "build:types": "tsc --project tsconfig.lib.json",
+    "build:package": "vite build --mode lib && pnpm build:types",
+    "prepublishOnly": "pnpm build:package",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
   "devDependencies": {
     "@babel/core": "^7.18.5",
-    "@microsoft/api-extractor": "^7.28.4",
     "@storybook/addon-actions": "^6.5.9",
     "@storybook/addon-essentials": "^6.5.9",
     "@storybook/addon-interactions": "^6.5.9",
