@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import Typist from '../../packages/react-typist-component/src';
+import Typist from '../../src';
 import Section from './Section';
 
 export default function PauseExample() {

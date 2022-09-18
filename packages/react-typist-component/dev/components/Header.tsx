@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Typist from '../../packages/react-typist-component/src';
+import Typist from '../../src';
 import randomDelayGenerator from '../utils/randomDelayGenerator';
 
 export default function Header() {
