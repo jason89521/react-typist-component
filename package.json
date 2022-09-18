@@ -31,13 +31,14 @@
     }
   },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "commit": "cz",
     "dev": "vite",
     "test": "jest",
     "build:website": "tsc && vite build",
     "build:types": "rimraf types/* && tsc --project tsconfig.lib.json",
-    "build:lib": "yarn build:types && vite build --mode lib && api-extractor run",
-    "prepublishOnly": "yarn build:lib",
+    "build:lib": "pnpm build:types && vite build --mode lib && api-extractor run",
+    "prepublishOnly": "pnpm build:lib",
     "preview": "vite preview",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
