@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-  fireEvent,
-  getByTestId,
-  getByText,
-  render,
-} from '@testing-library/react';
+import { fireEvent, getByTestId, render } from '@testing-library/react';
 
 import Typist from '..';
 import { nestedChildren, textsArray, PauseTest, BUTTON_ID } from './constant';
-import { findByText, waitFor } from './utils';
+import { findByText } from './utils';
 
 afterEach(() => {
   jest.useRealTimers();
