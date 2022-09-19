@@ -13,7 +13,8 @@
     "preinstall": "npx only-allow pnpm",
     "commit": "cz",
     "test": "pnpm -r --filter ./packages/* run test",
-    "build:website": "pnpm -r --filter ./packages/* run build:website",
+    "dev:website": "pnpm --filter ./website dev",
+    "build:website": "pnpm --filter ./website run build",
     "build:packages": "pnpm -r --filter ./packages/* run build:package",
     "prepublishOnly": "pnpm build:lib"
   },
