@@ -7,19 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jason89521/react-typist-component"
-  },
-  "files": [
-    "dist"
-  ],
-  "types": "./dist/react-typist-component.d.ts",
-  "main": "./dist/react-typist-component.umd.js",
-  "module": "./dist/react-typist-component.mjs",
-  "exports": {
-    ".": {
-      "import": "./dist/react-typist-component.mjs",
-      "require": "./dist/react-typist-component.umd.js"
-    }
+    "url": "https://github.com/jason89521/react-components-monorepo"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
