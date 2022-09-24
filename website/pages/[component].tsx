@@ -1,6 +1,7 @@
 import { allDocs, Doc } from 'contentlayer/generated';
 import type { GetStaticPaths, GetStaticProps } from 'next';
 import { useMDXComponent } from 'next-contentlayer/hooks';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import components from '~/modules/docs/components';
@@ -19,6 +20,10 @@ export default function Component({ docs }: Props) {
 
   return (
     <div className='p-10'>
+      <Head>
+        <title>{doc.title}</title>
+        <meta name='description' content={doc.intro} />
+      </Head>
       <article className='prose max-w-none'>
         <h1>{doc.title}</h1>
         <p>{doc.intro}</p>
