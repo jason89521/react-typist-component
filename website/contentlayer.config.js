@@ -10,6 +10,11 @@ export const Doc = defineDocumentType(() => ({
       description: 'The title of the document',
       required: true,
     },
+    intro: {
+      type: 'string',
+      description: 'The brief introduction of the document',
+      required: true,
+    },
   },
 }));
 
