@@ -1,4 +1,5 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files';
+import rehypeHighlight from 'rehype-highlight';
 
 export const Doc = defineDocumentType(() => ({
   name: 'Doc',
@@ -21,4 +22,7 @@ export const Doc = defineDocumentType(() => ({
 export default makeSource({
   contentDirPath: 'contents',
   documentTypes: [Doc],
+  mdx: {
+    rehypePlugins: [rehypeHighlight],
+  },
 });
