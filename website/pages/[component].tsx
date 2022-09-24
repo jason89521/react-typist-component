@@ -3,13 +3,16 @@ import type { GetStaticPaths, GetStaticProps } from 'next';
 import { useMDXComponent } from 'next-contentlayer/hooks';
 import { useRouter } from 'next/router';
 
+import components from '~/modules/docs/components';
+
 interface Props {
   docs: Doc[];
 }
 
 export default function Component({ docs }: Props) {
   const { query } = useRouter();
-  const doc = docs.find(d => d.title === query.component);
+  const doc = docs.find(d => d.name === query.component);
+
   const MDXComponent = useMDXComponent(doc?.body.code || '');
 
   if (!doc) return null;
@@ -17,7 +20,9 @@ export default function Component({ docs }: Props) {
   return (
     <div className='p-10'>
       <article className='prose max-w-none'>
-        <MDXComponent />
+        <h1>{doc.title}</h1>
+        <p>{doc.intro}</p>
+        <MDXComponent components={components[doc.name]} />
       </article>
     </div>
   );
@@ -34,7 +39,7 @@ export const getStaticProps: GetStaticProps<
 
 export const getStaticPaths: GetStaticPaths = () => {
   const paths = allDocs.map(doc => ({
-    params: { component: doc.title },
+    params: { component: doc.name },
   }));
 
   return {

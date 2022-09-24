@@ -1,7 +1,6 @@
 import { allDocs, Doc } from 'contentlayer/generated';
 import { GetStaticProps } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
 
 interface Props {
   docs: Doc[];
@@ -20,12 +19,10 @@ export default function Home({ docs }: Props) {
         <h1 className='text-4xl text-primary mb-10'>React Components</h1>
         {docs.map(doc => {
           return (
-            <Link key={doc._id} href={`/${doc.title}`}>
-              <div className='mb-6 last:mb-0'>
-                <h2 className='text-2xl mb-2'>{doc.title}</h2>
-                <p>{doc.intro}</p>
-              </div>
-            </Link>
+            <div key={doc._id} className='mb-6 last:mb-0'>
+              <h2 className='text-2xl mb-2'>{doc.title}</h2>
+              <p>{doc.intro}</p>
+            </div>
           );
         })}
       </main>
