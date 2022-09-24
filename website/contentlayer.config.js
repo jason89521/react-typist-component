@@ -6,6 +6,12 @@ export const Doc = defineDocumentType(() => ({
   filePathPattern: 'docs/**/*.mdx',
   contentType: 'mdx',
   fields: {
+    name: {
+      type: 'enum',
+      options: ['react-typist-component'],
+      description: `The package's name`,
+      required: true,
+    },
     title: {
       type: 'string',
       description: 'The title of the document',

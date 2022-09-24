@@ -13,8 +13,8 @@
     "preinstall": "npx only-allow pnpm",
     "commit": "cz",
     "test": "pnpm -r --filter ./packages/* run test",
-    "dev:website": "pnpm --filter ./website dev",
-    "build:website": "pnpm --filter ./website run build",
+    "dev:website": "pnpm build:packages && pnpm --filter ./website dev",
+    "build:website": "pnpm build:packages && pnpm --filter ./website run build",
     "build:packages": "pnpm -r --filter ./packages/* run build:package",
     "prepublishOnly": "pnpm build:lib"
   },
@@ -47,5 +47,8 @@
       "@vitejs/plugin-react": "^2.1.0",
       "typescript": "^4.8.3"
     }
+  },
+  "dependencies": {
+    "next": "12.3.1"
   }
 }
