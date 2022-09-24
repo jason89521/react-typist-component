@@ -7,8 +7,5 @@ module.exports = {
   bracketSameLine: true,
   importOrder: ['^node:', '<THIRD_PARTY_MODULES>', '^~', '^[./]'],
   importOrderSeparation: true,
-  plugins: [
-    'prettier-plugin-tailwindcss',
-    '@trivago/prettier-plugin-sort-imports',
-  ],
+  plugins: ['@trivago/prettier-plugin-sort-imports'],
 };
