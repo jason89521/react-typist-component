@@ -1,0 +1,36 @@
+{
+  "name": "react-date-time-picker-component",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build:website": "tsc && vite build",
+    "build:types": "tsc --project tsconfig.lib.json",
+    "build:package": "vite build --mode lib && pnpm build:types",
+    "prepublishOnly": "pnpm build:package",
+    "preview": "vite preview"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jason89521/react-components-monorepo"
+  },
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/types/index.d.ts",
+  "main": "./dist/react-date-time-picker-component.umd.cjs",
+  "module": "./dist/react-date-time-picker-component.js",
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/react": "^18.0.20",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.1.0",
+    "typescript": "^4.8.3",
+    "vite": "^3.1.3"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0"
+  }
+}
