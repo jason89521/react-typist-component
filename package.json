@@ -15,7 +15,7 @@
     "test": "pnpm -r --filter ./packages/* run test",
     "dev:website": "pnpm build:packages && pnpm --filter ./website dev",
     "build:website": "pnpm build:packages && pnpm --filter ./website run build",
-    "build:packages": "pnpm -r --filter ./packages/* run build:package",
+    "build:packages": "pnpm -r --filter './packages/*' run build:package",
     "prepublishOnly": "pnpm build:lib"
   },
   "devDependencies": {
