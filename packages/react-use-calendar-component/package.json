@@ -1,5 +1,5 @@
 {
-  "name": "react-date-time-picker-component",
+  "name": "react-use-calendar-component",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
@@ -19,8 +19,8 @@
     "dist"
   ],
   "types": "./dist/types/index.d.ts",
-  "main": "./dist/react-date-time-picker-component.umd.cjs",
-  "module": "./dist/react-date-time-picker-component.js",
+  "main": "./dist/react-use-calendar-component.umd.cjs",
+  "module": "./dist/react-use-calendar-component.js",
   "devDependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

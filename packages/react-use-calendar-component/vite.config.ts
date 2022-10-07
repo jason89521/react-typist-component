@@ -13,7 +13,7 @@ const libConfig: UserConfigExport = {
   build: {
     lib: {
       entry: 'src/lib/index.ts',
-      name: 'react-typist-component',
+      name: 'react-use-calendar-component',
     },
     rollupOptions: {
       external: ['react'],

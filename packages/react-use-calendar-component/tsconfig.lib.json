@@ -18,6 +18,6 @@
     "declarationDir": "./dist/types",
     "emitDeclarationOnly": true
   },
-  "include": ["src/lib"],
+  "include": ["src/lib/index.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

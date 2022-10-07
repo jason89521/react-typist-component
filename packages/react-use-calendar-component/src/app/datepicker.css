@@ -7,28 +7,6 @@
   user-select: none;           /* Non-prefixed version, currently */  
 }
 
-.mdp-input{
-  width: 150px;
-  height: 35px;
-  overflow: hidden;
-  border-radius: 20px;
-}
-.mdp-input input:focus{
-  outline: none;
-}
-.mdp-input input{
-  width: 130%;
-  background: #f5f5f5;
-  border: none;
-  padding-right: 10px;
-  height: 35px;
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 11px;
-  cursor: pointer;
-}
-
 .mdp-container {
   position: absolute;
   width: 300px;
@@ -238,14 +216,14 @@
   line-height: 30px;
 }
 .c-day-container.disabled{
-  pointer-events: none;
+  /* pointer-events: none; */
 }
 
 .c-day-container.disabled .cdc-day span{
   color: #ddd;
 }
 .c-day-container.disabled .cdc-day span{
-  background: #fff!important;
+  background: #fff;
 }
 .c-day-container.highlight .cdc-day span{
   background: #efdbca;
