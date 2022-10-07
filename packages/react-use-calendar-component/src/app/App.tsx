@@ -1,86 +1,71 @@
-import { useCalendarComponent } from '../lib';
-import { getWeekDayList } from '../lib/utils/locale';
+import { useEffect } from 'react';
+
+import useCalendarComponent from '../lib';
+import { getWeekDayList, getMonthList } from '../lib/utils/locale';
+import LeftArrow from './components/LeftArrow';
+import RightArrow from './components/RightArrow';
 
 const weekDayList = getWeekDayList();
+const monthList = getMonthList();
 
 function App() {
   const {
     displayedYear,
     displayedMonth,
-    addMonth,
-    addYear,
+    selectedDate,
+    changeDisplayedMonth,
+    changeDisplayedYear,
     getDateCellInfos,
-    setSelectedDate,
   } = useCalendarComponent();
 
+  useEffect(() => {
+    const { year, month, dayOfMonth } = selectedDate;
+    console.log(new Date(year, month, dayOfMonth).toLocaleString());
+  }, [selectedDate]);
+
   const dateCells = getDateCellInfos().map(
-    ({ key, year, month, monthStatus, dayOfMonth, isToday, isSelected }) => {
-      let className = 'c-day-container';
-      if (monthStatus !== 'current') className = `${className} disabled`;
-      if (isToday) className = `${className} highlight`;
-      if (isSelected) className = `${className} highlight-green`;
+    ({ key, monthStatus, dayOfMonth, isToday, isSelected, selectThisDate }) => {
+      let className = 'rounded-full';
+      if (monthStatus !== 'current') className = `${className} text-slate-300`;
+      if (isSelected) className = `${className} bg-green-200`;
+      if (isToday && !isSelected) className = `${className} bg-amber-200`;
 
       return (
-        <div
+        <button
           key={key}
           className={className}
           onClick={() => {
-            setSelectedDate(
-              {
-                year,
-                month,
-                dayOfMonth,
-              },
-              { shouldChangePanel: true }
-            );
+            selectThisDate({ changeDisplayedValues: true });
           }}>
-          <div className='cdc-day'>
+          <div className='flex items-center justify-center'>
             <span>{dayOfMonth}</span>
           </div>
-        </div>
+        </button>
       );
     }
   );
 
   return (
-    <div className='mdp-container'>
-      <div className='mdpc-head'>
-        <div className='mdpch-button'>
-          <div className='mdpchb-inner' onClick={() => addYear(-1)}>
-            <span className='mdpchbi-left-arrows'></span>
-          </div>
+    <div className='bg-white shadow-2xl rounded-3xl p-8 w-[500px]'>
+      <div className='flex justify-between items-center'>
+        <LeftArrow arrowAmount={2} onClick={() => changeDisplayedYear(-1)} />
+        <LeftArrow onClick={() => changeDisplayedMonth(-1)} />
+        <div className='flex flex-col justify-center items-center'>
+          <span className='text-lg'>{displayedYear}</span>
+          <span className='text-sm'>{monthList[displayedMonth]}</span>
         </div>
-        <div className='mdpch-button'>
-          <div className='mdpchb-inner' onClick={() => addMonth(-1)}>
-            <span className='mdpchbi-left-arrow'></span>
-          </div>
-        </div>
-        <div className='mdpch-container'>
-          <div className='mdpchc-year'>{displayedYear}</div>
-          <div className='mdpchc-month'>{displayedMonth + 1}</div>
-        </div>
-        <div className='mdpch-button'>
-          <div className='mdpchb-inner' onClick={() => addMonth(1)}>
-            <span className='mdpchbi-right-arrow'></span>
-          </div>
-        </div>
-        <div className='mdpch-button' onClick={() => addYear(1)}>
-          <div className='mdpchb-inner'>
-            <span className='mdpchbi-right-arrows'></span>
-          </div>
-        </div>
+        <RightArrow onClick={() => changeDisplayedMonth(1)} />
+        <RightArrow arrowAmount={2} onClick={() => changeDisplayedYear(1)} />
       </div>
-      <div className='mdpc-body'>
-        <div className='c-container'>
-          <div className='cc-head'>
-            {weekDayList.map((d, i) => (
-              <div key={i} className='cch-name'>
-                {d}
-              </div>
-            ))}
-          </div>
-          <div className='cc-body'>{dateCells}</div>
+      <div className='mt-5'>
+        <div className='grid grid-cols-7 mb-4'>
+          {weekDayList.map((d, i) => (
+            <div key={i} className='flex items-center justify-center'>
+              {d}
+            </div>
+          ))}
         </div>
+        <div className='grid grid-cols-7 gap-y-4'>{dateCells}</div>
       </div>
     </div>
   );

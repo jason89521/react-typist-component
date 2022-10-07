@@ -7,11 +7,18 @@ export interface DateCellInfo {
   isToday: boolean;
   isSelected: boolean;
   monthStatus: 'current' | 'next' | 'previous';
+  selectThisDate: (options?: SelectDateOptions) => void;
 }
 
-export type SetSelectedDate = (
-  date: DateUnit,
-  options?: { shouldChangePanel?: boolean }
+export interface SelectDateOptions {
+  changeDisplayedValues?: boolean;
+}
+
+export type SelectDate = (date: DateUnit, options?: SelectDateOptions) => void;
+
+export type ChangeDisplayedValue = (
+  value: number,
+  options?: { override?: boolean }
 ) => void;
 
 export interface DateUnit {
