@@ -10,3 +10,4 @@ This project is aimed to provide an easy-to-use API interface for those people w
 - [ ] Select multiple dates
 - [ ] Support disabled date
 - [ ] Support displaying two calendar
+- [ ] Support week, month, year selection
