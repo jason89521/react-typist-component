@@ -1,4 +1,4 @@
-export default function isToday(year: number, month: number, date: number) {
+export function isToday(year: number, month: number, date: number) {
   const todayDate = new Date();
 
   return (

@@ -1,26 +1,28 @@
 import { useState } from 'react';
 
 import type {
+  UseCalendarOptions,
   DateCellInfo,
   SelectDate,
   ChangeDisplayedValue,
   SelectDateOptions,
+  ControlOptions,
 } from '../types';
-import getNumberOfDays from '../utils/getNumberOfDays';
-import isToday from '../utils/isToday';
-
-const dateInstance = new Date();
+import { getNumberOfDays, isToday } from '../utils';
 
 const CELLS_OF_PICKER = 42;
 
-export default function useCalendarComponent(initialDate: Date = new Date()) {
-  const [displayedYear, setDisplayedYear] = useState(initialDate.getFullYear());
-  const [displayedMonth, setDisplayedMonth] = useState(initialDate.getMonth());
-  const [selectedDate, internalSetSelectedDate] = useState({
-    year: displayedYear,
-    month: displayedMonth,
-    dayOfMonth: dateInstance.getDate(),
-  });
+export default function useCalendarComponent<C extends ControlOptions>({
+  displayedDate = new Date(),
+}: UseCalendarOptions<C> = {}) {
+  const [displayedYear, setDisplayedYear] = useState(
+    displayedDate.getFullYear()
+  );
+  const [displayedMonth, setDisplayedMonth] = useState(
+    displayedDate.getMonth()
+  );
+
+  const [selectedDate, setSelectedDate] = useState<Date[]>([]);
 
   const getDateCellInfo = (cellIndex: number): DateCellInfo => {
     const prevMonth = displayedMonth === 0 ? 11 : displayedMonth - 1;
@@ -65,9 +67,9 @@ export default function useCalendarComponent(initialDate: Date = new Date()) {
       dayOfWeek: weekDay,
       isToday: isToday(year, month, dayOfMonth),
       isSelected:
-        year === selectedDate.year &&
-        month === selectedDate.month &&
-        dayOfMonth === selectedDate.dayOfMonth,
+        year === selectedDate[0]?.getFullYear() &&
+        month === selectedDate[0]?.getMonth() &&
+        dayOfMonth === selectedDate[0]?.getDate(),
       monthStatus:
         monthOffset < 0 ? 'previous' : monthOffset > 0 ? 'next' : 'current',
       selectThisDate,
@@ -111,19 +113,21 @@ export default function useCalendarComponent(initialDate: Date = new Date()) {
     } else setDisplayedMonth(nextMonth);
   };
 
-  const selectDate: SelectDate = (dateUnit, options = {}) => {
+  const selectDate: SelectDate = (
+    { year, month, dayOfMonth },
+    options = {}
+  ) => {
     const { changeDisplayedValues = false } = options;
-    internalSetSelectedDate(dateUnit);
+    setSelectedDate([new Date(year, month, dayOfMonth)]);
     if (changeDisplayedValues) {
-      setDisplayedYear(dateUnit.year);
-      setDisplayedMonth(dateUnit.month);
+      setDisplayedYear(year);
+      setDisplayedMonth(month);
     }
   };
 
   return {
     displayedYear,
     displayedMonth,
-    selectedDate,
     changeDisplayedYear,
     changeDisplayedMonth,
     getDateCellInfos,

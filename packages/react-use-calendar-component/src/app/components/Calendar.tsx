@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import useCalendarComponent from '../../lib';
 import CalendarBody from './CalendarBody';
 import CalendarHeader from './CalendarHeader';
@@ -12,16 +10,10 @@ export default function Calendar({ calendarControl }: Props) {
   const {
     displayedYear,
     displayedMonth,
-    selectedDate,
     changeDisplayedMonth,
     changeDisplayedYear,
     getDateCellInfos,
   } = calendarControl;
-
-  useEffect(() => {
-    const { year, month, dayOfMonth } = selectedDate;
-    console.log(new Date(year, month, dayOfMonth).toLocaleString());
-  }, [selectedDate]);
 
   return (
     <div className='bg-white shadow-2xl rounded-3xl p-8 w-[500px]'>
