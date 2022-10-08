@@ -2,7 +2,7 @@ import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
 
 export default function Single() {
-  const calendarControl = useCalendarComponent({});
+  const calendarControl = useCalendarComponent();
   // const { selectedDate } = calendarControl;
   // const { year, month, dayOfMonth } = selectedDate;
 

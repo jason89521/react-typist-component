@@ -1,29 +1,16 @@
 // useCalendarComponent
-export interface SingleOptions {
-  defaultSelectedDate?: Date;
-  type: 'single';
-}
+export type SelectType = 'single' | 'multiple';
 
-export interface MultipleOptions {
-  defaultSelectedDate?: Date[];
-  type: 'multiple';
-}
-
-export interface RangeOptions {
-  defaultRange?: [Date, Date];
-  type: 'range';
-}
-
-export type ControlOptions = SingleOptions | MultipleOptions;
-export type SelectedDate<C extends ControlOptions> = C extends SingleOptions
-  ? SingleOptions['defaultSelectedDate']
-  : C extends MultipleOptions
-  ? MultipleOptions['defaultSelectedDate']
+export type DefaultValue<S extends SelectType> = S extends 'single'
+  ? Date
+  : S extends 'multiple'
+  ? Date[]
   : never;
 
-export type UseCalendarOptions<C extends ControlOptions> = {
+export type UseCalendarOptions<S extends SelectType = 'single'> = {
   displayedDate?: Date;
-  controlOptions?: C;
+  selectType?: S;
+  defaultValue?: DefaultValue<S>;
 };
 
 export interface DateCellInfo {

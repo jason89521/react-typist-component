@@ -4,24 +4,27 @@ import type {
   UseCalendarOptions,
   DateCellInfo,
   SelectDate,
-  ChangeDisplayedValue,
   SelectDateOptions,
-  ControlOptions,
+  SelectType,
 } from '../types';
 import { getNumberOfDays, isToday } from '../utils';
+import useDisplayedDate from './useDisplayedDate';
 
 const CELLS_OF_PICKER = 42;
 
-export default function useCalendarComponent<C extends ControlOptions>({
+export default function useCalendarComponent<S extends SelectType>({
   displayedDate = new Date(),
-}: UseCalendarOptions<C> = {}) {
-  const [displayedYear, setDisplayedYear] = useState(
-    displayedDate.getFullYear()
-  );
-  const [displayedMonth, setDisplayedMonth] = useState(
-    displayedDate.getMonth()
-  );
-
+  selectType,
+}: UseCalendarOptions<S> = {}) {
+  console.log(selectType);
+  const {
+    displayedYear,
+    displayedMonth,
+    setDisplayedYear,
+    setDisplayedMonth,
+    changeDisplayedYear,
+    changeDisplayedMonth,
+  } = useDisplayedDate(displayedDate);
   const [selectedDate, setSelectedDate] = useState<Date[]>([]);
 
   const getDateCellInfo = (cellIndex: number): DateCellInfo => {
@@ -85,34 +88,6 @@ export default function useCalendarComponent<C extends ControlOptions>({
     return arr;
   };
 
-  const changeDisplayedYear: ChangeDisplayedValue = (value, options = {}) => {
-    const { override = false } = options;
-    if (override) {
-      setDisplayedYear(value);
-      return;
-    }
-
-    if (displayedYear + value >= 0) setDisplayedYear(displayedYear + value);
-    else setDisplayedYear(0);
-  };
-
-  const changeDisplayedMonth: ChangeDisplayedValue = (value, options = {}) => {
-    const { override = false } = options;
-    if (override) {
-      setDisplayedMonth(value);
-      return;
-    }
-
-    const nextMonth = displayedMonth + value;
-    if (nextMonth < 0) {
-      setDisplayedMonth(11);
-      changeDisplayedYear(-1);
-    } else if (nextMonth > 11) {
-      setDisplayedMonth(0);
-      changeDisplayedYear(1);
-    } else setDisplayedMonth(nextMonth);
-  };
-
   const selectDate: SelectDate = (
     { year, month, dayOfMonth },
     options = {}
@@ -131,6 +106,5 @@ export default function useCalendarComponent<C extends ControlOptions>({
     changeDisplayedYear,
     changeDisplayedMonth,
     getDateCellInfos,
-    selectDate,
   };
 }
