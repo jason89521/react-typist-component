@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
 
-export default function Single() {
-  const calendarControl = useCalendarComponent();
+export default function Multiple() {
+  const calendarControl = useCalendarComponent({ selectType: 'multiple' });
   const { selectedDates, value } = calendarControl;
   // const { year, month, dayOfMonth } = selectedDate;
 

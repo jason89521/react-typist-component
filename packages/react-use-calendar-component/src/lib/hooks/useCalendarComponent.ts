@@ -3,7 +3,6 @@ import { useState } from 'react';
 import type {
   UseCalendarOptions,
   DateCellInfo,
-  SelectDate,
   SelectDateOptions,
   SelectType,
 } from '../types';
@@ -12,11 +11,11 @@ import useDisplayedDate from './useDisplayedDate';
 
 const CELLS_OF_PICKER = 42;
 
-export default function useCalendarComponent<S extends SelectType>({
+export default function useCalendarComponent<S extends SelectType = 'single'>({
   displayedDate = new Date(),
   selectType,
+  defaultValue,
 }: UseCalendarOptions<S> = {}) {
-  console.log(selectType);
   const {
     displayedYear,
     displayedMonth,
@@ -25,7 +24,8 @@ export default function useCalendarComponent<S extends SelectType>({
     changeDisplayedYear,
     changeDisplayedMonth,
   } = useDisplayedDate(displayedDate);
-  const [selectedDate, setSelectedDate] = useState<Date[]>([]);
+  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
+  const [value, setValue] = useState(defaultValue);
 
   const getDateCellInfo = (cellIndex: number): DateCellInfo => {
     const prevMonth = displayedMonth === 0 ? 11 : displayedMonth - 1;
@@ -58,8 +58,28 @@ export default function useCalendarComponent<S extends SelectType>({
       };
     })();
     const weekDay = cellIndex % 7;
-    const selectThisDate = (options?: SelectDateOptions) => {
-      selectDate({ year, month, dayOfMonth }, options);
+    const selectThisDate = (options: SelectDateOptions = {}) => {
+      const { changeDisplayedValues = true } = options;
+      if (changeDisplayedValues) {
+        setDisplayedYear(year);
+        setDisplayedMonth(month);
+      }
+      const selectedDate = new Date(year, month, dayOfMonth);
+      if (selectType === 'multiple') {
+        const newDates = selectedDates.filter(
+          date => date.toString() !== selectedDate.toString()
+        );
+        if (newDates.length === selectedDates.length)
+          newDates.push(selectedDate);
+        newDates.sort((a, b) => a.getTime() - b.getTime());
+        setSelectedDates(newDates);
+        setValue(newDates as any);
+
+        return;
+      }
+
+      setSelectedDates([selectedDate]);
+      setValue(selectedDate as any);
     };
 
     return {
@@ -69,10 +89,12 @@ export default function useCalendarComponent<S extends SelectType>({
       dayOfMonth: dayOfMonth,
       dayOfWeek: weekDay,
       isToday: isToday(year, month, dayOfMonth),
-      isSelected:
-        year === selectedDate[0]?.getFullYear() &&
-        month === selectedDate[0]?.getMonth() &&
-        dayOfMonth === selectedDate[0]?.getDate(),
+      isSelected: !!selectedDates.find(
+        date =>
+          date.getFullYear() === year &&
+          date.getMonth() === month &&
+          date.getDate() === dayOfMonth
+      ),
       monthStatus:
         monthOffset < 0 ? 'previous' : monthOffset > 0 ? 'next' : 'current',
       selectThisDate,
@@ -88,21 +110,11 @@ export default function useCalendarComponent<S extends SelectType>({
     return arr;
   };
 
-  const selectDate: SelectDate = (
-    { year, month, dayOfMonth },
-    options = {}
-  ) => {
-    const { changeDisplayedValues = false } = options;
-    setSelectedDate([new Date(year, month, dayOfMonth)]);
-    if (changeDisplayedValues) {
-      setDisplayedYear(year);
-      setDisplayedMonth(month);
-    }
-  };
-
   return {
+    selectedDates,
     displayedYear,
     displayedMonth,
+    value,
     changeDisplayedYear,
     changeDisplayedMonth,
     getDateCellInfos,
