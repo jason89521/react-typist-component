@@ -2,6 +2,10 @@
 
 This project is aimed to provide an easy-to-use API interface for those people who want to build their own calendar component with custom style.
 
+## Caveat
+
+This package is still under development, the API interface may change frequently.
+
 ## Todo
 
 - [x] Generate 42 date cell information
@@ -11,3 +15,8 @@ This project is aimed to provide an easy-to-use API interface for those people w
 - [ ] Support disabled date
 - [ ] Support displaying two calendar
 - [ ] Support week, month, year selection
+
+## Examples
+
+- [Single Mode](./src/app/components/Examples/Single.tsx)
+- [Multiple Mode](./src/app/components/Examples/Multiple.tsx)
