@@ -1,16 +1,9 @@
-import { useEffect } from 'react';
-
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
 
-export default function Single() {
+export function Single() {
   const calendarControl = useCalendarComponent();
-  const { selectedDates, value } = calendarControl;
-  // const { year, month, dayOfMonth } = selectedDate;
-
-  useEffect(() => {
-    console.log('value:', value);
-  }, [value]);
+  const { selectedDates } = calendarControl;
 
   return (
     <div>

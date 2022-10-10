@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-import Multiple from './components/Examples/Multiple';
-import Single from './components/Examples/Single';
+import { Single, Multiple } from './components/Examples';
 
 type ExampleType = 'single' | 'multiple';
 

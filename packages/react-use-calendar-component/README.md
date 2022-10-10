@@ -6,8 +6,8 @@ This project is aimed to provide an easy-to-use API interface for those people w
 
 - [x] Generate 42 date cell information
 - [x] Change displayed year/month when selected date is change
-- [ ] Support selecting with range
-- [ ] Select multiple dates
+- [x] Select multiple dates
+- [ ] Select with range
 - [ ] Support disabled date
 - [ ] Support displaying two calendar
 - [ ] Support week, month, year selection

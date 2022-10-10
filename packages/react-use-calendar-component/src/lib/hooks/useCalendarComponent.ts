@@ -1,18 +1,17 @@
 import { useState } from 'react';
 
+import { CALENDAR_CELLS_NUM } from '../constant';
 import type {
   UseCalendarOptions,
   DateCellInfo,
   SelectDateOptions,
   SelectType,
 } from '../types';
-import { getNumberOfDays, isToday } from '../utils';
+import { getDateInfoByIndex } from '../utils';
 import useDisplayedDate from './useDisplayedDate';
 
-const CELLS_OF_PICKER = 42;
-
 export default function useCalendarComponent<S extends SelectType = 'single'>({
-  displayedDate = new Date(),
+  initialDisplayedDate = new Date(),
   selectType,
   defaultValue,
 }: UseCalendarOptions<S> = {}) {
@@ -23,48 +22,28 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     setDisplayedMonth,
     changeDisplayedYear,
     changeDisplayedMonth,
-  } = useDisplayedDate(displayedDate);
+  } = useDisplayedDate(initialDisplayedDate);
   const [selectedDates, setSelectedDates] = useState<Date[]>([]);
   const [value, setValue] = useState(defaultValue);
 
-  const getDateCellInfo = (cellIndex: number): DateCellInfo => {
-    const prevMonth = displayedMonth === 0 ? 11 : displayedMonth - 1;
-    const prevYear = displayedMonth === 0 ? displayedYear - 1 : displayedYear;
-    const prevMonthNumberOfDays = getNumberOfDays(prevYear, prevMonth);
-    const weekDayOfFirstDay = new Date(displayedYear, displayedMonth).getDay();
-    const offset = cellIndex - weekDayOfFirstDay;
-    const numberOfDays = getNumberOfDays(displayedYear, displayedMonth);
-    const dayOfMonth =
-      (offset < 0 ? prevMonthNumberOfDays + offset : offset % numberOfDays) + 1;
-    const monthOffset = offset < 0 ? -1 : offset >= numberOfDays ? 1 : 0;
-
-    const { year, month } = (() => {
-      const targetMonth = displayedMonth + monthOffset;
-      if (targetMonth < 0)
-        return {
-          year: displayedYear - 1,
-          month: 11,
-        };
-
-      if (targetMonth > 11)
-        return {
-          year: displayedYear + 1,
-          month: 0,
-        };
-
-      return {
-        year: displayedYear,
-        month: targetMonth,
-      };
-    })();
-    const weekDay = cellIndex % 7;
+  const getDateCellInfo = (
+    year: number,
+    month: number,
+    cellIndex: number
+  ): DateCellInfo => {
+    const {
+      year: dateYear,
+      month: dateMonth,
+      dayOfMonth,
+      ...info
+    } = getDateInfoByIndex(year, month, cellIndex);
     const selectThisDate = (options: SelectDateOptions = {}) => {
       const { changeDisplayedValues = true } = options;
       if (changeDisplayedValues) {
-        setDisplayedYear(year);
-        setDisplayedMonth(month);
+        setDisplayedYear(dateYear);
+        setDisplayedMonth(dateMonth);
       }
-      const selectedDate = new Date(year, month, dayOfMonth);
+      const selectedDate = new Date(dateYear, dateMonth, dayOfMonth);
       if (selectType === 'multiple') {
         const newDates = selectedDates.filter(
           date => date.toString() !== selectedDate.toString()
@@ -83,28 +62,27 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     };
 
     return {
-      key: `${year}-${month}-${dayOfMonth}`,
-      year,
-      month,
+      key: `${dateYear}-${dateMonth}-${dayOfMonth}`,
+      year: dateYear,
+      month: dateMonth,
       dayOfMonth: dayOfMonth,
-      dayOfWeek: weekDay,
-      isToday: isToday(year, month, dayOfMonth),
       isSelected: !!selectedDates.find(
         date =>
-          date.getFullYear() === year &&
-          date.getMonth() === month &&
-          date.getDate() === dayOfMonth
+          date.toString() ===
+          new Date(dateYear, dateMonth, dayOfMonth).toString()
       ),
-      monthStatus:
-        monthOffset < 0 ? 'previous' : monthOffset > 0 ? 'next' : 'current',
       selectThisDate,
+      ...info,
     };
   };
 
-  const getDateCellInfos = () => {
+  const getDateCellInfos = (
+    year: number = displayedYear,
+    month: number = displayedMonth
+  ) => {
     const arr: DateCellInfo[] = [];
-    for (let i = 0; i < CELLS_OF_PICKER; i++) {
-      arr.push(getDateCellInfo(i));
+    for (let i = 0; i < CALENDAR_CELLS_NUM; i++) {
+      arr.push(getDateCellInfo(year, month, i));
     }
 
     return arr;
