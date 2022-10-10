@@ -6,14 +6,16 @@ import type {
   DateCellInfo,
   SelectDateOptions,
   SelectType,
+  Value,
 } from '../types';
-import { getDateInfoByIndex } from '../utils';
+import { getDateInfoByIndex, isSameDate, noop } from '../utils';
 import useDisplayedDate from './useDisplayedDate';
 
 export default function useCalendarComponent<S extends SelectType = 'single'>({
   initialDisplayedDate = new Date(),
   selectType,
-  defaultValue,
+  value,
+  onChange = noop,
 }: UseCalendarOptions<S> = {}) {
   const {
     displayedYear,
@@ -23,8 +25,23 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     changeDisplayedYear,
     changeDisplayedMonth,
   } = useDisplayedDate(initialDisplayedDate);
-  const [selectedDates, setSelectedDates] = useState<Date[]>([]);
-  const [value, setValue] = useState(defaultValue);
+  const [internalValue, setInternalValue] = useState(value);
+  const selectedDates = (() => {
+    if (selectType === 'multiple') {
+      if (value) return value as Date[];
+      if (internalValue) return internalValue as Date[];
+    }
+
+    if (value) return [value] as Date[];
+    if (internalValue) return [internalValue] as Date[];
+
+    return [];
+  })();
+
+  const handleValueChange = (value: Value<S>) => {
+    onChange(value);
+    setInternalValue(value);
+  };
 
   const getDateCellInfo = (
     year: number,
@@ -46,19 +63,17 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
       const selectedDate = new Date(dateYear, dateMonth, dayOfMonth);
       if (selectType === 'multiple') {
         const newDates = selectedDates.filter(
-          date => date.toString() !== selectedDate.toString()
+          date => !isSameDate(date, selectedDate)
         );
         if (newDates.length === selectedDates.length)
           newDates.push(selectedDate);
         newDates.sort((a, b) => a.getTime() - b.getTime());
-        setSelectedDates(newDates);
-        setValue(newDates as any);
+        handleValueChange(newDates as any);
 
         return;
       }
 
-      setSelectedDates([selectedDate]);
-      setValue(selectedDate as any);
+      handleValueChange(selectedDate as any);
     };
 
     return {
@@ -66,10 +81,8 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
       year: dateYear,
       month: dateMonth,
       dayOfMonth: dayOfMonth,
-      isSelected: !!selectedDates.find(
-        date =>
-          date.toString() ===
-          new Date(dateYear, dateMonth, dayOfMonth).toString()
+      isSelected: !!selectedDates.find(date =>
+        isSameDate(date, new Date(dateYear, dateMonth, dayOfMonth))
       ),
       selectThisDate,
       ...info,
@@ -92,7 +105,6 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     selectedDates,
     displayedYear,
     displayedMonth,
-    value,
     changeDisplayedYear,
     changeDisplayedMonth,
     getDateCellInfos,

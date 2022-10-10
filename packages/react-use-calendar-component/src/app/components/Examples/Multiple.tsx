@@ -1,17 +1,18 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
 import SelectedDates from '../SelectedDates';
 
 export function Multiple() {
-  const calendarControl = useCalendarComponent({ selectType: 'multiple' });
-  const { selectedDates, value } = calendarControl;
-  // const { year, month, dayOfMonth } = selectedDate;
-
-  useEffect(() => {
-    console.log('value:', value);
-  }, [value]);
+  const [value, setValue] = useState([new Date()]);
+  console.log(value);
+  const calendarControl = useCalendarComponent({
+    selectType: 'multiple',
+    value,
+    onChange: setValue,
+  });
+  const { selectedDates } = calendarControl;
 
   return (
     <div>

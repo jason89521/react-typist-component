@@ -1,9 +1,12 @@
+import { useState } from 'react';
+
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
 import SelectedDates from '../SelectedDates';
 
 export function Single() {
-  const calendarControl = useCalendarComponent();
+  const [value, setValue] = useState(new Date());
+  const calendarControl = useCalendarComponent({ value, onChange: setValue });
   const { selectedDates } = calendarControl;
 
   return (

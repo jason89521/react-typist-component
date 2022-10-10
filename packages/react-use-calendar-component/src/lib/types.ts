@@ -1,7 +1,7 @@
 // useCalendarComponent
 export type SelectType = 'single' | 'multiple';
 
-export type DefaultValue<S extends SelectType> = S extends 'single'
+export type Value<S extends SelectType> = S extends 'single'
   ? Date
   : S extends 'multiple'
   ? Date[]
@@ -10,7 +10,8 @@ export type DefaultValue<S extends SelectType> = S extends 'single'
 export type UseCalendarOptions<S extends SelectType = 'single'> = {
   initialDisplayedDate?: Date;
   selectType?: S;
-  defaultValue?: DefaultValue<S>;
+  value?: Value<S>;
+  onChange?: (value: Value<S>) => void;
 };
 
 export interface DateInfo {
