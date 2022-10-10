@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
+import SelectedDates from '../SelectedDates';
 
 export function Multiple() {
   const calendarControl = useCalendarComponent({ selectType: 'multiple' });
@@ -15,14 +16,7 @@ export function Multiple() {
   return (
     <div>
       <Calendar calendarControl={calendarControl} />
-      <p className='text-center mt-10 text-white flex flex-col'>
-        {selectedDates.map(date => {
-          const localeString = date.toLocaleString(navigator.language, {
-            dateStyle: 'long',
-          });
-          return <span key={localeString}>{localeString}</span>;
-        })}
-      </p>
+      <SelectedDates selectedDates={selectedDates} />
     </div>
   );
 }

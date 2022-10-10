@@ -1,5 +1,6 @@
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
+import SelectedDates from '../SelectedDates';
 
 export function Single() {
   const calendarControl = useCalendarComponent();
@@ -8,14 +9,7 @@ export function Single() {
   return (
     <div>
       <Calendar calendarControl={calendarControl} />
-      <p className='text-center mt-10 text-white flex flex-col'>
-        {selectedDates.map(date => {
-          const localeString = date.toLocaleString(navigator.language, {
-            dateStyle: 'long',
-          });
-          return <span key={localeString}>{localeString}</span>;
-        })}
-      </p>
+      <SelectedDates selectedDates={selectedDates} />
     </div>
   );
 }
