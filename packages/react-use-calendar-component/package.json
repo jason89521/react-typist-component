@@ -4,6 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "build:website": "tsc && vite build",
     "build:types": "tsc --project tsconfig.lib.json",
     "build:package": "vite build --mode lib && pnpm build:types",
