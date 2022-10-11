@@ -20,9 +20,7 @@ export default function CalendarCell({
       onClick={() => selectThisDate()}
       type='button'
       title={title}>
-      <div className='flex items-center justify-center'>
-        <span>{dayOfMonth}</span>
-      </div>
+      {dayOfMonth}
     </button>
   );
 }
