@@ -2,11 +2,10 @@ import { useState } from 'react';
 
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
-import SelectedDates from '../SelectedDates';
+import StateInfo from '../StateInfo';
 
 export function Multiple() {
   const [value, setValue] = useState([new Date()]);
-  console.log(value);
   const calendarControl = useCalendarComponent({
     selectType: 'multiple',
     value,
@@ -17,7 +16,7 @@ export function Multiple() {
   return (
     <div>
       <Calendar calendarControl={calendarControl} />
-      <SelectedDates selectedDates={selectedDates} />
+      <StateInfo value={value} selectedDates={selectedDates} />
     </div>
   );
 }

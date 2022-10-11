@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import useCalendarComponent from '../../../lib';
 import Calendar from '../Calendar';
-import SelectedDates from '../SelectedDates';
+import StateInfo from '../StateInfo';
 
 export function Single() {
   const [value, setValue] = useState(new Date());
@@ -12,7 +12,7 @@ export function Single() {
   return (
     <div>
       <Calendar calendarControl={calendarControl} />
-      <SelectedDates selectedDates={selectedDates} />
+      <StateInfo value={[value]} selectedDates={selectedDates} />
     </div>
   );
 }
