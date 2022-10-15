@@ -52,7 +52,7 @@ const config = {
         title: 'React Components',
         items: [
           {
-            href: 'https://github.com/facebook/docusaurus',
+            href: 'https://github.com/jason89521/react-components-monorepo',
             label: 'GitHub',
             position: 'right',
           },
