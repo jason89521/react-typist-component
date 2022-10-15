@@ -53,6 +53,7 @@ importers:
       prism-react-renderer: ^1.3.5
       react: ^18.2.0
       react-dom: ^18.2.0
+      react-typist-component: workspace:*
       typescript: ^4.8.3
     dependencies:
       '@docusaurus/core': 2.1.0_bb2lpehc4sm6fnn2zwweqmbmoy
@@ -62,6 +63,7 @@ importers:
       prism-react-renderer: 1.3.5_react@18.2.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-typist-component: link:../packages/react-typist-component
     devDependencies:
       '@docusaurus/module-type-aliases': 2.1.0_biqbaboplfbrettd7655fr4n2y
       '@tsconfig/docusaurus': 1.0.6
@@ -11874,6 +11876,12 @@ packages:
   /react-dev-utils/12.0.1_kb3egcnme7w23lfa5xodfjfhge:
     resolution: {integrity: sha512-84Ivxmr17KjUupyqzFode6xKhjwuEJDROWKJy/BthkL7Wn6NJ8h4WE6k/exAv6ImS+0oZLRRW5j/aINMHyeGeQ==}
     engines: {node: '>=14'}
+    peerDependencies:
+      typescript: '>=2.7'
+      webpack: '>=4'
+    peerDependenciesMeta:
+      typescript:
+        optional: true
     dependencies:
       '@babel/code-frame': 7.18.6
       address: 1.2.1
@@ -11899,12 +11907,12 @@ packages:
       shell-quote: 1.7.4
       strip-ansi: 6.0.1
       text-table: 0.2.0
+      typescript: 4.8.3
+      webpack: 5.74.0
     transitivePeerDependencies:
       - eslint
       - supports-color
-      - typescript
       - vue-template-compiler
-      - webpack
     dev: false
 
   /react-dom/18.2.0_react@18.2.0:
@@ -13469,6 +13477,7 @@ packages:
   /unified/9.2.0:
     resolution: {integrity: sha512-vx2Z0vY+a3YoTj8+pttM3tiJHCwY5UFbYdiWrwBEbHmK8pvsPj2rtAX2BFfgXen8T39CJWblWRDT4L5WGXtDdg==}
     dependencies:
+      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5
@@ -13480,6 +13489,7 @@ packages:
   /unified/9.2.2:
     resolution: {integrity: sha512-Sg7j110mtefBD+qunSLO1lqOEKdrwBFBrR6Qd8f4uwkhWNlbkaqwHse6e7QvD3AP/MNoJdEDLaf8OxYyoWgorQ==}
     dependencies:
+      '@types/unist': 2.0.6
       bail: 1.0.5
       extend: 3.0.2
       is-buffer: 2.0.5
