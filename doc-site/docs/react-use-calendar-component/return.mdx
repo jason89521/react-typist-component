@@ -1,0 +1,56 @@
+---
+title: Return value
+---
+
+```ts
+export interface DateInfo {
+  year: number;
+  month: number;
+  monthDay: number;
+  weekDay: number;
+  isToday: boolean;
+  monthStatus: 'current' | 'next' | 'previous';
+}
+
+export interface DateCellInfo extends DateInfo {
+  key: string;
+  isSelected: boolean;
+  isExcluded: boolean;
+  selectThisDate: (options?: SelectDateOptions) => void;
+}
+
+export type ChangeDisplayedValue = (
+  value: number,
+  options?: { override?: boolean }
+) => void;
+
+interface Return {
+  displayedYear: number;
+  displayedMonth: number;
+  changeDisplayedYear: ChangeDisplayedValue;
+  changeDisplayedMonth: ChangeDisplayedValue;
+  getDateCellInfos: (year?: number, month?: number) => DateCellInfo[];
+}
+```
+
+## `displayedYear`
+
+The current year which should be displayed.
+
+## `displayedMonth`
+
+The current month which should be displayed.
+
+## `changeDisplayedYear`
+
+Add `displayedYear` by a value. For example, if `displayedYear` is `2022`, then `changeDisplayedYear(1)` will change `displayedYear` to `2023`.
+
+If `options.override` is set to `true`, then `displayedYear` will be set to `1`.
+
+## `changeDisplayedMonth`
+
+Like `changeDisplayYear`, but change `displayedMonth` instead.
+
+## `getDateCellInfos`
+
+Use this function to get the calendar of the specified `year` and `month`. The default value of `year` and `month` is `displayedYear` and `displayedMonth`.
