@@ -8,14 +8,21 @@ import type {
   SelectType,
   Value,
 } from '../types';
-import { getDateInfoByIndex, isSameDate, noop } from '../utils';
+import {
+  getDateInfoByIndex,
+  isSameDate,
+  isExcludedDate,
+  noop,
+  normalizeValue,
+} from '../utils';
 import useDisplayedDate from './useDisplayedDate';
 
 export default function useCalendarComponent<S extends SelectType = 'single'>({
   initialDisplayedDate = new Date(),
   selectType,
-  value,
+  value: userValue,
   onChange = noop,
+  excludedDates = {},
 }: UseCalendarOptions<S> = {}) {
   const {
     displayedYear,
@@ -25,18 +32,8 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     changeDisplayedYear,
     changeDisplayedMonth,
   } = useDisplayedDate(initialDisplayedDate);
-  const [internalValue, setInternalValue] = useState(value);
-  const selectedDates = (() => {
-    if (selectType === 'multiple') {
-      if (value) return value as Date[];
-      if (internalValue) return internalValue as Date[];
-    }
-
-    if (value) return [value] as Date[];
-    if (internalValue) return [internalValue] as Date[];
-
-    return [];
-  })();
+  const [internalValue, setInternalValue] = useState(userValue);
+  const selectedDates = normalizeValue(selectType, userValue || internalValue);
 
   const handleValueChange = (value: Value<S>) => {
     onChange(value);
@@ -51,48 +48,41 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     const {
       year: dateYear,
       month: dateMonth,
-      dayOfMonth,
+      monthDay,
       ...info
     } = getDateInfoByIndex(year, month, cellIndex);
+    const thisDate = new Date(dateYear, dateMonth, monthDay);
+    const isSelected = !!selectedDates.find(d => isSameDate(d, thisDate));
+    const isExcluded = isExcludedDate(thisDate, excludedDates);
     const selectThisDate = (options: SelectDateOptions = {}) => {
       const { changeDisplayedValues = true } = options;
       if (changeDisplayedValues) {
         setDisplayedYear(dateYear);
         setDisplayedMonth(dateMonth);
       }
-      const selectedDate = new Date(dateYear, dateMonth, dayOfMonth);
       if (selectType === 'multiple') {
-        const newDates = selectedDates.filter(
-          date => !isSameDate(date, selectedDate)
-        );
-        if (newDates.length === selectedDates.length)
-          newDates.push(selectedDate);
-        newDates.sort((a, b) => a.getTime() - b.getTime());
+        const newDates = selectedDates.filter(d => !isSameDate(d, thisDate));
+        if (newDates.length === selectedDates.length) newDates.push(thisDate);
         handleValueChange(newDates as any);
 
         return;
       }
-
-      handleValueChange(selectedDate as any);
+      handleValueChange(thisDate as any);
     };
 
     return {
-      key: `${dateYear}-${dateMonth}-${dayOfMonth}`,
+      key: `${dateYear}-${dateMonth}-${monthDay}`,
       year: dateYear,
       month: dateMonth,
-      dayOfMonth: dayOfMonth,
-      isSelected: !!selectedDates.find(date =>
-        isSameDate(date, new Date(dateYear, dateMonth, dayOfMonth))
-      ),
+      monthDay,
+      isSelected,
+      isExcluded,
       selectThisDate,
       ...info,
     };
   };
 
-  const getDateCellInfos = (
-    year: number = displayedYear,
-    month: number = displayedMonth
-  ) => {
+  const getDateCellInfos = (year = displayedYear, month = displayedMonth) => {
     const arr: DateCellInfo[] = [];
     for (let i = 0; i < CALENDAR_CELLS_NUM; i++) {
       arr.push(getDateCellInfo(year, month, i));
@@ -102,7 +92,6 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
   };
 
   return {
-    selectedDates,
     displayedYear,
     displayedMonth,
     changeDisplayedYear,

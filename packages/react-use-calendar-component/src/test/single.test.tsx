@@ -6,7 +6,6 @@ import { getLocaleMonth } from './utils';
 
 const dateInstance = new Date(2022, 9, 1);
 const idValue = 'value';
-const idSelectedDates = 'selected-dates';
 
 describe('common functionality', () => {
   it('should display correct year/month', async () => {
@@ -58,23 +57,17 @@ describe('common functionality', () => {
     const user = userEvent.setup({ delay: null });
     render(<Single />);
     const valueBlock = screen.getByTestId(idValue);
-    const datesBlock = screen.getByTestId(idSelectedDates);
     let testString = dateInstance.toDateString();
     expect(valueBlock).toHaveTextContent(testString);
-    expect(datesBlock).toHaveTextContent(testString);
 
     const date10 = screen.getByRole('button', { name: '10' });
     await user.click(date10);
     testString = new Date(2022, 9, 10).toDateString();
     expect(valueBlock).toHaveTextContent(testString);
-    expect(datesBlock).toHaveTextContent(testString);
-    expect(datesBlock.childElementCount).toBe(2);
 
     const date20 = screen.getByRole('button', { name: '20' });
     await user.click(date20);
     testString = new Date(2022, 9, 20).toDateString();
     expect(valueBlock).toHaveTextContent(testString);
-    expect(datesBlock).toHaveTextContent(testString);
-    expect(datesBlock.childElementCount).toBe(2);
   });
 });

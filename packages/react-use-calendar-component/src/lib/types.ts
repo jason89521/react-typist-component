@@ -7,31 +7,33 @@ export type Value<S extends SelectType> = S extends 'single'
   ? Date[]
   : never;
 
+export type ExcludedDates = {
+  min?: Date;
+  max?: Date;
+  arbitrary?: Date[];
+};
+
 export type UseCalendarOptions<S extends SelectType = 'single'> = {
   initialDisplayedDate?: Date;
   selectType?: S;
   value?: Value<S>;
   onChange?: (value: Value<S>) => void;
+  excludedDates?: ExcludedDates;
 };
 
 export interface DateInfo {
   year: number;
   month: number;
-  dayOfMonth: number;
-  dayOfWeek: number;
+  monthDay: number;
+  weekDay: number;
   isToday: boolean;
   monthStatus: 'current' | 'next' | 'previous';
 }
 
-export interface DateCellInfo {
+export interface DateCellInfo extends DateInfo {
   key: string;
-  year: number;
-  month: number;
-  dayOfMonth: number;
-  dayOfWeek: number;
-  isToday: boolean;
   isSelected: boolean;
-  monthStatus: 'current' | 'next' | 'previous';
+  isExcluded: boolean;
   selectThisDate: (options?: SelectDateOptions) => void;
 }
 

@@ -26,7 +26,7 @@ export function getDateInfoByIndex(
   // If this offset is larger than or equal to the `numberOfDays`, means that the date at the current index is in the next month.
   // Otherwise means that the date at the current index is at the target month.
   const offset = index - weekDayOfFirstDay;
-  const dayOfMonth =
+  const monthDay =
     (offset < 0 ? prevNumberOfDays + offset : offset % numberOfDays) + 1;
   const monthOffset = offset < 0 ? -1 : offset >= numberOfDays ? 1 : 0;
   const { dateYear, dateMonth } = (() => {
@@ -55,9 +55,9 @@ export function getDateInfoByIndex(
   return {
     year: dateYear,
     month: dateMonth,
-    dayOfWeek: index % 7,
-    dayOfMonth,
+    weekDay: index % 7,
+    monthDay,
     monthStatus,
-    isToday: isToday(dateYear, dateMonth, dayOfMonth),
+    isToday: isToday(dateYear, dateMonth, monthDay),
   };
 }
