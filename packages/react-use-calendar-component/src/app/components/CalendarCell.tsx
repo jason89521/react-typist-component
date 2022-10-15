@@ -4,7 +4,7 @@ export default function CalendarCell({
   monthStatus,
   isSelected,
   isToday,
-  monthDay: dayOfMonth,
+  monthDay,
   selectThisDate,
 }: DateCellInfo) {
   const title = isToday ? 'today' : undefined;
@@ -20,7 +20,7 @@ export default function CalendarCell({
       onClick={() => selectThisDate()}
       type='button'
       title={title}>
-      {dayOfMonth}
+      {monthDay}
     </button>
   );
 }

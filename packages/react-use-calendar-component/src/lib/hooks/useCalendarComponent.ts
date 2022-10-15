@@ -9,6 +9,7 @@ import type {
   Value,
 } from '../types';
 import { getDateInfoByIndex, isSameDate, noop } from '../utils';
+import { normalizeValue } from '../utils/normalizeValue';
 import useDisplayedDate from './useDisplayedDate';
 
 export default function useCalendarComponent<S extends SelectType = 'single'>({
@@ -26,17 +27,7 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     changeDisplayedMonth,
   } = useDisplayedDate(initialDisplayedDate);
   const [internalValue, setInternalValue] = useState(userValue);
-  const selectedDates = (() => {
-    if (selectType === 'multiple') {
-      if (userValue) return userValue as Date[];
-      if (internalValue) return internalValue as Date[];
-    }
-
-    if (userValue) return [userValue] as Date[];
-    if (internalValue) return [internalValue] as Date[];
-
-    return [];
-  })();
+  const selectedDates = normalizeValue(selectType, userValue || internalValue);
 
   const handleValueChange = (value: Value<S>) => {
     onChange(value);
@@ -54,6 +45,10 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
       monthDay,
       ...info
     } = getDateInfoByIndex(year, month, cellIndex);
+
+    const isSelected = !!selectedDates.find(date =>
+      isSameDate(date, new Date(dateYear, dateMonth, monthDay))
+    );
     const selectThisDate = (options: SelectDateOptions = {}) => {
       const { changeDisplayedValues = true } = options;
       if (changeDisplayedValues) {
@@ -81,9 +76,7 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
       year: dateYear,
       month: dateMonth,
       monthDay,
-      isSelected: !!selectedDates.find(date =>
-        isSameDate(date, new Date(dateYear, dateMonth, monthDay))
-      ),
+      isSelected,
       selectThisDate,
       ...info,
     };
@@ -102,7 +95,6 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
   };
 
   return {
-    selectedDates,
     displayedYear,
     displayedMonth,
     changeDisplayedYear,

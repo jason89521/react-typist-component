@@ -11,12 +11,11 @@ export function Multiple() {
     value,
     onChange: setValue,
   });
-  const { selectedDates } = calendarControl;
 
   return (
     <div>
       <Calendar calendarControl={calendarControl} />
-      <StateInfo value={value} selectedDates={selectedDates} />
+      <StateInfo value={value} />
     </div>
   );
 }
