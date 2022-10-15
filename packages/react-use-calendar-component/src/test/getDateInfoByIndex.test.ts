@@ -11,11 +11,12 @@ describe('getDateInfoByIndex', () => {
 
   it('should determine the date is at the previous month', () => {
     previousIndexes.forEach((value, index) => {
-      const { year, month, dayOfMonth, monthStatus } = getDateInfoByIndex(
-        testYear,
-        testMonth,
-        value
-      );
+      const {
+        year,
+        month,
+        monthDay: dayOfMonth,
+        monthStatus,
+      } = getDateInfoByIndex(testYear, testMonth, value);
       expect(year).toBe(testYear);
       expect(month).toBe(testMonth - 1);
       expect(dayOfMonth).toBe(25 + index);
@@ -24,11 +25,12 @@ describe('getDateInfoByIndex', () => {
   });
   it('should determine the date is at the current month', () => {
     currentIndexes.forEach((value, index) => {
-      const { year, month, dayOfMonth, monthStatus } = getDateInfoByIndex(
-        testYear,
-        testMonth,
-        value
-      );
+      const {
+        year,
+        month,
+        monthDay: dayOfMonth,
+        monthStatus,
+      } = getDateInfoByIndex(testYear, testMonth, value);
       expect(year).toBe(testYear);
       expect(month).toBe(testMonth);
       expect(dayOfMonth).toBe(1 + index);
@@ -37,11 +39,12 @@ describe('getDateInfoByIndex', () => {
   });
   it('should determine the date is at the next month', () => {
     nextIndexes.forEach((value, index) => {
-      const { year, month, dayOfMonth, monthStatus } = getDateInfoByIndex(
-        testYear,
-        testMonth,
-        value
-      );
+      const {
+        year,
+        month,
+        monthDay: dayOfMonth,
+        monthStatus,
+      } = getDateInfoByIndex(testYear, testMonth, value);
       expect(year).toBe(testYear);
       expect(month).toBe(testMonth + 1);
       expect(dayOfMonth).toBe(1 + index);

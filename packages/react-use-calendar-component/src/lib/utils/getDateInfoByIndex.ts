@@ -55,8 +55,8 @@ export function getDateInfoByIndex(
   return {
     year: dateYear,
     month: dateMonth,
-    dayOfWeek: index % 7,
-    dayOfMonth,
+    weekDay: index % 7,
+    monthDay: dayOfMonth,
     monthStatus,
     isToday: isToday(dateYear, dateMonth, dayOfMonth),
   };

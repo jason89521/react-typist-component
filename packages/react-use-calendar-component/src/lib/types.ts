@@ -17,21 +17,15 @@ export type UseCalendarOptions<S extends SelectType = 'single'> = {
 export interface DateInfo {
   year: number;
   month: number;
-  dayOfMonth: number;
-  dayOfWeek: number;
+  monthDay: number;
+  weekDay: number;
   isToday: boolean;
   monthStatus: 'current' | 'next' | 'previous';
 }
 
-export interface DateCellInfo {
+export interface DateCellInfo extends DateInfo {
   key: string;
-  year: number;
-  month: number;
-  dayOfMonth: number;
-  dayOfWeek: number;
-  isToday: boolean;
   isSelected: boolean;
-  monthStatus: 'current' | 'next' | 'previous';
   selectThisDate: (options?: SelectDateOptions) => void;
 }
 

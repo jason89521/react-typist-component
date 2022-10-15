@@ -14,7 +14,7 @@ import useDisplayedDate from './useDisplayedDate';
 export default function useCalendarComponent<S extends SelectType = 'single'>({
   initialDisplayedDate = new Date(),
   selectType,
-  value,
+  value: userValue,
   onChange = noop,
 }: UseCalendarOptions<S> = {}) {
   const {
@@ -25,14 +25,14 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     changeDisplayedYear,
     changeDisplayedMonth,
   } = useDisplayedDate(initialDisplayedDate);
-  const [internalValue, setInternalValue] = useState(value);
+  const [internalValue, setInternalValue] = useState(userValue);
   const selectedDates = (() => {
     if (selectType === 'multiple') {
-      if (value) return value as Date[];
+      if (userValue) return userValue as Date[];
       if (internalValue) return internalValue as Date[];
     }
 
-    if (value) return [value] as Date[];
+    if (userValue) return [userValue] as Date[];
     if (internalValue) return [internalValue] as Date[];
 
     return [];
@@ -51,7 +51,7 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     const {
       year: dateYear,
       month: dateMonth,
-      dayOfMonth,
+      monthDay,
       ...info
     } = getDateInfoByIndex(year, month, cellIndex);
     const selectThisDate = (options: SelectDateOptions = {}) => {
@@ -60,7 +60,7 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
         setDisplayedYear(dateYear);
         setDisplayedMonth(dateMonth);
       }
-      const selectedDate = new Date(dateYear, dateMonth, dayOfMonth);
+      const selectedDate = new Date(dateYear, dateMonth, monthDay);
       if (selectType === 'multiple') {
         const newDates = selectedDates.filter(
           date => !isSameDate(date, selectedDate)
@@ -77,12 +77,12 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
     };
 
     return {
-      key: `${dateYear}-${dateMonth}-${dayOfMonth}`,
+      key: `${dateYear}-${dateMonth}-${monthDay}`,
       year: dateYear,
       month: dateMonth,
-      dayOfMonth: dayOfMonth,
+      monthDay,
       isSelected: !!selectedDates.find(date =>
-        isSameDate(date, new Date(dateYear, dateMonth, dayOfMonth))
+        isSameDate(date, new Date(dateYear, dateMonth, monthDay))
       ),
       selectThisDate,
       ...info,

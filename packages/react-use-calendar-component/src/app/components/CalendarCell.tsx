@@ -4,7 +4,7 @@ export default function CalendarCell({
   monthStatus,
   isSelected,
   isToday,
-  dayOfMonth,
+  monthDay: dayOfMonth,
   selectThisDate,
 }: DateCellInfo) {
   const title = isToday ? 'today' : undefined;
