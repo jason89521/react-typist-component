@@ -42,7 +42,7 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
   };
 
   useEffect(() => {
-    if (typeof userValue !== 'undefined') {
+    if (!isControlledRef.current && typeof userValue !== 'undefined') {
       setInternalValue(undefined);
       isControlledRef.current = true;
     }
