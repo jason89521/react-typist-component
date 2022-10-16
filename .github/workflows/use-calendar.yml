@@ -10,6 +10,7 @@ defaults:
 on:
   push:
     branches: ['main']
+    paths: ['packages/react-use-calendar-component']
   pull_request:
     branches: ['main']
     paths: ['packages/react-use-calendar-component']
