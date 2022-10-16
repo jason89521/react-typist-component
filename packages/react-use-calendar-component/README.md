@@ -12,6 +12,6 @@ This package is still under development, the API interface may change frequently
 - [x] Change displayed year/month when selected date is change
 - [x] Select multiple dates
 - [ ] Select with range
-- [ ] Support disabled date
+- [x] Support disabled date
 - [ ] Support displaying two calendar
 - [ ] Support week, month, year selection
