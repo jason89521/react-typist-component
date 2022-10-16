@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { CALENDAR_CELLS_NUM } from '../constant';
 import type {
@@ -34,11 +34,19 @@ export default function useCalendarComponent<S extends SelectType = 'single'>({
   } = useDisplayedDate(initialDisplayedDate);
   const [internalValue, setInternalValue] = useState(userValue);
   const selectedDates = normalizeValue(selectType, userValue || internalValue);
+  const isControlledRef = useRef(false);
 
   const handleValueChange = (value: Value<S>) => {
     onChange(value);
-    setInternalValue(value);
+    if (!isControlledRef.current) setInternalValue(value);
   };
+
+  useEffect(() => {
+    if (typeof userValue !== 'undefined') {
+      setInternalValue(undefined);
+      isControlledRef.current = true;
+    }
+  }, [userValue]);
 
   const getDateCellInfo = (
     year: number,

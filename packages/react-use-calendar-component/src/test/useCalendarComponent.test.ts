@@ -131,4 +131,22 @@ describe('useCalendarComponent', () => {
       expect(isExcluded).toBe(true);
     });
   });
+
+  it('should not set internalValue if it is controlled by user', () => {
+    const { result } = renderHook(() => {
+      const [value, setValue] = useState<Date | undefined>(now);
+      return {
+        ...useCalendarComponent({ value, onChange: setValue }),
+        value,
+        setValue,
+      };
+    });
+    act(() => {
+      result.current.setValue(undefined);
+    });
+    const noSelectedDates = result.current
+      .getDateCellInfos()
+      .every(info => !info.isSelected);
+    expect(noSelectedDates).toBe(true);
+  });
 });
