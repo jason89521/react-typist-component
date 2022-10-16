@@ -8,10 +8,15 @@ import type { ExcludedDates } from '../lib/types';
 const now = new Date(2022, 9, 1);
 const nowYear = now.getFullYear();
 const nowMonth = now.getMonth();
+const sep25 = new Date(2022, 8, 25);
+const nov05 = new Date(2022, 10, 5);
+
+beforeEach(() => {
+  jest.useFakeTimers({ now });
+});
 
 describe('useCalendarComponent', () => {
   it('should generate correct calendar cell', () => {
-    jest.useFakeTimers({ now });
     const { result } = renderHook(() => useCalendarComponent());
     const cells = result.current.getDateCellInfos();
     const previousCells = cells.splice(0, 6);
@@ -39,12 +44,11 @@ describe('useCalendarComponent', () => {
   });
 
   it('should select the date cell correctly with single mode', () => {
-    jest.useFakeTimers({ now });
     const { result } = renderHook(() => {
       const [value, setValue] = useState(now);
       return { ...useCalendarComponent({ value, onChange: setValue }), value };
     });
-    const cells = result.current.getDateCellInfos();
+    let cells = result.current.getDateCellInfos();
     // 2022-10-01
     expect(cells[6]).toMatchObject({
       isToday: true,
@@ -56,19 +60,51 @@ describe('useCalendarComponent', () => {
     // select the date at previous month
     act(() => {
       // 2022-09-25
-      cells[0]?.selectThisDate();
+      cells[0]?.selectThisDate({ changeDisplayedValues: false });
     });
-    expect(result.current.value).toEqual(new Date(2022, 8, 25));
+    expect(result.current.value).toEqual(sep25);
+    cells = result.current.getDateCellInfos();
     // select the date at next month
     act(() => {
       // 2022-11-05
-      cells.at(-1)?.selectThisDate();
+      cells.at(-1)?.selectThisDate({ changeDisplayedValues: false });
     });
-    expect(result.current.value).toEqual(new Date(2022, 10, 5));
+    expect(result.current.value).toEqual(nov05);
+  });
+
+  it('should select the date cells correctly with multiple mode', () => {
+    const { result } = renderHook(() => {
+      const [value, setValue] = useState<Date[]>([]);
+      return {
+        ...useCalendarComponent({
+          selectType: 'multiple',
+          value,
+          onChange: setValue,
+        }),
+        value,
+      };
+    });
+    let cells = result.current.getDateCellInfos();
+    act(() => {
+      cells[6]?.selectThisDate({ changeDisplayedValues: false });
+    });
+    expect(result.current.value).toEqual([now]);
+
+    cells = result.current.getDateCellInfos();
+    act(() => {
+      cells[0]?.selectThisDate({ changeDisplayedValues: false });
+    });
+    expect(result.current.value).toEqual([now, sep25]);
+
+    cells = result.current.getDateCellInfos();
+    // unselect the date
+    act(() => {
+      cells[0]?.selectThisDate({ changeDisplayedValues: false });
+    });
+    expect(result.current.value).toEqual([now]);
   });
 
   it('should distinguish whether a date is excluded', () => {
-    jest.useFakeTimers({ now });
     const excludedDates: ExcludedDates = {
       min: now,
       max: new Date(2022, 10, 1),
