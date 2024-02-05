@@ -29,7 +29,7 @@
     "build": "tsc --project tsconfig.lib.json"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/jest-dom": "^6.4.1",
     "@testing-library/react": "^14.2.1",
     "@types/jest": "^29.0.3",
     "@types/react": "^18.0.20",
