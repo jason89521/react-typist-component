@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Delay, TypedChildren, TypistProps } from '../types/TypistProps';
 import insertCursor from '../utils/insertCursor';
@@ -22,7 +22,7 @@ const Main = ({
   pause = false,
 }: TypistProps) => {
   const [typedChildrenArray, setTypedChildrenArray] = useState<TypedChildren[]>(
-    []
+    [],
   );
   const [currentIndex, setCurrentIndex] = useState(-1);
   const clearTimerRef = useRef(emptyFunc);
@@ -92,16 +92,16 @@ const Main = ({
           for (const { type, payload } of actions) {
             if (pauseRef.current) await pausePromise();
             if (type === 'TYPE_TOKEN') {
-              setCurrentIndex((prev) => prev + 1);
+              setCurrentIndex(prev => prev + 1);
               await timeoutPromise(typingDelay);
             } else if (type === 'BACKSPACE') {
               let amount = payload;
               while (amount--) {
-                setCurrentIndex((prev) => prev + 1);
+                setCurrentIndex(prev => prev + 1);
                 await timeoutPromise(backspaceDelay);
               }
             } else if (type === 'PASTE') {
-              setCurrentIndex((prev) => prev + 1);
+              setCurrentIndex(prev => prev + 1);
             } else if (type === 'DELAY') {
               await timeoutPromise(payload);
             }

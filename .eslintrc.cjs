@@ -7,10 +7,10 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
-  root: true,
   ignorePatterns: ['.eslintrc.cjs'],
   rules: {
     'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unused-vars': 'error',
   },
 };
