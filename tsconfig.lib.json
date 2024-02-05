@@ -15,9 +15,9 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "declaration": true,
-    "declarationDir": "./dist/types",
-    "emitDeclarationOnly": true
+    "outDir": "dist"
   },
-  "include": ["src/lib/index.ts"],
+  "include": ["src"],
+  "exclude": ["src/__test__", "src/stories"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -27,3 +27,5 @@ dist-ssr
 
 # contentlayer
 .contentlayer
+
+dist/
