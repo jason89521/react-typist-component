@@ -20,6 +20,7 @@ const Main = ({
   finishDelay = 0,
   loop = false,
   pause = false,
+  hideCursorWhenDone = false,
 }: TypistProps) => {
   const [typedChildrenArray, setTypedChildrenArray] = useState<TypedChildren[]>(
     [],
@@ -28,6 +29,8 @@ const Main = ({
   const clearTimerRef = useRef(emptyFunc);
   const loopRef = useRef(loop);
   const pauseRef = useRef(pause);
+  const hideCursorWhenDoneRef = useRef(hideCursorWhenDone);
+  const [showCursor, setShowCursor] = useState(true);
 
   const timeoutPromise = useCallback((delay: Delay) => {
     return new Promise((resolve, reject) => {
@@ -73,7 +76,8 @@ const Main = ({
   useEffect(() => {
     loopRef.current = loop;
     pauseRef.current = pause;
-  }, [loop, pause]);
+    hideCursorWhenDoneRef.current = hideCursorWhenDone;
+  }, [loop, pause, hideCursorWhenDone]);
 
   useEffect(() => {
     const typedChildrenArray = getTypedChildrenArray(children, splitter);
@@ -86,6 +90,7 @@ const Main = ({
     (async () => {
       try {
         do {
+          setShowCursor(true);
           setCurrentIndex(-1);
           const actions = getActions(children, splitter);
           if (startDelay > 0) await timeoutPromise(startDelay);
@@ -107,6 +112,7 @@ const Main = ({
             }
           }
           onTypingDone?.();
+          setShowCursor(false);
           if (finishDelay > 0) await timeoutPromise(finishDelay);
           if (!loopRef.current) await loopPromise();
         } while (loopRef.current);
@@ -123,7 +129,13 @@ const Main = ({
   }, [restartKey, disabled]);
 
   const typedChildren = typedChildrenArray[currentIndex];
-  return <>{cursor ? insertCursor(typedChildren, cursor) : typedChildren}</>;
+  return (
+    <>
+      {cursor && showCursor
+        ? insertCursor(typedChildren, cursor)
+        : typedChildren}
+    </>
+  );
 };
 
 export default Main;

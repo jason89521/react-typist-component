@@ -54,6 +54,7 @@ export type TypistProps = {
   cursor?: string | React.ReactElement;
   disabled?: boolean;
   restartKey?: any;
+  hideCursorWhenDone?: boolean;
 };
 ```
 
@@ -155,6 +156,10 @@ If this value is `true`, the result will be displayed immediately without typing
 #### `restartKey`
 
 `Typist` will restart the typing animation whenever `restartKey` changes.
+
+#### `hideCursorWhenDone`
+
+Hide the cursor when the typing animation is done.
 
 ### `Typist.Backspace`
 
