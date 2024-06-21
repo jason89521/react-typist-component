@@ -16,4 +16,5 @@ export type TypistProps = {
   cursor?: string | React.ReactElement;
   disabled?: boolean;
   restartKey?: any;
+  hideCursorWhenDone?: boolean;
 };
