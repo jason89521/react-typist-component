@@ -112,7 +112,7 @@ const Main = ({
             }
           }
           onTypingDone?.();
-          setShowCursor(false);
+          if (hideCursorWhenDoneRef.current) setShowCursor(false);
           if (finishDelay > 0) await timeoutPromise(finishDelay);
           if (!loopRef.current) await loopPromise();
         } while (loopRef.current);
